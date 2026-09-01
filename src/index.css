@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+/* Custom warm light scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1ede3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d8cfbe;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b5a790;
+}
+
+/* Canvas styling */
+canvas {
+  touch-action: none;
+  outline: none;
+}
+
+/* Hide scrollbar utility (e.g. for horizontal scroll strips) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Ensure minimum tap target size on mobile */
+@media (max-width: 768px) {
+  button, a {
+    min-height: 36px;
+  }
+}
+
+/* iOS safe area bottom padding for mobile nav */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+
+/* Print styling for Mechanic Report */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #1c1917 !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+
+  .mechanic-report-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #1c1917 !important;
+  }
+}
