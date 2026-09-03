@@ -12,6 +12,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { useVehicle } from '../../context/VehicleContext';
+import { ChatbotIcon } from '../Chatbot/DiagnosticChatbot';
 
 interface HeaderProps {
   vehicleConfig: VehicleConfig;
@@ -20,6 +21,7 @@ interface HeaderProps {
   connectionState: ConnectionState;
   onOpenReportModal: () => void;
   onOpenConnectionModal: () => void;
+  onOpenChatbot?: () => void;
   alertCount: number;
 }
 
@@ -30,6 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
   connectionState,
   onOpenReportModal: _onOpenReportModal,
   onOpenConnectionModal: _onOpenConnectionModal,
+  onOpenChatbot,
   alertCount
 }) => {
   const navigate = useNavigate();
@@ -202,6 +205,19 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
           </div>
+
+          {/* Diagnostic Copilot Quick Trigger */}
+          {onOpenChatbot && (
+            <button
+              type="button"
+              onClick={onOpenChatbot}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-orange-200/80 bg-orange-50/60 hover:bg-orange-100/80 text-orange-800 text-xs font-semibold transition-all shadow-xs cursor-pointer"
+              title="Ask MotoMind Copilot"
+            >
+              <ChatbotIcon className="w-3.5 h-3.5 text-orange-600" />
+              <span className="hidden md:inline">Copilot</span>
+            </button>
+          )}
 
           {/* Notifications Button */}
           <div className="relative">

@@ -20,6 +20,7 @@ import { VehiclesTab } from '../components/Vehicles/VehiclesTab';
 import { SettingsTab } from '../components/Settings/SettingsTab';
 import { MechanicReportModal } from '../components/MechanicReport/MechanicReportModal';
 import { ConnectionModal } from '../components/Header/ConnectionModal';
+import { DiagnosticChatbot } from '../components/Chatbot/DiagnosticChatbot';
 
 interface DashboardPageProps {
   initialTab?: SidebarTab;
@@ -36,6 +37,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ initialTab = 'dash
   const [connectionState, setConnectionState] = useState<ConnectionState>('connected');
   const [showConnectionModal, setShowConnectionModal] = useState(false);
   const [showMechanicReport, setShowMechanicReport] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false);
 
   // Connection Logs
   const [connectionLogs, setConnectionLogs] = useState<ConnectionLog[]>([
@@ -98,6 +100,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ initialTab = 'dash
           connectionState={connectionState}
           onOpenReportModal={() => setShowMechanicReport(true)}
           onOpenConnectionModal={() => setShowConnectionModal(true)}
+          onOpenChatbot={() => setShowChatbot(true)}
           alertCount={vehicleConfig.alerts.length}
         />
 
@@ -308,6 +311,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ initialTab = 'dash
           onClose={() => setShowConnectionModal(false)}
         />
       )}
+
+      {/* Automotive Diagnostic Chatbot Assistant (MotoMind Copilot) */}
+      <DiagnosticChatbot
+        vehicleConfig={vehicleConfig}
+        onNavigateTab={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        isOpenExternal={showChatbot}
+        onToggleExternal={() => setShowChatbot(!showChatbot)}
+      />
     </div>
   );
 };
