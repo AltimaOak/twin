@@ -34,25 +34,30 @@ export class ProceduralVehicles {
     if (isXRay) {
       return new THREE.MeshPhysicalMaterial({
         color: 0x94a3b8,
-        metalness: 0.1,
-        roughness: 0.12,
-        transmission: 0.86,
+        metalness: 0.05,
+        roughness: 0.1,
+        transmission: 0.94,
         transparent: true,
-        opacity: 0.22,
-        reflectivity: 0.6,
-        clearcoat: 0.6,
-        clearcoatRoughness: 0.1
+        opacity: 0.12,
+        depthWrite: false,
+        clearcoat: 0.8,
+        reflectivity: 0.5
       });
     }
 
+    // Default Digital Twin Body: Sleek frosted translucent tint with subtle paint hue
+    // This allows all internal mechanical and electrical parts to be immediately visible!
     return new THREE.MeshPhysicalMaterial({
       color: colorHex,
-      metalness: 0.88,
-      roughness: 0.2,
+      metalness: 0.35,
+      roughness: 0.15,
+      transmission: 0.65,
+      transparent: true,
+      opacity: 0.42,
+      depthWrite: false,
       clearcoat: 1.0,
       clearcoatRoughness: 0.08,
-      reflectivity: 0.92,
-      envMapIntensity: 1.2
+      reflectivity: 0.85
     });
   }
 
@@ -61,34 +66,54 @@ export class ProceduralVehicles {
       return new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.4 });
     }
     return new THREE.MeshPhysicalMaterial({
-      color: 0x0f172a,
-      metalness: 0.15,
+      color: 0xbae6fd,
+      metalness: 0.1,
       roughness: 0.04,
-      transmission: 0.76,
+      transmission: 0.92,
       transparent: true,
-      opacity: 0.75,
-      ior: 1.52,
+      opacity: 0.22,
+      depthWrite: false,
+      ior: 1.48,
       reflectivity: 0.9
     });
   }
 
-  // Realistic Automotive Metals & Polymers
+  // Realistic High-Visibility Automotive Metals & Components
   private static chromeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.98, roughness: 0.06 });
-  private static brushedSteelMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.88, roughness: 0.24 });
-  private static darkMetalMat = new THREE.MeshStandardMaterial({ color: 0x27272a, metalness: 0.82, roughness: 0.35 });
-  private static engineCastMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, metalness: 0.72, roughness: 0.52 });
-  private static goldAnodizedMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.92, roughness: 0.18 });
-  private static copperMat = new THREE.MeshStandardMaterial({ color: 0xb45309, metalness: 0.94, roughness: 0.22 });
-  private static carbonFiberMat = new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.55, roughness: 0.55 });
-  private static trimBlackMat = new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.3, roughness: 0.7 });
-  private static silverTrimMat = new THREE.MeshStandardMaterial({ color: 0xd1d5db, metalness: 0.85, roughness: 0.3 });
+  private static brushedSteelMat = new THREE.MeshStandardMaterial({ color: 0xcfd8dc, metalness: 0.88, roughness: 0.22 });
+  private static darkMetalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 });
+  
+  // Precision machined aluminum engine block
+  private static engineCastMat = new THREE.MeshStandardMaterial({ color: 0xdde3ea, metalness: 0.85, roughness: 0.22 });
+  // Vibrant Orange Valve Cover / Cylinder Head
+  private static engineOrangeMat = new THREE.MeshStandardMaterial({ color: 0xea580c, metalness: 0.6, roughness: 0.2, emissive: 0xea580c, emissiveIntensity: 0.25 });
+  
+  // High-visibility battery pack
+  private static batteryLeadMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.45, metalness: 0.2 });
+  private static batteryPosMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xef4444, emissiveIntensity: 0.9, roughness: 0.1 });
+  private static batteryNegMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, emissive: 0x3b82f6, emissiveIntensity: 0.9, roughness: 0.1 });
+  
+  // Cooling & Radiator
+  private static radiatorCoreMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9, roughness: 0.18 });
+  private static coolantHoseMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.25, metalness: 0.1, emissive: 0x0284c7, emissiveIntensity: 0.4 });
+  
+  // Brakes: Mirror discs & Brembo Orange Calipers
+  private static brakeDiscMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.98, roughness: 0.08 });
+  private static caliperOrangeMat = new THREE.MeshStandardMaterial({ color: 0xea580c, metalness: 0.6, roughness: 0.2, emissive: 0xea580c, emissiveIntensity: 0.45 });
+  private static caliperRedMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, metalness: 0.6, roughness: 0.2, emissive: 0xdc2626, emissiveIntensity: 0.45 });
+  
+  // Suspension: Bright canary yellow springs
+  private static suspensionSpringMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.75, roughness: 0.2, emissive: 0xf59e0b, emissiveIntensity: 0.4 });
+  
+  // Exhaust: Stainless steel
+  private static exhaustPipeMat = new THREE.MeshStandardMaterial({ color: 0xd1d5db, metalness: 0.92, roughness: 0.18 });
 
-  // Tire rubber with satin finish
-  private static tireTreadMat = new THREE.MeshStandardMaterial({ color: 0x141416, roughness: 0.92, metalness: 0.04 });
-  private static brakeDiscMat = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, metalness: 0.96, roughness: 0.16 });
-  private static caliperOrangeMat = new THREE.MeshStandardMaterial({ color: 0xea580c, metalness: 0.5, roughness: 0.28 });
-  private static caliperRedMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, metalness: 0.5, roughness: 0.28 });
-  private static batteryLeadMat = new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.65, metalness: 0.1 });
+  // Accents
+  private static goldAnodizedMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.92, roughness: 0.18 });
+  private static carbonFiberMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.55, roughness: 0.45 });
+  private static trimBlackMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.2, roughness: 0.6 });
+  private static silverTrimMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9, roughness: 0.25 });
+  private static tireTreadMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.9, metalness: 0.05 });
 
   // Lighting
   private static ledWhiteMat = new THREE.MeshStandardMaterial({
@@ -273,80 +298,92 @@ export class ProceduralVehicles {
     car.add(bodyGroup);
 
     // --- B. INTERNAL MECHANICAL & HEALTH SUBSYSTEMS ---
-    // Engine Bay
+    // Engine Bay (Machined aluminum block with signature orange valve cover)
     const engineGroup = new THREE.Group();
-    engineGroup.position.set(0, 0.45, 1.15);
-    const engineBlock = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.38, 0.54), this.engineCastMat);
-    const valveCover = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.12, 0.48), this.brushedSteelMat);
-    valveCover.position.set(0, 0.24, 0);
-    const oilCap = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.03, 16), this.caliperOrangeMat);
-    oilCap.position.set(-0.16, 0.31, 0.1);
+    engineGroup.position.set(0, 0.46, 1.15);
+    const engineBlock = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.42, 0.58), this.engineCastMat);
+    const valveCover = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.15, 0.52), this.engineOrangeMat);
+    valveCover.position.set(0, 0.26, 0);
+    const oilCap = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 16), this.chromeMat);
+    oilCap.position.set(-0.18, 0.34, 0.12);
     for (let i = 0; i < 4; i++) {
-      const runner = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.26, 14), this.chromeMat);
-      runner.position.set(-0.18 + i * 0.12, 0.2, 0.28);
+      const runner = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.28, 14), this.chromeMat);
+      runner.position.set(-0.21 + i * 0.14, 0.22, 0.3);
       runner.rotation.x = Math.PI / 4;
       engineGroup.add(runner);
     }
-    engineGroup.add(engineBlock, valveCover, oilCap);
+    const pulley = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.04, 20), this.silverTrimMat);
+    pulley.rotation.z = Math.PI / 2;
+    pulley.position.set(0.35, -0.05, 0);
+    engineGroup.add(engineBlock, valveCover, oilCap, pulley);
     this.tagMesh(engineGroup, 'engine', 'Internal Combustion Engine', [0, 0.5, 0.3]);
     car.add(engineGroup);
 
-    // Battery
+    // Battery (Graphite casing with luminous red & blue terminals)
     const batteryGroup = new THREE.Group();
-    batteryGroup.position.set(-0.48, 0.5, 0.95);
-    const batCasing = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.24, 0.2), this.batteryLeadMat);
-    const termPos = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.05, 12), this.ledRedMat);
-    termPos.position.set(-0.08, 0.14, 0.05);
-    const termNeg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.05, 12), this.darkMetalMat);
-    termNeg.position.set(0.08, 0.14, 0.05);
-    batteryGroup.add(batCasing, termPos, termNeg);
-    this.tagMesh(batteryGroup, 'battery', '12V Lead-Acid Starter Battery', [-0.3, 0.3, 0.2]);
+    batteryGroup.position.set(-0.48, 0.52, 0.95);
+    const batCasing = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.26, 0.22), this.batteryLeadMat);
+    const termPos = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.06, 14), this.batteryPosMat);
+    termPos.position.set(-0.09, 0.15, 0.05);
+    const termNeg = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.06, 14), this.batteryNegMat);
+    termNeg.position.set(0.09, 0.15, 0.05);
+    const batPlate = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.01, 0.14), this.engineOrangeMat);
+    batPlate.position.set(0, 0.135, -0.02);
+    batteryGroup.add(batCasing, termPos, termNeg, batPlate);
+    this.tagMesh(batteryGroup, 'battery', '12V Starter Battery Pack', [-0.3, 0.3, 0.2]);
     car.add(batteryGroup);
 
-    // Cooling
+    // Cooling System (Silver radiator core with coolant-blue loop pipes)
     const coolingGroup = new THREE.Group();
-    coolingGroup.position.set(0, 0.35, 1.6);
-    const radCore = new THREE.Mesh(new THREE.BoxGeometry(1.08, 0.36, 0.08), this.brushedSteelMat);
-    coolingGroup.add(radCore);
+    coolingGroup.position.set(0, 0.36, 1.62);
+    const radCore = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.4, 0.09), this.radiatorCoreMat);
+    const upperHose = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.45, 14), this.coolantHoseMat);
+    upperHose.rotation.x = Math.PI / 2.5;
+    upperHose.position.set(0.25, 0.12, -0.22);
+    const lowerHose = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.42, 14), this.coolantHoseMat);
+    lowerHose.rotation.x = Math.PI / 2.3;
+    lowerHose.position.set(-0.25, -0.1, -0.2);
+    coolingGroup.add(radCore, upperHose, lowerHose);
     this.tagMesh(coolingGroup, 'cooling', 'Cooling System & Radiator', [0, 0.3, 0.4]);
     car.add(coolingGroup);
 
-    // Transmission
+    // Transmission (Titanium silver CVT housing)
     const transGroup = new THREE.Group();
-    transGroup.position.set(0.3, 0.35, 0.6);
-    const cvtCase = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.48, 20), this.darkMetalMat);
+    transGroup.position.set(0.32, 0.36, 0.62);
+    const cvtCase = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.52, 20), this.brushedSteelMat);
     cvtCase.rotation.x = Math.PI / 2;
     transGroup.add(cvtCase);
     this.tagMesh(transGroup, 'transmission', 'Continuously Variable Transmission (CVT)', [0.4, 0.2, 0.1]);
     car.add(transGroup);
 
-    // Exhaust
+    // Exhaust System (Stainless steel midpipe and polished muffler)
     const exhaustGroup = new THREE.Group();
     exhaustGroup.position.set(0, 0.18, -1.4);
-    const midPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 2.3, 16), this.brushedSteelMat);
+    const midPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 2.3, 16), this.exhaustPipeMat);
     midPipe.rotation.x = Math.PI / 2;
     midPipe.position.set(0.12, 0.02, 0.6);
-    const muffler = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.2, 0.45), this.darkMetalMat);
+    const muffler = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.22, 0.46), this.darkMetalMat);
     muffler.position.set(0, 0.04, -0.15);
-    [-0.15, 0.15].forEach((xTip) => {
-      const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.048, 0.28, 16), this.chromeMat);
+    [-0.16, 0.16].forEach((xTip) => {
+      const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.052, 0.3, 16), this.chromeMat);
       tip.rotation.x = Math.PI / 2;
-      tip.position.set(xTip, -0.02, -0.48);
+      tip.position.set(xTip, -0.02, -0.5);
       exhaustGroup.add(tip);
     });
     exhaustGroup.add(midPipe, muffler);
     this.tagMesh(exhaustGroup, 'exhaust', 'Exhaust & Catalytic Converter', [0, -0.3, -0.4]);
     car.add(exhaustGroup);
 
-    // Suspension
+    // Suspension (Bright canary yellow coilovers with chrome dampers)
     const suspGroup = new THREE.Group();
-    suspGroup.position.set(0.65, 0.35, 1.1);
-    const coilSpring = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.32, 16), this.caliperOrangeMat);
-    suspGroup.add(coilSpring);
+    suspGroup.position.set(0.68, 0.36, 1.15);
+    const coilSpring = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.36, 16), this.suspensionSpringMat);
+    const damperRod = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.44, 14), this.chromeMat);
+    suspGroup.add(coilSpring, damperRod);
     this.tagMesh(suspGroup, 'suspension', 'MacPherson Strut Suspension', [0.3, 0.2, 0.2]);
     car.add(suspGroup);
 
-    // 4 Wheels
+    // 4 Wheels with Open Lightweight Spokes & Visible Brembo Orange Calipers
     const wheelPositions: [number, number, number][] = [
       [-0.88, 0.25, 1.15],
       [0.88, 0.25, 1.15],
@@ -359,16 +396,37 @@ export class ProceduralVehicles {
       const wheelGroup = new THREE.Group();
       wheelGroup.position.set(pos[0], pos[1], pos[2]);
 
+      // Outer Rubber Tire
       const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.24, 28), this.tireTreadMat);
       tire.rotation.z = Math.PI / 2;
-      const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.245, 24), this.brushedSteelMat);
-      rim.rotation.z = Math.PI / 2;
-      const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.185, 0.185, 0.025, 20), this.brakeDiscMat);
+
+      // Open Rim Barrel Ring
+      const rimBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.245, 24, 1, true), this.silverTrimMat);
+      rimBarrel.rotation.z = Math.PI / 2;
+
+      // Center Hub
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.25, 16), this.silverTrimMat);
+      hub.rotation.z = Math.PI / 2;
+
+      // 5 Sleek Open Spokes - allow looking directly through to the brake disc & caliper!
+      for (let s = 0; s < 5; s++) {
+        const angle = (s / 5) * Math.PI * 2;
+        const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.18, 0.02), this.silverTrimMat);
+        spoke.position.set(isRight ? 0.08 : -0.08, Math.sin(angle) * 0.09, Math.cos(angle) * 0.09);
+        spoke.rotation.x = angle;
+        wheelGroup.add(spoke);
+      }
+
+      // Large Mirror-Finish Vented Brake Disc Rotor
+      const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.025, 20), this.brakeDiscMat);
       disc.rotation.z = Math.PI / 2;
-      disc.position.x = isRight ? -0.06 : 0.06;
-      const caliper = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.11, 0.09), this.caliperOrangeMat);
-      caliper.position.set(isRight ? -0.06 : 0.06, 0.11, 0.04);
-      wheelGroup.add(tire, rim, disc, caliper);
+      disc.position.x = isRight ? -0.04 : 0.04;
+
+      // Vibrant Performance Orange Brake Caliper - prominently visible on outer edge!
+      const caliper = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.09), this.caliperOrangeMat);
+      caliper.position.set(isRight ? 0.02 : -0.02, 0.12, 0.05);
+
+      wheelGroup.add(tire, rimBarrel, hub, disc, caliper);
 
       if (idx === 1) {
         this.tagMesh(wheelGroup, 'brakes', 'Hydraulic Disc Braking System', [0.4, 0, 0.2]);
@@ -827,14 +885,14 @@ export class ProceduralVehicles {
     // Mechanical Subsystems
     const engineGroup = new THREE.Group();
     engineGroup.position.set(0, 0.45, 0.05);
-    const crankcase = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.34, 0.48), this.engineCastMat);
-    const cylHead = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.36, 16), this.darkMetalMat);
+    const crankcase = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.36, 0.5), this.engineCastMat);
+    const cylHead = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.38, 16), this.engineOrangeMat);
     cylHead.rotation.x = 0.28;
-    cylHead.position.set(0, 0.22, 0.08);
-    const headerPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.65, 16), this.copperMat);
+    cylHead.position.set(0, 0.24, 0.08);
+    const headerPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.65, 16), this.chromeMat);
     headerPipe.rotation.x = Math.PI * 0.45;
     headerPipe.position.set(0.14, 0.05, 0.32);
-    const underMuffler = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.52, 16), this.brushedSteelMat);
+    const underMuffler = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.095, 0.52, 16), this.brushedSteelMat);
     underMuffler.rotation.x = Math.PI / 2 - 0.2;
     underMuffler.position.set(0.18, -0.15, -0.25);
     engineGroup.add(crankcase, cylHead, headerPipe, underMuffler);
@@ -857,32 +915,38 @@ export class ProceduralVehicles {
 
     const batteryGroup = new THREE.Group();
     batteryGroup.position.set(0, 0.58, -0.2);
-    const bat = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.16, 0.16), this.batteryLeadMat);
-    batteryGroup.add(bat);
+    const bat = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.18, 0.18), this.batteryLeadMat);
+    const bPos = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.04, 12), this.batteryPosMat);
+    bPos.position.set(-0.06, 0.1, 0.04);
+    const bNeg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.04, 12), this.batteryNegMat);
+    bNeg.position.set(0.06, 0.1, 0.04);
+    batteryGroup.add(bat, bPos, bNeg);
     this.tagMesh(batteryGroup, 'm-battery', '12V 8.6Ah AGM Battery', [0, 0.25, -0.1]);
     bike.add(batteryGroup);
 
     const swingarm = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.09, 0.72), this.brushedSteelMat);
     swingarm.position.set(0, 0.32, -0.52);
     swingarm.rotation.x = -0.14;
-    const monoShock = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.32, 16), this.goldAnodizedMat);
+    const monoShock = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.34, 16), this.suspensionSpringMat);
     monoShock.position.set(0, 0.46, -0.35);
     monoShock.rotation.x = 0.55;
     bike.add(swingarm, monoShock);
 
-    // Front & Rear Wheels
+    // Front & Rear Wheels with visible Brembo Orange Calipers
     const frontWheel = new THREE.Group();
     frontWheel.position.set(0, 0.28, 0.95);
     const fTire = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.13, 28), this.tireTreadMat);
     fTire.rotation.z = Math.PI / 2;
-    const fRim = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.14, 20), this.brushedSteelMat);
+    const fRim = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.14, 20, 1, true), this.silverTrimMat);
     fRim.rotation.z = Math.PI / 2;
+    const fHub = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.145, 16), this.silverTrimMat);
+    fHub.rotation.z = Math.PI / 2;
     const fDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.015, 20), this.brakeDiscMat);
     fDisc.rotation.z = Math.PI / 2;
     fDisc.position.x = 0.08;
-    const fCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.09, 0.08), this.caliperOrangeMat);
+    const fCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.1, 0.08), this.caliperOrangeMat);
     fCaliper.position.set(0.08, 0.12, -0.05);
-    frontWheel.add(fTire, fRim, fDisc, fCaliper);
+    frontWheel.add(fTire, fRim, fHub, fDisc, fCaliper);
     this.tagMesh(frontWheel, 'm-brakes', 'Dual-Channel ABS Disc Brakes', [0, 0, 0.35]);
     bike.add(frontWheel);
 
@@ -892,7 +956,12 @@ export class ProceduralVehicles {
     rTire.rotation.z = Math.PI / 2;
     const rRim = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.21, 20), this.brushedSteelMat);
     rRim.rotation.z = Math.PI / 2;
-    rearWheel.add(rTire, rRim);
+    const rDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.015, 18), this.brakeDiscMat);
+    rDisc.rotation.z = Math.PI / 2;
+    rDisc.position.x = 0.11;
+    const rCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 0.07), this.caliperOrangeMat);
+    rCaliper.position.set(0.11, 0.1, 0.04);
+    rearWheel.add(rTire, rRim, rDisc, rCaliper);
     this.tagMesh(rearWheel, 'm-tyres', 'Sport Radial Tyres', [0, 0, -0.35]);
     bike.add(rearWheel);
 

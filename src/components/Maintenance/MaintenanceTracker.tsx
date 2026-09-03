@@ -193,7 +193,7 @@ export const MaintenanceTracker: React.FC<MaintenanceTrackerProps> = ({
 
                 {rec.cost && (
                   <div className="text-right sm:self-center font-mono font-bold text-emerald-400 text-sm">
-                    ${rec.cost.toFixed(2)}
+                    ₹{rec.cost.toLocaleString('en-IN')}
                   </div>
                 )}
               </div>

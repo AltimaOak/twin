@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useVehicle } from '../context/VehicleContext';
 import type { VehicleComponentData } from '../data/vehicleConfigurations';
 import type { ConnectionState, ConnectionLog } from '../types/device';
@@ -6,15 +7,17 @@ import type { SidebarTab } from '../components/Sidebar/Sidebar';
 
 import { Sidebar } from '../components/Sidebar/Sidebar';
 import { Header } from '../components/Header/Header';
-import { VehicleProfileCard } from '../components/VehicleProfile/VehicleProfileCard';
 import { VehicleViewer } from '../components/VehicleViewer/VehicleViewer';
 import { ComponentInspector } from '../components/ComponentInspector/ComponentInspector';
-import { HealthIndexCard } from '../components/HealthIndex/HealthIndexCard';
 import { DiagnosticStatusCards } from '../components/Diagnostics/DiagnosticStatusCards';
 import { LiveDataSection } from '../components/LiveData/LiveDataSection';
 import { AlertsSection } from '../components/Alerts/AlertsSection';
 import { MaintenanceSection } from '../components/Maintenance/MaintenanceSection';
 import { VehicleHistorySection } from '../components/History/VehicleHistorySection';
+import { OverviewDashboard } from '../components/Dashboard/OverviewDashboard';
+import { ReportsTab } from '../components/Reports/ReportsTab';
+import { VehiclesTab } from '../components/Vehicles/VehiclesTab';
+import { SettingsTab } from '../components/Settings/SettingsTab';
 import { MechanicReportModal } from '../components/MechanicReport/MechanicReportModal';
 import { ConnectionModal } from '../components/Header/ConnectionModal';
 
@@ -23,6 +26,7 @@ interface DashboardPageProps {
 }
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ initialTab = 'dashboard' }) => {
+  const navigate = useNavigate();
   const { activeVehicle, selectedCategory, setSelectedCategory } = useVehicle();
 
   const [selectedComponent, setSelectedComponent] = useState<VehicleComponentData | null>(null);
@@ -100,53 +104,145 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ initialTab = 'dash
         {/* Dashboard Content — pb-20 md:pb-0 gives room for mobile bottom tab bar */}
         <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-7 space-y-4 sm:space-y-6 pb-20 md:pb-7">
           {/* Active Tab View Rendering */}
-          {(activeTab === 'dashboard' || activeTab === 'digitalTwin') && (
-            <>
-              {/* Top Row: Vehicle Profile & Quick Specifications */}
-              <VehicleProfileCard vehicleConfig={vehicleConfig} />
+          {activeTab === 'dashboard' && (
+            <OverviewDashboard
+              vehicleConfig={vehicleConfig}
+              onNavigateTab={(tab) => {
+                setActiveTab(tab);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onOpenReportModal={() => setShowMechanicReport(true)}
+            />
+          )}
 
-              {/* Core Layout Grid: 3D Twin & Health/Telemetry */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                {/* LEFT 7 COLUMNS: 3D Digital Twin, Component Inspector & Live Sensor Grid */}
-                <div className="lg:col-span-7 space-y-6">
-                  {/* 3D Digital Twin Visualizer */}
+          {activeTab === 'digitalTwin' && (
+            <div className="space-y-5">
+              {/* Header Bar for 3D View */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white border border-stone-200/90 rounded-2xl p-4 sm:p-5 shadow-sm">
+                <div>
+                  <h2 className="text-base sm:text-lg font-bold text-stone-900 tracking-tight">
+                    3D Digital Twin View
+                  </h2>
+                  <p className="text-xs text-stone-500 mt-0.5">
+                    Rotate, zoom, and inspect mechanical assemblies and live sensor telemetry.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-semibold">
+                  <span className="px-2.5 py-1 rounded-xl bg-orange-50 text-orange-700 border border-orange-200">
+                    {vehicleConfig.model.name}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-xl bg-stone-100 text-stone-600">
+                    {vehicleConfig.components.length} Components
+                  </span>
+                </div>
+              </div>
+
+              {/* 3D Viewer & Component Selector Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* 3D Canvas (8 cols on desktop) */}
+                <div className="lg:col-span-8 space-y-4">
                   <VehicleViewer
                     vehicleConfig={vehicleConfig}
                     selectedComponent={selectedComponent}
                     onSelectComponent={(comp) => setSelectedComponent(comp)}
                   />
 
-                  {/* Component Inspector (Opens when pin clicked) */}
+                  {/* Component Inspector Card (when a component is active) */}
                   {selectedComponent && (
                     <ComponentInspector
                       component={selectedComponent}
                       onClose={() => setSelectedComponent(null)}
                     />
                   )}
-
-                  {/* Live Sensor Telemetry */}
-                  <LiveDataSection vehicleConfig={vehicleConfig} />
-
-                  {/* Diagnostic Status Cards */}
-                  <DiagnosticStatusCards vehicleConfig={vehicleConfig} />
                 </div>
 
-                {/* RIGHT 5 COLUMNS: Health Index, Alerts & Maintenance */}
-                <div className="lg:col-span-5 space-y-6">
-                  {/* 1. Vehicle Health Index Card */}
-                  <HealthIndexCard vehicleConfig={vehicleConfig} />
+                {/* Subsystem & Parts Sidebar (4 cols on desktop) */}
+                <div className="lg:col-span-4 space-y-4">
+                  <div className="bg-white border border-stone-200/90 rounded-2xl p-4 shadow-sm space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold text-stone-900">
+                        Subsystems &amp; Parts
+                      </h3>
+                      {selectedComponent && (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedComponent(null)}
+                          className="text-[11px] font-semibold text-orange-600 hover:text-orange-700"
+                        >
+                          Reset Focus
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-xs text-stone-500">
+                      Click any component to highlight and focus in 3D:
+                    </p>
 
-                  {/* 2. Recent Alerts & Diagnostic Codes */}
-                  <AlertsSection vehicleConfig={vehicleConfig} />
+                    <div className="space-y-1.5 pt-1">
+                      {vehicleConfig.components.map((comp) => {
+                        const isSelected = selectedComponent?.id === comp.id;
+                        return (
+                          <button
+                            key={comp.id}
+                            type="button"
+                            onClick={() => setSelectedComponent(isSelected ? null : comp)}
+                            className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left text-xs transition-all ${
+                              isSelected
+                                ? 'bg-orange-50 border border-orange-300 text-orange-950 font-semibold shadow-sm'
+                                : 'bg-stone-50/70 hover:bg-stone-100/80 border border-stone-200/60 text-stone-700'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span
+                                className={`w-2 h-2 rounded-full shrink-0 ${
+                                  comp.status === 'good'
+                                    ? 'bg-emerald-500'
+                                    : 'bg-amber-500'
+                                }`}
+                              />
+                              <span className="truncate">{comp.name}</span>
+                            </div>
+                            <span className="font-mono text-[11px] text-stone-500 shrink-0 ml-2">
+                              {comp.healthPct}%
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
 
-                  {/* 3. Maintenance & Service Schedule */}
-                  <MaintenanceSection vehicleConfig={vehicleConfig} />
-
-                  {/* 4. Event & Diagnostic History */}
-                  <VehicleHistorySection vehicleConfig={vehicleConfig} />
+                  {/* Specifications Card */}
+                  <div className="bg-white border border-stone-200/90 rounded-2xl p-4 shadow-sm space-y-2.5 text-xs">
+                    <h4 className="font-bold text-stone-900">Quick Specifications</h4>
+                    <div className="space-y-1.5 text-stone-600 text-[11px]">
+                      <div className="flex justify-between py-1 border-b border-stone-100">
+                        <span className="text-stone-400">Powertrain</span>
+                        <span className="font-semibold text-stone-800 text-right truncate max-w-[180px]">
+                          {vehicleConfig.specifications.engineOrMotor}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 border-b border-stone-100">
+                        <span className="text-stone-400">Drive Type</span>
+                        <span className="font-semibold text-stone-800">
+                          {vehicleConfig.specifications.driveType}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 border-b border-stone-100">
+                        <span className="text-stone-400">Mileage / Runtime</span>
+                        <span className="font-semibold text-stone-800 font-mono">
+                          {vehicleConfig.specifications.mileageOrCycles}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-stone-400">Telemetry Link</span>
+                        <span className="font-semibold text-stone-800">
+                          {vehicleConfig.hardwareLink.protocol.split('(')[0]}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
 
           {activeTab === 'diagnostics' && (
@@ -157,67 +253,40 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ initialTab = 'dash
           )}
 
           {activeTab === 'liveData' && (
-            <div className="space-y-6">
-              <LiveDataSection vehicleConfig={vehicleConfig} />
-            </div>
+            <LiveDataSection vehicleConfig={vehicleConfig} />
           )}
 
           {activeTab === 'maintenance' && (
-            <div className="space-y-6">
-              <MaintenanceSection vehicleConfig={vehicleConfig} />
-            </div>
+            <MaintenanceSection vehicleConfig={vehicleConfig} />
           )}
 
           {activeTab === 'alerts' && (
-            <div className="space-y-6">
-              <AlertsSection vehicleConfig={vehicleConfig} />
-            </div>
+            <AlertsSection vehicleConfig={vehicleConfig} />
           )}
 
           {activeTab === 'history' && (
-            <div className="space-y-6">
-              <VehicleHistorySection vehicleConfig={vehicleConfig} />
-            </div>
+            <VehicleHistorySection vehicleConfig={vehicleConfig} />
           )}
 
-          {(activeTab === 'reports' || activeTab === 'vehicles' || activeTab === 'settings') && (
-            <div className="p-8 bg-white border border-stone-200 rounded-2xl shadow-warm-sm space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-orange-600" />
-                <h2 className="text-lg font-black text-stone-900 uppercase font-mono tracking-tight">
-                  {activeTab === 'reports' ? 'Diagnostic Reports Archive' : activeTab === 'vehicles' ? 'Connected Garage & Fleet' : 'Hardware & System Settings'}
-                </h2>
-              </div>
-              <p className="text-xs text-stone-600 leading-relaxed max-w-xl">
-                {activeTab === 'reports'
-                  ? 'Generate, print, or export verified mechanic service reports for insurance, warranty validation, and scheduled workshop maintenance.'
-                  : activeTab === 'vehicles'
-                  ? 'Manage multiple vehicles in your MotoMindX account. Switch between passenger cars, motorcycles, and RC telemetry rigs.'
-                  : 'Configure baud rates, CAN bus masks, LoRa telemetry frequencies, and alert notification thresholds.'}
-              </p>
-              <div className="pt-2">
-                <button
-                  onClick={() => setShowMechanicReport(true)}
-                  className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold shadow-md shadow-orange-600/20"
-                >
-                  Open Mechanic Report Modal
-                </button>
-              </div>
-            </div>
+          {activeTab === 'reports' && (
+            <ReportsTab
+              vehicleConfig={vehicleConfig}
+              onOpenReportModal={() => setShowMechanicReport(true)}
+            />
+          )}
+
+          {activeTab === 'vehicles' && (
+            <VehiclesTab onNavigateToSetup={() => navigate('/select-vehicle')} />
+          )}
+
+          {activeTab === 'settings' && (
+            <SettingsTab vehicleConfig={vehicleConfig} />
           )}
         </main>
 
         {/* Footer */}
-        <footer className="w-full bg-white border-t border-stone-200 py-4 px-6 mt-8 shadow-warm-sm">
-          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs text-stone-500 font-mono">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-stone-800">MotoMindX Pro Telematics</span>
-              <span>• {vehicleConfig.hardwareLink.protocol}</span>
-            </div>
-            <div>
-              <span>Connected to {vehicleConfig.hardwareLink.deviceId} • Demo Mode Active</span>
-            </div>
-          </div>
+        <footer className="w-full py-6 text-center text-xs text-stone-400 font-sans">
+          © 2024 MotoMindX. All rights reserved.
         </footer>
       </div>
 

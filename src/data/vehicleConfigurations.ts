@@ -324,11 +324,11 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
       { id: 's-oil', label: 'Oil Pressure', value: 340, unit: 'kPa', nominalRange: [200, 450], status: 'good', category: 'powertrain' }
     ],
     maintenance: [
-      { id: 'm-oil', name: 'Engine Oil & Filter', intervalValue: '10,000 km', dueValue: '45,000 km', remainingValue: '2,620 km remaining', remainingNumber: 2620, status: 'good', action: 'Synthetic 0W-20 engine oil & OEM spin-on filter.', lastCompleted: '35,000 km (15 Mar 2026)', costRange: '$65 – $95' },
-      { id: 'm-brake', name: 'Front Brake Inspection', intervalValue: '20,000 km', dueValue: '42,000 km', remainingValue: 'Due Soon (380 km past)', remainingNumber: -380, status: 'due_soon', action: 'Measure front disc thickness and replace brake pads.', lastCompleted: '22,000 km (10 Aug 2025)', costRange: '$120 – $220' },
-      { id: 'm-filter', name: 'Engine Air & Cabin Pollen Filter', intervalValue: '15,000 km', dueValue: '45,000 km', remainingValue: '2,620 km remaining', remainingNumber: 2620, status: 'good', action: 'Replace pleated engine air intake filter.', lastCompleted: '30,000 km (20 Nov 2025)', costRange: '$35 – $60' },
-      { id: 'm-tyres', name: 'Tyre Rotation & Wheel Balancing', intervalValue: '10,000 km', dueValue: '50,000 km', remainingValue: '7,620 km remaining', remainingNumber: 7620, status: 'good', action: 'Rotate tyres diagonally for even wear.', lastCompleted: '40,000 km (05 Jun 2026)', costRange: '$30 – $50' },
-      { id: 'm-bat', name: '12V Battery Health Test', intervalValue: '20,000 km', dueValue: '40,000 km', remainingValue: 'Due Soon', remainingNumber: -2380, status: 'due_soon', action: 'Perform digital conductance load test.', lastCompleted: '20,000 km (12 Jun 2025)', costRange: '$0 – $140' }
+      { id: 'm-oil', name: 'Engine Oil & Filter', intervalValue: '10,000 km', dueValue: '45,000 km', remainingValue: '2,620 km remaining', remainingNumber: 2620, status: 'good', action: 'Synthetic 0W-20 engine oil & OEM spin-on filter.', lastCompleted: '35,000 km (15 Mar 2026)', costRange: '₹3,500 – ₹5,500' },
+      { id: 'm-brake', name: 'Front Brake Inspection', intervalValue: '20,000 km', dueValue: '42,000 km', remainingValue: 'Due Soon (380 km past)', remainingNumber: -380, status: 'due_soon', action: 'Measure front disc thickness and replace brake pads.', lastCompleted: '22,000 km (10 Aug 2025)', costRange: '₹4,000 – ₹7,500' },
+      { id: 'm-filter', name: 'Engine Air & Cabin Pollen Filter', intervalValue: '15,000 km', dueValue: '45,000 km', remainingValue: '2,620 km remaining', remainingNumber: 2620, status: 'good', action: 'Replace pleated engine air intake filter.', lastCompleted: '30,000 km (20 Nov 2025)', costRange: '₹1,200 – ₹2,200' },
+      { id: 'm-tyres', name: 'Tyre Rotation & Wheel Balancing', intervalValue: '10,000 km', dueValue: '50,000 km', remainingValue: '7,620 km remaining', remainingNumber: 7620, status: 'good', action: 'Rotate tyres diagonally for even wear.', lastCompleted: '40,000 km (05 Jun 2026)', costRange: '₹800 – ₹1,500' },
+      { id: 'm-bat', name: '12V Battery Health Test', intervalValue: '20,000 km', dueValue: '40,000 km', remainingValue: 'Due Soon', remainingNumber: -2380, status: 'due_soon', action: 'Perform digital conductance load test.', lastCompleted: '20,000 km (12 Jun 2025)', costRange: '₹0 – ₹4,500' }
     ],
     alerts: [
       {
@@ -508,10 +508,10 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
       { id: 'sm-chain', label: 'Chain Slack', value: 36, unit: 'mm', nominalRange: [25, 35], status: 'check_soon', category: 'powertrain' }
     ],
     maintenance: [
-      { id: 'mm-oil', name: '4T Engine Oil & Filter', intervalValue: '5,000 km', dueValue: '15,000 km', remainingValue: '1,200 km remaining', remainingNumber: 1200, status: 'good', action: 'Full synthetic 10W-30 motorcycle oil + filter.', lastCompleted: '10,000 km (12 Apr 2026)', costRange: '$45 – $70' },
-      { id: 'mm-chain', name: 'Chain Clean, Lube & Slack Tension', intervalValue: '1,000 km', dueValue: '13,000 km', remainingValue: 'Due Soon (slack 36mm)', remainingNumber: -200, status: 'due_soon', action: 'Clean with kerosene/chain cleaner and adjust tension to 30mm.', lastCompleted: '12,000 km (10 Jul 2026)', costRange: '$15 – $25' },
-      { id: 'mm-brake', name: 'Brake Fluid Flush (DOT 4)', intervalValue: '10,000 km', dueValue: '20,000 km', remainingValue: '7,580 km remaining', remainingNumber: 7580, status: 'good', action: 'Bleed front and rear hydraulic lines.', lastCompleted: '10,000 km (12 Apr 2026)', costRange: '$35 – $60' },
-      { id: 'mm-air', name: 'Engine Intake Air Filter', intervalValue: '10,000 km', dueValue: '20,000 km', remainingValue: '7,580 km remaining', remainingNumber: 7580, status: 'good', action: 'Inspect paper pleated element.', lastCompleted: '10,000 km (12 Apr 2026)', costRange: '$20 – $35' }
+      { id: 'mm-oil', name: '4T Engine Oil & Filter', intervalValue: '5,000 km', dueValue: '15,000 km', remainingValue: '1,200 km remaining', remainingNumber: 1200, status: 'good', action: 'Full synthetic 10W-30 motorcycle oil + filter.', lastCompleted: '10,000 km (12 Apr 2026)', costRange: '₹1,800 – ₹2,800' },
+      { id: 'mm-chain', name: 'Chain Clean, Lube & Slack Tension', intervalValue: '1,000 km', dueValue: '13,000 km', remainingValue: 'Due Soon (slack 36mm)', remainingNumber: -200, status: 'due_soon', action: 'Clean with kerosene/chain cleaner and adjust tension to 30mm.', lastCompleted: '12,000 km (10 Jul 2026)', costRange: '₹350 – ₹600' },
+      { id: 'mm-brake', name: 'Brake Fluid Flush (DOT 4)', intervalValue: '10,000 km', dueValue: '20,000 km', remainingValue: '7,580 km remaining', remainingNumber: 7580, status: 'good', action: 'Bleed front and rear hydraulic lines.', lastCompleted: '10,000 km (12 Apr 2026)', costRange: '₹800 – ₹1,500' },
+      { id: 'mm-air', name: 'Engine Intake Air Filter', intervalValue: '10,000 km', dueValue: '20,000 km', remainingValue: '7,580 km remaining', remainingNumber: 7580, status: 'good', action: 'Inspect paper pleated element.', lastCompleted: '10,000 km (12 Apr 2026)', costRange: '₹450 – ₹800' }
     ],
     alerts: [
       {
@@ -661,10 +661,10 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
       { id: 'src-speed', label: 'Vehicle Speed', value: 28, unit: 'km/h', nominalRange: [0, 96], status: 'good', category: 'powertrain', isLiveAnimated: true }
     ],
     maintenance: [
-      { id: 'mrc-bat', name: 'LiPo Battery Storage Balance', intervalValue: '25 Cycles', dueValue: '140 Cycles', remainingValue: 'After 14 more cycles', remainingNumber: 14, status: 'good', action: 'Cycle test internal resistance & balance discharge.', lastCompleted: '110 Cycles (20 Aug 2026)', costRange: '$0' },
-      { id: 'mrc-gear', name: 'Pinion & Spur Gear Mesh Check', intervalValue: '50 Runs', dueValue: '130 Runs', remainingValue: 'Due Soon (4 runs left)', remainingNumber: 4, status: 'due_soon', action: 'Inspect nylon spur teeth and pinion set screw.', lastCompleted: '80 Runs (28 Jul 2026)', costRange: '$10 – $20' },
-      { id: 'mrc-diff', name: 'Front & Rear Differential Fluid', intervalValue: '100 Runs', dueValue: '200 Runs', remainingValue: '72 runs remaining', remainingNumber: 72, status: 'good', action: 'Re-fill 30k wt silicone differential fluid.', lastCompleted: '100 Runs (15 May 2026)', costRange: '$15 – $30' },
-      { id: 'mrc-shocks', name: 'Oil-Filled Shock Rebuild', intervalValue: '50 Runs', dueValue: '150 Runs', remainingValue: '24 runs remaining', remainingNumber: 24, status: 'good', action: 'Refill 35wt silicone shock oil.', lastCompleted: '100 Runs (15 May 2026)', costRange: '$12 – $25' }
+      { id: 'mrc-bat', name: 'LiPo Battery Storage Balance', intervalValue: '25 Cycles', dueValue: '140 Cycles', remainingValue: 'After 14 more cycles', remainingNumber: 14, status: 'good', action: 'Cycle test internal resistance & balance discharge.', lastCompleted: '110 Cycles (20 Aug 2026)', costRange: '₹0' },
+      { id: 'mrc-gear', name: 'Pinion & Spur Gear Mesh Check', intervalValue: '50 Runs', dueValue: '130 Runs', remainingValue: 'Due Soon (4 runs left)', remainingNumber: 4, status: 'due_soon', action: 'Inspect nylon spur teeth and pinion set screw.', lastCompleted: '80 Runs (28 Jul 2026)', costRange: '₹500 – ₹1,200' },
+      { id: 'mrc-diff', name: 'Front & Rear Differential Fluid', intervalValue: '100 Runs', dueValue: '200 Runs', remainingValue: '72 runs remaining', remainingNumber: 72, status: 'good', action: 'Re-fill 30k wt silicone differential fluid.', lastCompleted: '100 Runs (15 May 2026)', costRange: '₹600 – ₹1,500' },
+      { id: 'mrc-shocks', name: 'Oil-Filled Shock Rebuild', intervalValue: '50 Runs', dueValue: '150 Runs', remainingValue: '24 runs remaining', remainingNumber: 24, status: 'good', action: 'Refill 35wt silicone shock oil.', lastCompleted: '100 Runs (15 May 2026)', costRange: '₹500 – ₹1,100' }
     ],
     alerts: [
       {

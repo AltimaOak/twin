@@ -82,7 +82,7 @@ export class ThreeScene {
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.08;
     container.appendChild(this.renderer.domElement);
@@ -101,33 +101,36 @@ export class ThreeScene {
   }
 
   private setupLighting(): void {
-    // Ambient Warm Light
-    const ambientLight = new THREE.AmbientLight(0xfffbf0, 1.3);
+    // 1. High-illumination Ambient Light - ensures all mechanical parts inside are crisp and visible
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
     this.scene.add(ambientLight);
 
-    // Key Studio Light
-    const keyLight = new THREE.DirectionalLight(0xfffaed, 1.65);
+    // 2. Key Studio Light
+    const keyLight = new THREE.DirectionalLight(0xfffdf5, 1.9);
     keyLight.position.set(4.5, 7.5, 4.5);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 2048;
     keyLight.shadow.mapSize.height = 2048;
-    keyLight.shadow.camera.near = 0.5;
-    keyLight.shadow.camera.far = 25;
-    keyLight.shadow.bias = -0.0006;
+    keyLight.shadow.bias = -0.0004;
     this.scene.add(keyLight);
 
-    // Warm Amber Rim Light
-    const rimLight = new THREE.DirectionalLight(0xfed7aa, 0.85);
+    // 3. Warm Amber Rim Light
+    const rimLight = new THREE.DirectionalLight(0xffedd5, 1.2);
     rimLight.position.set(-4.5, 4.0, -4.5);
     this.scene.add(rimLight);
 
-    // Sky Contrast Fill Light
-    const fillLight = new THREE.DirectionalLight(0xe0f2fe, 0.5);
+    // 4. Fill Light
+    const fillLight = new THREE.DirectionalLight(0xe0f2fe, 0.9);
     fillLight.position.set(0, 5, -5);
     this.scene.add(fillLight);
 
-    // Overhead Softbox
-    const topLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    // 5. Undercarriage Uplight (illuminates lower suspension, brake rotors, exhaust, transmission)
+    const underLight = new THREE.DirectionalLight(0xfff7ed, 1.1);
+    underLight.position.set(0, -3, 0);
+    this.scene.add(underLight);
+
+    // 6. Overhead Softbox
+    const topLight = new THREE.DirectionalLight(0xffffff, 0.6);
     topLight.position.set(0, 8, 0);
     this.scene.add(topLight);
   }
@@ -261,6 +264,39 @@ export class ThreeScene {
     this.onSelectPartClick = cb;
   }
 
+  private highlightedMeshes: Array<{ mesh: THREE.Mesh; origEmissive: THREE.Color; origIntensity: number }> = [];
+
+  public highlightComponent(componentId: string | null): void {
+    this.clearHighlight();
+    if (!componentId || !this.currentVehicleGroup) return;
+
+    this.currentVehicleGroup.traverse((child) => {
+      if (child instanceof THREE.Mesh && child.userData && child.userData.componentId === componentId) {
+        if (child.material && 'emissive' in child.material) {
+          const mat = child.material as THREE.MeshStandardMaterial;
+          this.highlightedMeshes.push({
+            mesh: child,
+            origEmissive: mat.emissive.clone(),
+            origIntensity: mat.emissiveIntensity
+          });
+          mat.emissive.setHex(0xea580c);
+          mat.emissiveIntensity = 1.6;
+        }
+      }
+    });
+  }
+
+  public clearHighlight(): void {
+    for (const item of this.highlightedMeshes) {
+      if (item.mesh.material && 'emissive' in item.mesh.material) {
+        const mat = item.mesh.material as THREE.MeshStandardMaterial;
+        mat.emissive.copy(item.origEmissive);
+        mat.emissiveIntensity = item.origIntensity;
+      }
+    }
+    this.highlightedMeshes = [];
+  }
+
   public focusComponent(component: VehicleComponentData): void {
     const focusPos = component.cameraFocusPosition || component.position3D;
     const targetCam = component.cameraPosition || [
@@ -271,9 +307,11 @@ export class ThreeScene {
 
     this.targetLookAt.set(focusPos[0], focusPos[1], focusPos[2]);
     this.targetCameraPos.set(targetCam[0], targetCam[1], targetCam[2]);
+    this.highlightComponent(component.id);
   }
 
   public resetCamera(): void {
+    this.clearHighlight();
     const name = (this.vehicleModelName || '').toLowerCase();
     if (this.vehicleType === 'suv' || (name.includes('suv') && !name.includes('compact'))) {
       this.targetCameraPos.set(3.4, 2.2, 3.4);
@@ -365,7 +403,7 @@ export class ThreeScene {
       this.prevPointerX = e.clientX;
       this.prevPointerY = e.clientY;
 
-      if (e.buttons === 1) {
+      if (e.buttons === 1 || e.pointerType === 'touch') {
         // Orbit
         const offset = new THREE.Vector3().subVectors(this.targetCameraPos, this.targetLookAt);
         const radius = offset.length();

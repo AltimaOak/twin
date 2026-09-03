@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import type { VehicleConfig, VehicleAlertItem } from '../../data/vehicleConfigurations';
+import type { VehicleConfig } from '../../data/vehicleConfigurations';
 import {
   AlertTriangle,
   AlertCircle,
   CheckCircle2,
-  ChevronRight,
-  HelpCircle,
-  Wrench,
-  Info,
-  X
+  Check,
+  RotateCcw,
+  ShieldCheck
 } from 'lucide-react';
 
 interface AlertsSectionProps {
@@ -16,179 +14,205 @@ interface AlertsSectionProps {
 }
 
 export const AlertsSection: React.FC<AlertsSectionProps> = ({ vehicleConfig }) => {
-  const [selectedAlert, setSelectedAlert] = useState<VehicleAlertItem | null>(null);
+  const [resolvedAlertIds, setResolvedAlertIds] = useState<string[]>([]);
+  const [filter, setFilter] = useState<'all' | 'active' | 'resolved'>('all');
 
-  const getUrgencyBadge = (urgency: string) => {
+  const handleToggleResolve = (id: string) => {
+    if (resolvedAlertIds.includes(id)) {
+      setResolvedAlertIds(resolvedAlertIds.filter((item) => item !== id));
+    } else {
+      setResolvedAlertIds([...resolvedAlertIds, id]);
+    }
+  };
+
+  const getUrgencyBadge = (urgency: string, isResolved: boolean) => {
+    if (isResolved) {
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+          Resolved
+        </span>
+      );
+    }
     switch (urgency) {
       case 'critical':
         return (
-          <span className="flex items-center gap-1 text-[10px] font-bold text-red-800 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full uppercase">
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700 bg-red-50 border border-red-200 px-2.5 py-0.5 rounded-full">
             <AlertCircle className="w-3 h-3 text-red-600" />
-            Critical Action
+            Attention Required
           </span>
         );
       case 'warning':
       case 'check_soon':
         return (
-          <span className="flex items-center gap-1 text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full uppercase">
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
             <AlertTriangle className="w-3 h-3 text-amber-600" />
             Check Soon
           </span>
         );
       default:
         return (
-          <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full uppercase">
-            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-stone-700 bg-stone-100 border border-stone-200 px-2.5 py-0.5 rounded-full">
+            <CheckCircle2 className="w-3 h-3 text-stone-500" />
             Advisory
           </span>
         );
     }
   };
 
+  const activeCount = vehicleConfig.alerts.filter(
+    (a) => !resolvedAlertIds.includes(a.id)
+  ).length;
+
+  const filteredAlerts = vehicleConfig.alerts.filter((alert) => {
+    const isResolved = resolvedAlertIds.includes(alert.id);
+    if (filter === 'active') return !isResolved;
+    if (filter === 'resolved') return isResolved;
+    return true;
+  });
+
   return (
-    <div className="bg-white border border-stone-200 rounded-2xl p-5 shadow-warm-sm space-y-4">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-stone-100">
-        <div className="flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-amber-600" />
-          <h2 className="text-sm font-bold text-stone-900 uppercase font-mono tracking-wider">
-            Recent Alerts & Action Items
+      <div className="bg-white border border-stone-200/90 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 className="text-base sm:text-lg font-bold text-stone-900 tracking-tight">
+            Alerts &amp; Fault Codes
           </h2>
+          <p className="text-xs text-stone-500 mt-0.5">
+            Diagnostic trouble codes (DTCs) and active system notifications.
+          </p>
         </div>
-        <span className="px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-mono font-bold">
-          {vehicleConfig.alerts.length} Active
-        </span>
+
+        <div className="flex items-center gap-2">
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
+              activeCount > 0
+                ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+            }`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                activeCount > 0 ? 'bg-amber-500' : 'bg-emerald-500'
+              }`}
+            />
+            {activeCount > 0 ? `${activeCount} Active Alerts` : 'All Systems Nominal'}
+          </span>
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex items-center gap-1.5">
+        {(['all', 'active', 'resolved'] as const).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setFilter(tab)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-colors ${
+              filter === tab
+                ? 'bg-orange-50 text-orange-700 font-semibold border border-orange-200'
+                : 'bg-white text-stone-600 hover:bg-stone-50 border border-stone-200/90'
+            }`}
+          >
+            {tab === 'all'
+              ? `All (${vehicleConfig.alerts.length})`
+              : tab === 'active'
+              ? `Active (${activeCount})`
+              : `Resolved (${resolvedAlertIds.length})`}
+          </button>
+        ))}
       </div>
 
       {/* Alerts List */}
       <div className="space-y-3">
-        {vehicleConfig.alerts.length === 0 ? (
-          <div className="p-6 rounded-xl bg-emerald-50/50 border border-emerald-200 text-center flex flex-col items-center justify-center">
-            <CheckCircle2 className="w-8 h-8 text-emerald-600 mb-2" />
-            <div className="text-sm font-bold text-emerald-950">No Active Faults or DTCs</div>
-            <div className="text-xs text-emerald-800 mt-0.5">
-              All sensors and onboard monitors are operating within nominal thresholds.
+        {filteredAlerts.length === 0 ? (
+          <div className="bg-white border border-stone-200/90 rounded-2xl p-8 text-center shadow-sm flex flex-col items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2">
+              <ShieldCheck className="w-5 h-5" />
             </div>
+            <h3 className="text-sm font-bold text-stone-900">
+              No alerts in this view
+            </h3>
+            <p className="text-xs text-stone-500 mt-0.5">
+              All monitored subsystems are reporting normal values.
+            </p>
           </div>
         ) : (
-          vehicleConfig.alerts.map((alert) => (
-            <div
-              key={alert.id}
-              onClick={() => setSelectedAlert(alert)}
-              className="p-4 rounded-xl bg-[#fbf9f4] hover:bg-white border border-stone-200 hover:border-orange-300 shadow-warm-sm transition-all cursor-pointer space-y-3"
-            >
-              {/* Alert Top */}
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  {alert.code && (
-                    <span className="px-2 py-0.5 rounded-md bg-stone-200 text-stone-800 text-xs font-mono font-bold">
-                      {alert.code}
-                    </span>
-                  )}
-                  <div>
-                    <h3 className="text-xs font-bold text-stone-900 leading-snug">
-                      {alert.title}
-                    </h3>
-                    <div className="text-[10px] text-stone-500 font-mono">
-                      Subsystem: {alert.subsystem} • {alert.timestamp}
+          filteredAlerts.map((alert) => {
+            const isResolved = resolvedAlertIds.includes(alert.id);
+            return (
+              <div
+                key={alert.id}
+                className={`bg-white border rounded-2xl p-4 sm:p-5 shadow-sm transition-all space-y-3 ${
+                  isResolved
+                    ? 'border-stone-200/80 opacity-75'
+                    : 'border-stone-200/90'
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                  <div className="flex items-start gap-2.5">
+                    {alert.code && (
+                      <span className="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-800 text-xs font-mono font-bold shrink-0 mt-0.5">
+                        {alert.code}
+                      </span>
+                    )}
+                    <div>
+                      <h3 className="text-xs sm:text-sm font-bold text-stone-900 leading-snug">
+                        {alert.title}
+                      </h3>
+                      <p className="text-[11px] text-stone-400 mt-0.5">
+                        Subsystem: {alert.subsystem} • Detected {alert.timestamp}
+                      </p>
                     </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                    {getUrgencyBadge(alert.urgency, isResolved)}
                   </div>
                 </div>
 
-                {getUrgencyBadge(alert.urgency)}
-              </div>
+                {/* Explanation */}
+                <div className="bg-stone-50/70 border border-stone-200/60 rounded-xl p-3 text-xs space-y-1.5">
+                  <div>
+                    <span className="font-semibold text-stone-700">Finding: </span>
+                    <span className="text-stone-600">{alert.whatHappened}</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-stone-700">Recommended Action: </span>
+                    <span className="text-stone-600">{alert.whatShouldIDo}</span>
+                  </div>
+                </div>
 
-              {/* What Should I Do Preview */}
-              <div className="p-2.5 rounded-lg bg-white border border-stone-200/80 text-xs text-stone-700 flex items-start gap-2">
-                <Wrench className="w-3.5 h-3.5 text-orange-600 flex-shrink-0 mt-0.5" />
-                <span className="text-[11px] leading-relaxed">
-                  <strong>Recommendation:</strong> {alert.whatShouldIDo}
-                </span>
+                {/* Action button */}
+                <div className="flex justify-end pt-1">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleResolve(alert.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+                      isResolved
+                        ? 'border border-stone-200 text-stone-600 hover:bg-stone-50'
+                        : 'bg-stone-100 hover:bg-stone-200 text-stone-800'
+                    }`}
+                  >
+                    {isResolved ? (
+                      <>
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Reopen Alert</span>
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Mark as Resolved</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
-
-              <div className="flex justify-end">
-                <span className="text-[11px] font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1">
-                  <span>View Diagnostic Breakdown</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </span>
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
-
-      {/* Alert Detail Modal */}
-      {selectedAlert && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white border border-stone-200 rounded-2xl w-full max-w-lg p-6 shadow-warm-xl space-y-5">
-            <div className="flex items-start justify-between pb-3 border-b border-stone-100">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  {selectedAlert.code && (
-                    <span className="px-2 py-0.5 rounded bg-stone-100 border border-stone-200 text-xs font-mono font-bold text-stone-800">
-                      {selectedAlert.code}
-                    </span>
-                  )}
-                  <span className="text-xs font-mono text-stone-500">
-                    {selectedAlert.subsystem}
-                  </span>
-                </div>
-                <h3 className="text-base font-bold text-stone-900">
-                  {selectedAlert.title}
-                </h3>
-              </div>
-
-              <button
-                onClick={() => setSelectedAlert(null)}
-                className="p-1.5 text-stone-400 hover:text-stone-700 rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="space-y-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-orange-50/50 border border-orange-200/80">
-                <div className="flex items-center gap-1.5 font-bold text-orange-950 mb-1">
-                  <Info className="w-4 h-4 text-orange-600" />
-                  <span>What Happened?</span>
-                </div>
-                <p className="text-stone-700 leading-relaxed">
-                  {selectedAlert.whatHappened}
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-amber-50/50 border border-amber-200/80">
-                <div className="flex items-center gap-1.5 font-bold text-amber-950 mb-1">
-                  <HelpCircle className="w-4 h-4 text-amber-600" />
-                  <span>Why Does It Matter?</span>
-                </div>
-                <p className="text-stone-700 leading-relaxed">
-                  {selectedAlert.whyItMatters}
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-[#fbf9f4] border border-stone-200">
-                <div className="flex items-center gap-1.5 font-bold text-stone-900 mb-1">
-                  <Wrench className="w-4 h-4 text-emerald-600" />
-                  <span>What Should I Do?</span>
-                </div>
-                <p className="text-stone-700 leading-relaxed">
-                  {selectedAlert.whatShouldIDo}
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-stone-100 flex justify-end">
-              <button
-                onClick={() => setSelectedAlert(null)}
-                className="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold transition-colors"
-              >
-                Close Breakdown
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

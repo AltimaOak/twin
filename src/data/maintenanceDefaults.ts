@@ -14,7 +14,7 @@ export const CAR_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'good',
     urgencyDescription: '2,620 km remaining before next oil change',
     recommendedAction: 'Synthetic 0W-20 engine oil replacement with OEM spin-on filter.',
-    estimatedCostRange: '$65 – $95'
+    estimatedCostRange: '₹3,500 – ₹5,500'
   },
   {
     id: 'maint-car-brakes',
@@ -29,7 +29,7 @@ export const CAR_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'due_soon',
     urgencyDescription: 'Due soon (approx 3.2mm pad thickness remaining)',
     recommendedAction: 'Inspect front disc pads for wear and measure rotor thickness.',
-    estimatedCostRange: '$120 – $220'
+    estimatedCostRange: '₹4,000 – ₹7,500'
   },
   {
     id: 'maint-car-air-filter',
@@ -44,7 +44,7 @@ export const CAR_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'good',
     urgencyDescription: 'Clean condition, inspect at 45,000 km',
     recommendedAction: 'Replace pleated engine air intake element and carbon cabin filter.',
-    estimatedCostRange: '$35 – $60'
+    estimatedCostRange: '₹1,200 – ₹2,200'
   },
   {
     id: 'maint-car-tyres',
@@ -59,7 +59,7 @@ export const CAR_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'good',
     urgencyDescription: 'Healthy tread depth (5.4mm average)',
     recommendedAction: 'Rotate front-to-rear diagonally to equalize wear.',
-    estimatedCostRange: '$30 – $50'
+    estimatedCostRange: '₹800 – ₹1,500'
   },
   {
     id: 'maint-car-battery',
@@ -74,7 +74,7 @@ export const CAR_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'due_soon',
     urgencyDescription: 'Due for test (cold crank voltage dipping to 10.2V)',
     recommendedAction: 'Perform digital conductance test on battery cell health.',
-    estimatedCostRange: '$0 – $140'
+    estimatedCostRange: '₹0 – ₹4,500'
   },
   {
     id: 'maint-car-general',
@@ -89,7 +89,7 @@ export const CAR_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'good',
     urgencyDescription: 'Completed recently, in great shape',
     recommendedAction: 'Full 45-point comprehensive suspension, fluid, and belt check.',
-    estimatedCostRange: '$180 – $320'
+    estimatedCostRange: '₹6,500 – ₹12,000'
   }
 ];
 
@@ -107,7 +107,7 @@ export const BIKE_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'due_soon',
     urgencyDescription: 'Slack is 36mm (target: 30mm); needs lube',
     recommendedAction: 'Clean with dedicated chain cleaner, adjust tension, and apply PTFE lube.',
-    estimatedCostRange: '$15 – $30'
+    estimatedCostRange: '₹350 – ₹600'
   },
   {
     id: 'maint-bike-oil',
@@ -122,7 +122,7 @@ export const BIKE_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'good',
     urgencyDescription: '800 km remaining before next oil service',
     recommendedAction: 'Yamalube 10W-40 Full Synthetic 4T oil + filter.',
-    estimatedCostRange: '$55 – $80'
+    estimatedCostRange: '₹1,800 – ₹2,800'
   },
   {
     id: 'maint-bike-brakes',
@@ -137,7 +137,7 @@ export const BIKE_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'good',
     urgencyDescription: 'Fluid clear, moisture content < 2%',
     recommendedAction: 'Hydraulic line bleed and fresh reservoir fluid.',
-    estimatedCostRange: '$40 – $70'
+    estimatedCostRange: '₹800 – ₹1,500'
   }
 ];
 
@@ -155,7 +155,7 @@ export const RC_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'good',
     urgencyDescription: 'Pack in healthy balance (3.94V/cell)',
     recommendedAction: 'Put in Storage mode (3.85V/cell) if unused for > 48 hours.',
-    estimatedCostRange: '$0'
+    estimatedCostRange: '₹0'
   },
   {
     id: 'maint-rc-diff',
@@ -170,7 +170,7 @@ export const RC_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
     status: 'due_soon',
     urgencyDescription: 'Inspect spur and pinion backlash after rough jumps',
     recommendedAction: 'Check paper-strip gear clearance and lube ring/pinion.',
-    estimatedCostRange: '$10 – $20'
+    estimatedCostRange: '₹500 – ₹1,200'
   }
 ];
 
@@ -183,7 +183,7 @@ export const DEFAULT_SERVICE_HISTORY: ServiceLogRecord[] = [
     serviceCategory: 'Scheduled Maintenance',
     workshopOrMechanic: 'Metro Honda Authorized Service',
     notes: 'Engine oil replaced (0W-20), oil filter replaced, 40k inspection passed, tyres rotated.',
-    cost: 165,
+    cost: 5400,
     replacedParts: ['Synthetic Engine Oil 0W-20', 'OEM Oil Filter 15400-RTA-003', 'Crush Washer']
   },
   {
@@ -194,7 +194,7 @@ export const DEFAULT_SERVICE_HISTORY: ServiceLogRecord[] = [
     serviceCategory: 'Filters',
     workshopOrMechanic: 'QuickLube Diagnostics',
     notes: 'Cabin pollen filter and engine intake filter replaced due to seasonal dust.',
-    cost: 58,
+    cost: 1800,
     replacedParts: ['Engine Air Filter', 'Activated Carbon Cabin Filter']
   },
   {
@@ -205,7 +205,7 @@ export const DEFAULT_SERVICE_HISTORY: ServiceLogRecord[] = [
     serviceCategory: 'Brakes & Wheels',
     workshopOrMechanic: 'Precision Automotive Service',
     notes: 'Brake fluid flushed with DOT 4 fluid, wheel weights adjusted.',
-    cost: 110,
+    cost: 3200,
     replacedParts: ['DOT 4 Synthetic Brake Fluid']
   }
 ];

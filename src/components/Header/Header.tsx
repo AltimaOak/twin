@@ -7,10 +7,11 @@ import {
   Bike,
   Gamepad2,
   Bell,
-  FileText,
-  User,
-  RotateCcw
+  Check,
+  Home,
+  LogOut
 } from 'lucide-react';
+import { useVehicle } from '../../context/VehicleContext';
 
 interface HeaderProps {
   vehicleConfig: VehicleConfig;
@@ -27,131 +28,207 @@ export const Header: React.FC<HeaderProps> = ({
   selectedCategory,
   onSelectCategory,
   connectionState,
-  onOpenReportModal,
-  onOpenConnectionModal,
+  onOpenReportModal: _onOpenReportModal,
+  onOpenConnectionModal: _onOpenConnectionModal,
   alertCount
 }) => {
   const navigate = useNavigate();
+  const { currentUser, logout } = useVehicle();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showVehicleDropdown, setShowVehicleDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const isConnected = connectionState === 'connected';
 
-  const categoryButtons: { id: VehicleCategory; label: string; icon: React.ReactNode }[] = [
-    { id: 'car', label: 'Car', icon: <Car className="w-3.5 h-3.5" /> },
-    { id: 'motorcycle', label: 'Motorcycle', icon: <Bike className="w-3.5 h-3.5" /> },
-    { id: 'rc_car', label: 'RC Car', icon: <Gamepad2 className="w-3.5 h-3.5" /> }
-  ];
+  // Vehicle Icon outline in orange
+  const renderVehicleIcon = () => {
+    if (vehicleConfig.type === 'motorcycle') {
+      return <Bike className="w-6 h-6 text-orange-600 stroke-[2]" />;
+    }
+    if (vehicleConfig.type === 'rc_car') {
+      return <Gamepad2 className="w-6 h-6 text-orange-600 stroke-[2]" />;
+    }
+    return (
+      /* Outline Car SVG matching reference */
+      <svg className="w-6 h-6 text-orange-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+        <circle cx="7" cy="17" r="2" />
+        <path d="M9 17h6" />
+        <circle cx="17" cy="17" r="2" />
+      </svg>
+    );
+  };
 
   return (
-    <header className="w-full bg-white border-b border-stone-200 sticky top-0 z-20 px-3 sm:px-6 py-2.5 sm:py-3 shadow-warm-sm">
-      <div className="flex items-center justify-between gap-2">
-        {/* Left: Vehicle Category Selector */}
-        <div className="flex items-center gap-2 min-w-0 overflow-x-auto no-scrollbar">
-          {/* Category Switcher — compact on mobile */}
-          <div className="flex items-center p-0.5 sm:p-1 rounded-xl bg-stone-100 border border-stone-200 text-xs shrink-0">
-            {categoryButtons.map((btn) => (
-              <button
-                key={btn.id}
-                onClick={() => onSelectCategory(btn.id)}
-                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg font-bold transition-all ${
-                  selectedCategory === btn.id
-                    ? 'bg-white text-orange-600 shadow-warm-sm border border-stone-200/80'
-                    : 'text-stone-600 hover:text-stone-900'
-                }`}
-              >
-                {btn.icon}
-                <span className="hidden sm:inline">{btn.label}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Change Vehicle — icon only on smallest screens */}
+    <header className="w-full bg-white border-b border-stone-200/90 sticky top-0 z-20 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+      <div className="flex items-center justify-between gap-2 sm:gap-4">
+        {/* Left: Home Button + Vehicle Title, Status & Last Updated */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          {/* Home Link (Direct way to return to Landing Page on Mobile & Desktop) */}
           <button
-            onClick={() => navigate('/select-vehicle')}
-            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-orange-50 hover:text-orange-700 text-stone-700 border border-stone-200 text-xs font-bold transition-colors shadow-warm-sm shrink-0"
+            type="button"
+            onClick={() => navigate('/')}
+            title="Return to Landing Page"
+            className="p-1.5 sm:p-2 rounded-xl border border-stone-200/90 bg-white hover:bg-orange-50 hover:border-orange-300 text-stone-600 hover:text-orange-600 transition-colors shadow-xs shrink-0 cursor-pointer"
+            aria-label="Return to Landing Page"
           >
-            <RotateCcw className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden sm:inline">Change Vehicle</span>
+            <Home className="w-4 h-4" />
           </button>
 
-          {/* Detection banner — only on xl+ */}
-          <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-orange-50/70 border border-orange-200/70 text-xs">
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse shrink-0" />
-            <span className="font-mono text-orange-900 font-semibold truncate">
-              {vehicleConfig.detectionLabel}
-            </span>
+          <div className="shrink-0 p-1.5 rounded-xl bg-orange-50/50 hidden xs:block">
+            {renderVehicleIcon()}
+          </div>
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap sm:flex-nowrap">
+              <h1 className="text-sm sm:text-base lg:text-lg font-bold text-stone-900 tracking-tight truncate max-w-[130px] xs:max-w-[200px] sm:max-w-none">
+                {vehicleConfig.model.name} <span className="hidden xs:inline text-stone-400 font-normal">{vehicleConfig.model.year}</span>
+              </h1>
+
+              {/* Status Pill Badge */}
+              <span
+                className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold shrink-0 ${
+                  isConnected
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
+                    : 'bg-stone-100 text-stone-600 border border-stone-200'
+                }`}
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    isConnected ? 'bg-emerald-500' : 'bg-stone-400'
+                  }`}
+                />
+                <span className="hidden xs:inline">{isConnected ? 'Connected' : 'Offline'}</span>
+              </span>
+            </div>
+
+            <p className="text-[10px] sm:text-[11px] text-stone-400 font-medium mt-0.5 truncate">
+              Last updated: Today, 10:45 AM
+            </p>
           </div>
         </div>
 
-        {/* Right: Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-          {/* Vehicle Info Pill — hidden on mobile */}
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#fbf9f4] border border-stone-200 text-xs">
-            <span className="text-[10px] uppercase font-mono text-stone-400 font-bold">Active:</span>
-            <span className="font-bold text-stone-900 truncate max-w-[140px]">{vehicleConfig.model.name}</span>
-            <span className="text-stone-300">•</span>
-            <span className="font-mono text-stone-700 font-semibold truncate">{vehicleConfig.specifications.mileageOrCycles}</span>
-          </div>
-
-          {/* Connection Pill */}
-          <button
-            onClick={onOpenConnectionModal}
-            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-xs shadow-warm-sm transition-colors shrink-0"
-          >
-            <span className={`w-2 h-2 rounded-full shrink-0 ${
-              isConnected ? 'bg-emerald-500'
-              : connectionState === 'connecting' ? 'bg-amber-500 animate-ping'
-              : 'bg-stone-300'
-            }`} />
-            <span className="font-mono font-bold text-stone-800 hidden sm:inline">
-              {isConnected ? 'Connected' : connectionState === 'connecting' ? '...' : 'Off'}
-            </span>
-            {isConnected && (
-              <span className="text-stone-400 text-[10px] hidden md:inline">
-                {vehicleConfig.hardwareLink.latencyMs}ms
-              </span>
-            )}
-          </button>
-
-          {/* Report Button */}
-          <button
-            onClick={onOpenReportModal}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold shadow-md shadow-orange-600/25 transition-all shrink-0"
-          >
-            <FileText className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden sm:inline">Report</span>
-          </button>
-
-          {/* Notifications */}
+        {/* Right: Change Vehicle, Notifications, User Avatar */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          {/* Change Vehicle Dropdown / Button */}
           <div className="relative">
             <button
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="p-1.5 sm:p-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-600 relative shadow-warm-sm transition-colors"
+              type="button"
+              onClick={() => setShowVehicleDropdown(!showVehicleDropdown)}
+              className="flex items-center gap-2 px-3 py-1.5 sm:py-2 rounded-xl border border-stone-200/90 bg-white hover:bg-stone-50 text-stone-700 text-xs font-semibold transition-colors shadow-sm"
             >
-              <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <Car className="w-3.5 h-3.5 text-stone-500" />
+              <span className="hidden sm:inline">Change Vehicle</span>
+            </button>
+
+            {/* Vehicle Selector Menu */}
+            {showVehicleDropdown && (
+              <div className="absolute right-0 mt-2 w-56 bg-white border border-stone-200 rounded-2xl p-2 shadow-xl z-50 animate-in fade-in zoom-in-95 duration-100">
+                <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-400 font-mono">
+                  Switch Vehicle
+                </div>
+
+                <div className="space-y-1 mt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectCategory('car');
+                      setShowVehicleDropdown(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-colors ${
+                      selectedCategory === 'car'
+                        ? 'bg-orange-50 text-orange-700 font-semibold'
+                        : 'text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Car className="w-3.5 h-3.5 text-orange-600" />
+                      <span>Honda City i-VTEC (Car)</span>
+                    </div>
+                    {selectedCategory === 'car' && <Check className="w-3.5 h-3.5 text-orange-600" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectCategory('motorcycle');
+                      setShowVehicleDropdown(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-colors ${
+                      selectedCategory === 'motorcycle'
+                        ? 'bg-orange-50 text-orange-700 font-semibold'
+                        : 'text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Bike className="w-3.5 h-3.5 text-orange-600" />
+                      <span>Honda CB350 (Motorcycle)</span>
+                    </div>
+                    {selectedCategory === 'motorcycle' && <Check className="w-3.5 h-3.5 text-orange-600" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectCategory('rc_car');
+                      setShowVehicleDropdown(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-colors ${
+                      selectedCategory === 'rc_car'
+                        ? 'bg-orange-50 text-orange-700 font-semibold'
+                        : 'text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Gamepad2 className="w-3.5 h-3.5 text-orange-600" />
+                      <span>Traxxas Slash (RC Model)</span>
+                    </div>
+                    {selectedCategory === 'rc_car' && <Check className="w-3.5 h-3.5 text-orange-600" />}
+                  </button>
+                </div>
+
+                <div className="mt-1.5 pt-1.5 border-t border-stone-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowVehicleDropdown(false);
+                      navigate('/select-vehicle');
+                    }}
+                    className="w-full text-center py-1.5 text-xs font-semibold text-orange-600 hover:text-orange-700 transition-colors"
+                  >
+                    Manage Garage &amp; Add New →
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Notifications Button */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="p-2 rounded-xl border border-stone-200/90 bg-white hover:bg-stone-50 text-stone-600 transition-colors shadow-sm relative"
+              aria-label="Notifications"
+            >
+              <Bell className="w-4 h-4 text-stone-600" />
               {alertCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-amber-500 text-white rounded-full text-[8px] sm:text-[9px] font-bold flex items-center justify-center border-2 border-white">
-                  {alertCount}
-                </span>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-orange-600 ring-2 ring-white" />
               )}
             </button>
 
+            {/* Notifications Dropdown */}
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white border border-stone-200 rounded-2xl p-4 shadow-warm-xl z-50">
+              <div className="absolute right-0 mt-2 w-72 bg-white border border-stone-200 rounded-2xl p-3 shadow-xl z-50">
                 <div className="flex items-center justify-between pb-2 border-b border-stone-100">
-                  <span className="text-xs font-bold text-stone-900 uppercase font-mono">
-                    Recent Alerts ({vehicleConfig.alerts.length})
-                  </span>
-                  <button onClick={() => setShowNotifications(false)} className="text-[11px] text-stone-400 hover:text-stone-700">
-                    Close
-                  </button>
+                  <span className="text-xs font-bold text-stone-900">Notifications</span>
+                  <span className="text-[10px] font-semibold text-orange-600">{alertCount} new</span>
                 </div>
-                <div className="mt-2.5 space-y-2">
-                  {vehicleConfig.alerts.map((alt) => (
-                    <div key={alt.id} className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/70 text-xs">
-                      <div className="font-bold text-amber-950">{alt.title}</div>
-                      <div className="text-[11px] text-amber-800 mt-0.5">{alt.whatHappened}</div>
-                      <div className="text-[10px] text-amber-600 font-mono mt-1">{alt.timestamp}</div>
+                <div className="space-y-2 py-2 text-xs">
+                  {vehicleConfig.alerts.slice(0, 2).map((a) => (
+                    <div key={a.id} className="p-2 rounded-lg bg-stone-50 text-stone-800">
+                      <div className="font-semibold text-xs text-stone-900">{a.title}</div>
+                      <div className="text-[10px] text-stone-400 mt-0.5">{a.timestamp}</div>
                     </div>
                   ))}
                 </div>
@@ -159,9 +236,56 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* User Avatar */}
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-700 shadow-warm-sm shrink-0">
-            <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          {/* User Avatar & Profile Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              title={`User Profile: ${currentUser?.name || 'Driver'}`}
+              className="w-8 h-8 rounded-full bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs flex items-center justify-center shadow-sm cursor-pointer transition-colors"
+            >
+              {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'A'}
+            </button>
+
+            {showProfileDropdown && (
+              <div className="absolute right-0 mt-2 w-56 bg-white border border-stone-200 rounded-2xl p-2 shadow-xl z-50 animate-in fade-in zoom-in-95 duration-100">
+                <div className="px-3 py-2 border-b border-stone-100">
+                  <span className="font-bold text-xs text-stone-900 block truncate">
+                    {currentUser?.name || 'Alex Mercer'}
+                  </span>
+                  <span className="text-[11px] text-stone-400 block truncate">
+                    {currentUser?.email || 'alex.mercer@motomindx.io'}
+                  </span>
+                </div>
+
+                <div className="py-1 space-y-0.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowProfileDropdown(false);
+                      navigate('/');
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-stone-700 hover:bg-orange-50 hover:text-orange-700 transition-colors cursor-pointer"
+                  >
+                    <Home className="w-3.5 h-3.5 text-orange-600" />
+                    <span>Return to Landing Page</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowProfileDropdown(false);
+                      logout();
+                      navigate('/login');
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

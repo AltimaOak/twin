@@ -29,7 +29,29 @@ const STORAGE_KEYS = {
   ACTIVE_CAT: 'motomindx_active_cat'
 };
 
-const VehicleContext = createContext<VehicleContextType | undefined>(undefined);
+const defaultFallbackValue: VehicleContextType = {
+  currentUser: {
+    id: 'usr-demo-01',
+    name: 'Alex Mercer',
+    email: 'alex.mercer@motomindx.io',
+    isAuthenticated: true
+  },
+  userVehicles: [
+    VEHICLE_CONFIGURATIONS.car,
+    VEHICLE_CONFIGURATIONS.motorcycle,
+    VEHICLE_CONFIGURATIONS.rc_car
+  ],
+  activeVehicle: VEHICLE_CONFIGURATIONS.car,
+  selectedCategory: 'car',
+  login: () => true,
+  signup: () => true,
+  logout: () => {},
+  setSelectedCategory: () => {},
+  saveConfiguredVehicle: () => {},
+  switchActiveVehicle: () => {}
+};
+
+const VehicleContext = createContext<VehicleContextType>(defaultFallbackValue);
 
 export const VehicleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // 1. Current Auth State
@@ -186,8 +208,5 @@ export const VehicleProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
 export const useVehicle = () => {
   const context = useContext(VehicleContext);
-  if (!context) {
-    throw new Error('useVehicle must be used within a VehicleProvider');
-  }
-  return context;
+  return context || defaultFallbackValue;
 };
