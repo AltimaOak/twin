@@ -200,6 +200,11 @@ export class ThreeScene {
 
     if (this.currentVehicleGroup) {
       this.scene.remove(this.currentVehicleGroup);
+      this.currentVehicleGroup.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          if (child.geometry) child.geometry.dispose();
+        }
+      });
       this.currentVehicleGroup = null;
     }
 
@@ -207,13 +212,9 @@ export class ThreeScene {
 
     if (type === 'scooter' || name.includes('scooter') || name.includes('pcx') || name.includes('activa') || name.includes('vespa') || name.includes('nmax') || name.includes('aerox') || name.includes('ather')) {
       this.currentVehicleGroup = ProceduralVehicles.createScooter(this.paintColorHex, isXRay, this.isWireframe);
-    } else if (type === 'suv' || name.includes('fortuner') || name.includes('everest') || name.includes('land cruiser') || name.includes('harrier') || name.includes('safari') || (name.includes('suv') && !name.includes('compact'))) {
-      this.currentVehicleGroup = ProceduralVehicles.createSuv(this.paintColorHex, isXRay, this.isWireframe);
-    } else if (type === 'compact_suv' || name.includes('compact') || name.includes('creta') || name.includes('seltos') || name.includes('crossover') || name.includes('hr-v') || name.includes('rav4') || name.includes('brezza') || name.includes('nexon')) {
-      this.currentVehicleGroup = ProceduralVehicles.createCompactSuv(this.paintColorHex, isXRay, this.isWireframe);
-    } else if (type === 'motorcycle') {
+    } else if (type === 'motorcycle' || type as string === 'bike') {
       this.currentVehicleGroup = ProceduralVehicles.createMotorcycle(this.paintColorHex, isXRay, this.isWireframe);
-    } else if (type === 'rc_car') {
+    } else if (type === 'rc_car' || type as string === 'rc') {
       this.currentVehicleGroup = ProceduralVehicles.createRcCar(this.paintColorHex, isXRay, this.isWireframe);
     } else {
       this.currentVehicleGroup = ProceduralVehicles.createSedan(this.paintColorHex, isXRay, this.isWireframe);

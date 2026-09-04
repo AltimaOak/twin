@@ -27,30 +27,29 @@ export class ProceduralVehicles {
         color: colorHex,
         wireframe: true,
         transparent: true,
-        opacity: 0.65
+        opacity: 0.7
       });
     }
 
     if (isXRay) {
       return new THREE.MeshPhysicalMaterial({
         color: 0x94a3b8,
-        metalness: 0.05,
+        metalness: 0.08,
         roughness: 0.1,
         transmission: 0.94,
         transparent: true,
         opacity: 0.12,
         depthWrite: false,
-        clearcoat: 0.8,
+        clearcoat: 0.9,
         reflectivity: 0.5
       });
     }
 
     // Default Digital Twin Body: Sleek frosted translucent tint with subtle paint hue
-    // This allows all internal mechanical and electrical parts to be immediately visible!
     return new THREE.MeshPhysicalMaterial({
       color: colorHex,
       metalness: 0.35,
-      roughness: 0.15,
+      roughness: 0.18,
       transmission: 0.65,
       transparent: true,
       opacity: 0.42,
@@ -71,21 +70,20 @@ export class ProceduralVehicles {
       roughness: 0.04,
       transmission: 0.92,
       transparent: true,
-      opacity: 0.22,
+      opacity: 0.24,
       depthWrite: false,
-      ior: 1.48,
+      ior: 1.5,
       reflectivity: 0.9
     });
   }
 
-  // Realistic High-Visibility Automotive Metals & Components
+  // Realistic Automotive Metals & Components
   private static chromeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.98, roughness: 0.06 });
   private static brushedSteelMat = new THREE.MeshStandardMaterial({ color: 0xcfd8dc, metalness: 0.88, roughness: 0.22 });
-  private static darkMetalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 });
+  private static darkMetalMat = new THREE.MeshStandardMaterial({ color: 0x27272a, metalness: 0.85, roughness: 0.35 });
   
-  // Precision machined aluminum engine block
+  // Precision machined aluminum engine block & components
   private static engineCastMat = new THREE.MeshStandardMaterial({ color: 0xdde3ea, metalness: 0.85, roughness: 0.22 });
-  // Vibrant Orange Valve Cover / Cylinder Head
   private static engineOrangeMat = new THREE.MeshStandardMaterial({ color: 0xea580c, metalness: 0.6, roughness: 0.2, emissive: 0xea580c, emissiveIntensity: 0.25 });
   
   // High-visibility battery pack
@@ -100,7 +98,6 @@ export class ProceduralVehicles {
   // Brakes: Mirror discs & Brembo Orange Calipers
   private static brakeDiscMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.98, roughness: 0.08 });
   private static caliperOrangeMat = new THREE.MeshStandardMaterial({ color: 0xea580c, metalness: 0.6, roughness: 0.2, emissive: 0xea580c, emissiveIntensity: 0.45 });
-  private static caliperRedMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, metalness: 0.6, roughness: 0.2, emissive: 0xdc2626, emissiveIntensity: 0.45 });
   
   // Suspension: Bright canary yellow springs
   private static suspensionSpringMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.75, roughness: 0.2, emissive: 0xf59e0b, emissiveIntensity: 0.4 });
@@ -108,18 +105,18 @@ export class ProceduralVehicles {
   // Exhaust: Stainless steel
   private static exhaustPipeMat = new THREE.MeshStandardMaterial({ color: 0xd1d5db, metalness: 0.92, roughness: 0.18 });
 
-  // Accents
+  // Accents & Tires
   private static goldAnodizedMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.92, roughness: 0.18 });
-  private static carbonFiberMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.55, roughness: 0.45 });
+  private static carbonFiberMat = new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.55, roughness: 0.45 });
   private static trimBlackMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.2, roughness: 0.6 });
   private static silverTrimMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9, roughness: 0.25 });
-  private static tireTreadMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.9, metalness: 0.05 });
+  private static tireTreadMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.92, metalness: 0.05 });
 
   // Lighting
   private static ledWhiteMat = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     emissive: 0x38bdf8,
-    emissiveIntensity: 2.2,
+    emissiveIntensity: 2.4,
     roughness: 0.05
   });
   private static ledAmberMat = new THREE.MeshStandardMaterial({
@@ -164,7 +161,7 @@ export class ProceduralVehicles {
   }
 
   // =========================================================================
-  // 1. HIGH-FIDELITY PASSENGER SEDAN (Aerodynamic 4-Door Sedan)
+  // MODEL 1 — MODERN CAR (Clean, Recognizable Modern Passenger Sedan)
   // =========================================================================
   public static createSedan(
     colorHex: number = 0x1d3557,
@@ -177,633 +174,285 @@ export class ProceduralVehicles {
     const bodyMat = this.getPaintMaterial(colorHex, isXRay, isWireframe);
     const glassMat = this.getGlassMaterial(isWireframe);
 
+    // --- A. EXTERIOR SEDAN BODYWORK (CURVED AUTOMOTIVE CAD TOPOLOGY) ---
     const bodyGroup = new THREE.Group();
     bodyGroup.name = 'Sedan_BodyGroup';
     bodyGroup.userData = { explodedOffset: new THREE.Vector3(0, 0.45, 0) };
 
-    // 1. Lower Floorpan
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(1.66, 0.08, 3.86), this.darkMetalMat);
-    floor.position.set(0, 0.22, 0);
-    bodyGroup.add(floor);
+    // 1. Aerodynamic Sedan Hull Profile (Extruded CAD Silhouette)
+    // Points along Y (height) and Z (length: +Z is front, -Z is rear)
+    const sedanProfile = new THREE.Shape();
+    sedanProfile.moveTo(-2.15, 0.20);  // Front ground splitter
+    sedanProfile.lineTo(-2.24, 0.38);  // Front bumper nose tip
+    sedanProfile.lineTo(-2.14, 0.55);  // Upper grille lip / badge apex
+    sedanProfile.quadraticCurveTo(-1.65, 0.65, -1.20, 0.68);  // Long hood slope
+    sedanProfile.quadraticCurveTo(-0.70, 0.92, -0.52, 1.14);  // Raked windshield (30° angle)
+    sedanProfile.quadraticCurveTo(0.10, 1.18, 0.45, 1.15);    // Curved roof
+    sedanProfile.quadraticCurveTo(0.95, 0.94, 1.25, 0.72);    // Fastback rear window rake
+    sedanProfile.lineTo(1.85, 0.70);   // 3-box sedan trunk decklid
+    sedanProfile.lineTo(1.95, 0.67);   // Integrated ducktail lip spoiler
+    sedanProfile.lineTo(2.02, 0.40);   // Rear bumper apex
+    sedanProfile.lineTo(1.90, 0.20);   // Rear lower diffuser
+    sedanProfile.lineTo(1.30, 0.20);   // Rear underbody
+    sedanProfile.lineTo(-1.30, 0.20);  // Center floor underbody
+    sedanProfile.closePath();
 
-    // 2. Aerodynamic Doors & Flared Arches
-    [-0.78, 0.78].forEach((xSide) => {
-      const doorPanel = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.38, 2.05), bodyMat);
-      doorPanel.position.set(xSide, 0.44, 0.05);
+    const extrudeSettings: THREE.ExtrudeGeometryOptions = {
+      steps: 2,
+      depth: 1.62,
+      bevelEnabled: true,
+      bevelThickness: 0.08,
+      bevelSize: 0.07,
+      bevelSegments: 4
+    };
 
-      const creaseLine = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.02, 1.95), this.trimBlackMat);
-      creaseLine.position.set(xSide > 0 ? xSide + 0.06 : xSide - 0.06, 0.48, 0.05);
+    const sedanHullGeo = new THREE.ExtrudeGeometry(sedanProfile, extrudeSettings);
+    // Extrude builds along +Z; rotate to align along X-width and center
+    sedanHullGeo.rotateY(Math.PI / 2);
+    sedanHullGeo.translate(-0.81, 0, 0);
 
-      [-0.45, 0.45].forEach((zHandle) => {
+    const sedanHullMesh = new THREE.Mesh(sedanHullGeo, bodyMat);
+    bodyGroup.add(sedanHullMesh);
+
+    // 2. Glass Greenhouse (Front Windshield, Rear Glass, Side Windows)
+    // Raked Front Windshield
+    const fWindshield = new THREE.Mesh(new THREE.BoxGeometry(1.34, 0.62, 0.04), glassMat);
+    fWindshield.position.set(0, 0.88, 0.82);
+    fWindshield.rotation.x = -Math.PI * 0.28;
+    bodyGroup.add(fWindshield);
+
+    // Sloped Rear Windshield
+    const rWindshield = new THREE.Mesh(new THREE.BoxGeometry(1.32, 0.58, 0.04), glassMat);
+    rWindshield.position.set(0, 0.90, -0.85);
+    rWindshield.rotation.x = Math.PI * 0.28;
+    bodyGroup.add(rWindshield);
+
+    // 4 Side Window Panes with B-Pillar Dividers & Flared Wheel Arches
+    [-0.82, 0.82].forEach((xSide) => {
+      // Flush Side Glass
+      const sideGlass = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.38, 1.48), glassMat);
+      sideGlass.position.set(xSide, 0.90, -0.05);
+
+      // Central B-Pillar
+      const bPillar = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.40, 0.08), this.trimBlackMat);
+      bPillar.position.set(xSide > 0 ? xSide + 0.01 : xSide - 0.01, 0.90, -0.05);
+
+      // 4 Door Handles (Front & Rear Doors)
+      [-0.42, 0.38].forEach((zHandle) => {
         const handle = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.025, 0.12), this.chromeMat);
-        handle.position.set(xSide > 0 ? xSide + 0.065 : xSide - 0.065, 0.52, zHandle);
+        handle.position.set(xSide > 0 ? xSide + 0.04 : xSide - 0.04, 0.62, zHandle);
         bodyGroup.add(handle);
       });
 
-      const fArch = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.14, 16, 1, false, 0, Math.PI), bodyMat);
-      fArch.rotation.z = Math.PI / 2;
-      fArch.position.set(xSide, 0.32, 1.15);
-
-      const rArch = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.14, 16, 1, false, 0, Math.PI), bodyMat);
-      rArch.rotation.z = Math.PI / 2;
-      rArch.position.set(xSide, 0.32, -1.05);
-
-      const skirt = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 2.15), this.carbonFiberMat);
-      skirt.position.set(xSide > 0 ? xSide + 0.02 : xSide - 0.02, 0.24, 0.05);
-
-      bodyGroup.add(doorPanel, creaseLine, fArch, rArch, skirt);
-    });
-
-    // 3. Front Fascia, Grille & Bumper
-    const frontBumper = new THREE.Mesh(new THREE.BoxGeometry(1.68, 0.32, 0.45), bodyMat);
-    frontBumper.position.set(0, 0.38, 1.84);
-    const frontSplitter = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.04, 0.4), this.carbonFiberMat);
-    frontSplitter.position.set(0, 0.21, 1.92);
-    const meshGrille = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.18, 0.06), this.darkMetalMat);
-    meshGrille.position.set(0, 0.42, 2.05);
-    const brandEmblem = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.02, 20), this.chromeMat);
-    brandEmblem.rotation.x = Math.PI / 2;
-    brandEmblem.position.set(0, 0.44, 2.08);
-    bodyGroup.add(frontBumper, frontSplitter, meshGrille, brandEmblem);
-
-    // 4. Low Sculpted Hood
-    const hood = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.06, 1.25), bodyMat);
-    hood.position.set(0, 0.62, 1.15);
-    hood.rotation.x = 0.045;
-    bodyGroup.add(hood);
-
-    // 5. Sleek Fastback Greenhouse & Windshields
-    const roof = new THREE.Mesh(new THREE.BoxGeometry(1.36, 0.04, 1.78), bodyMat);
-    roof.position.set(0, 1.05, -0.16);
-    const sharkFin = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.09, 4), bodyMat);
-    sharkFin.rotation.y = Math.PI / 4;
-    sharkFin.position.set(0, 1.1, -0.85);
-    bodyGroup.add(roof, sharkFin);
-
-    const frontWindshield = new THREE.Mesh(new THREE.BoxGeometry(1.38, 0.54, 0.03), glassMat);
-    frontWindshield.position.set(0, 0.85, 0.62);
-    frontWindshield.rotation.x = -Math.PI * 0.24;
-
-    const rearWindshield = new THREE.Mesh(new THREE.BoxGeometry(1.36, 0.5, 0.03), glassMat);
-    rearWindshield.position.set(0, 0.85, -0.96);
-    rearWindshield.rotation.x = Math.PI * 0.26;
-
-    [-0.69, 0.69].forEach((xSide) => {
-      const sideGlass = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.34, 1.55), glassMat);
-      sideGlass.position.set(xSide, 0.85, -0.16);
-      const bPillar = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.36, 0.09), this.trimBlackMat);
-      bPillar.position.set(xSide > 0 ? xSide + 0.01 : xSide - 0.01, 0.85, -0.16);
-
+      // Aerodynamic Side Mirrors
       const mirrorArm = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.025, 0.04), this.trimBlackMat);
-      mirrorArm.position.set(xSide, 0.74, 0.52);
+      mirrorArm.position.set(xSide, 0.78, 0.55);
       const mirrorHousing = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.09, 0.08), bodyMat);
-      mirrorHousing.position.set(xSide > 0 ? xSide + 0.09 : xSide - 0.09, 0.75, 0.52);
+      mirrorHousing.position.set(xSide > 0 ? xSide + 0.08 : xSide - 0.08, 0.79, 0.55);
       const mirrorGlass = new THREE.Mesh(new THREE.PlaneGeometry(0.13, 0.07), this.chromeMat);
       mirrorGlass.rotation.y = xSide > 0 ? -Math.PI / 2 : Math.PI / 2;
-      mirrorGlass.position.set(xSide > 0 ? xSide + 0.08 : xSide - 0.08, 0.75, 0.52);
+      mirrorGlass.position.set(xSide > 0 ? xSide + 0.075 : xSide - 0.075, 0.79, 0.55);
 
-      bodyGroup.add(sideGlass, bPillar, mirrorArm, mirrorHousing, mirrorGlass);
+      // Wheel Arch Flared Lips
+      const fArch = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.03, 8, 20, Math.PI), this.trimBlackMat);
+      fArch.rotation.y = xSide > 0 ? Math.PI / 2 : -Math.PI / 2;
+      fArch.position.set(xSide, 0.32, 1.2);
+
+      const rArch = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.03, 8, 20, Math.PI), this.trimBlackMat);
+      rArch.rotation.y = xSide > 0 ? Math.PI / 2 : -Math.PI / 2;
+      rArch.position.set(xSide, 0.32, -1.18);
+
+      bodyGroup.add(sideGlass, bPillar, mirrorArm, mirrorHousing, mirrorGlass, fArch, rArch);
     });
-    bodyGroup.add(frontWindshield, rearWindshield);
 
-    // 6. Trunk & Rear Diffuser
-    const trunkLid = new THREE.Mesh(new THREE.BoxGeometry(1.58, 0.08, 0.85), bodyMat);
-    trunkLid.position.set(0, 0.65, -1.45);
-    const lipSpoiler = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.03, 0.14), this.carbonFiberMat);
-    lipSpoiler.position.set(0, 0.72, -1.84);
-    const rearBumper = new THREE.Mesh(new THREE.BoxGeometry(1.68, 0.34, 0.38), bodyMat);
-    rearBumper.position.set(0, 0.38, -1.82);
-    const rearDiffuser = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.12, 0.22), this.carbonFiberMat);
-    rearDiffuser.position.set(0, 0.21, -1.94);
-    bodyGroup.add(trunkLid, lipSpoiler, rearBumper, rearDiffuser);
+    // 3. Front Grille, Splitter & Brand Emblem
+    const frontGrille = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.22, 0.06), this.darkMetalMat);
+    frontGrille.position.set(0, 0.44, 2.18);
+    const emblem = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.02, 20), this.chromeMat);
+    emblem.rotation.x = Math.PI / 2;
+    emblem.position.set(0, 0.46, 2.22);
+    const frontSplitter = new THREE.Mesh(new THREE.BoxGeometry(1.68, 0.04, 0.25), this.carbonFiberMat);
+    frontSplitter.position.set(0, 0.19, 2.12);
+    bodyGroup.add(frontGrille, emblem, frontSplitter);
 
-    // 7. Matrix LED Headlights & 3D Rear Light Bar
+    // 4. Matrix LED Headlights & Full-Width 3D Lightbar
     [-0.62, 0.62].forEach((xSide) => {
-      const hlHousing = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.11, 0.14), this.darkMetalMat);
-      hlHousing.position.set(xSide, 0.54, 1.94);
+      const hlHousing = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.11, 0.14), this.darkMetalMat);
+      hlHousing.position.set(xSide, 0.54, 2.06);
       hlHousing.rotation.y = xSide > 0 ? -0.16 : 0.16;
       const hlProjector = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.04, 16), this.ledWhiteMat);
       hlProjector.rotation.x = Math.PI / 2;
-      hlProjector.position.set(xSide, 0.54, 2.01);
-      const drlBrow = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.02, 0.03), this.ledAmberMat);
-      drlBrow.position.set(xSide, 0.59, 2.01);
+      hlProjector.position.set(xSide, 0.54, 2.14);
+      const drlBrow = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.02, 0.03), this.ledAmberMat);
+      drlBrow.position.set(xSide, 0.59, 2.14);
       drlBrow.rotation.y = xSide > 0 ? -0.16 : 0.16;
       bodyGroup.add(hlHousing, hlProjector, drlBrow);
     });
 
-    const lightBarCenter = new THREE.Mesh(new THREE.BoxGeometry(1.46, 0.035, 0.05), this.ledRedMat);
-    lightBarCenter.position.set(0, 0.62, -1.96);
-    bodyGroup.add(lightBarCenter);
+    const rearLightBar = new THREE.Mesh(new THREE.BoxGeometry(1.48, 0.04, 0.05), this.ledRedMat);
+    rearLightBar.position.set(0, 0.65, -2.04);
+    const rearDiffuser = new THREE.Mesh(new THREE.BoxGeometry(1.44, 0.12, 0.2), this.carbonFiberMat);
+    rearDiffuser.position.set(0, 0.22, -1.98);
+    const sharkFin = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.09, 4), bodyMat);
+    sharkFin.rotation.y = Math.PI / 4;
+    sharkFin.position.set(0, 1.20, -0.45);
+    bodyGroup.add(rearLightBar, rearDiffuser, sharkFin);
 
     car.add(bodyGroup);
 
     // --- B. INTERNAL MECHANICAL & HEALTH SUBSYSTEMS ---
-    // Engine Bay (Machined aluminum block with signature orange valve cover)
+    // 1. ENGINE (`id: 'engine'`, position [0, 0.45, 1.15])
     const engineGroup = new THREE.Group();
-    engineGroup.position.set(0, 0.46, 1.15);
-    const engineBlock = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.42, 0.58), this.engineCastMat);
-    const valveCover = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.15, 0.52), this.engineOrangeMat);
+    engineGroup.position.set(0, 0.45, 1.15);
+    const engBlock = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.42, 0.56), this.engineCastMat);
+    const valveCover = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.14, 0.5), this.engineOrangeMat);
     valveCover.position.set(0, 0.26, 0);
-    const oilCap = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 16), this.chromeMat);
-    oilCap.position.set(-0.18, 0.34, 0.12);
-    for (let i = 0; i < 4; i++) {
-      const runner = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.28, 14), this.chromeMat);
-      runner.position.set(-0.21 + i * 0.14, 0.22, 0.3);
-      runner.rotation.x = Math.PI / 4;
-      engineGroup.add(runner);
-    }
-    const pulley = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.04, 20), this.silverTrimMat);
-    pulley.rotation.z = Math.PI / 2;
-    pulley.position.set(0.35, -0.05, 0);
-    engineGroup.add(engineBlock, valveCover, oilCap, pulley);
-    this.tagMesh(engineGroup, 'engine', 'Internal Combustion Engine', [0, 0.5, 0.3]);
+    const intakePlenum = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.18, 0.14), this.darkMetalMat);
+    intakePlenum.position.set(0, 0.18, -0.26);
+    const beltPulley1 = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.04, 16), this.chromeMat);
+    beltPulley1.rotation.z = Math.PI / 2;
+    beltPulley1.position.set(0.3, 0.05, 0.12);
+    const beltPulley2 = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.04, 16), this.chromeMat);
+    beltPulley2.rotation.z = Math.PI / 2;
+    beltPulley2.position.set(0.3, -0.1, -0.08);
+    engineGroup.add(engBlock, valveCover, intakePlenum, beltPulley1, beltPulley2);
+    this.tagMesh(engineGroup, 'engine', '1.5L i-VTEC DOHC Engine', [0, 0.55, 0.3]);
     car.add(engineGroup);
 
-    // Battery (Graphite casing with luminous red & blue terminals)
+    // 2. BATTERY (`id: 'battery'`, position [-0.48, 0.5, 0.95])
     const batteryGroup = new THREE.Group();
-    batteryGroup.position.set(-0.48, 0.52, 0.95);
-    const batCasing = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.26, 0.22), this.batteryLeadMat);
-    const termPos = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.06, 14), this.batteryPosMat);
-    termPos.position.set(-0.09, 0.15, 0.05);
-    const termNeg = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.06, 14), this.batteryNegMat);
-    termNeg.position.set(0.09, 0.15, 0.05);
-    const batPlate = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.01, 0.14), this.engineOrangeMat);
-    batPlate.position.set(0, 0.135, -0.02);
-    batteryGroup.add(batCasing, termPos, termNeg, batPlate);
-    this.tagMesh(batteryGroup, 'battery', '12V Starter Battery Pack', [-0.3, 0.3, 0.2]);
+    batteryGroup.position.set(-0.48, 0.5, 0.95);
+    const batBody = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.24), this.batteryLeadMat);
+    const posPost = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.04, 12), this.batteryPosMat);
+    posPost.position.set(-0.07, 0.12, 0.06);
+    const negPost = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.04, 12), this.batteryNegMat);
+    negPost.position.set(0.07, 0.12, 0.06);
+    batteryGroup.add(batBody, posPost, negPost);
+    this.tagMesh(batteryGroup, 'battery', '12V Lead-Acid Starter Battery', [-0.35, 0.35, 0.1]);
     car.add(batteryGroup);
 
-    // Cooling System (Silver radiator core with coolant-blue loop pipes)
+    // 3. COOLING SYSTEM & RADIATOR (`id: 'cooling'`, position [0, 0.35, 1.6])
     const coolingGroup = new THREE.Group();
-    coolingGroup.position.set(0, 0.36, 1.62);
-    const radCore = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.4, 0.09), this.radiatorCoreMat);
-    const upperHose = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.45, 14), this.coolantHoseMat);
-    upperHose.rotation.x = Math.PI / 2.5;
-    upperHose.position.set(0.25, 0.12, -0.22);
-    const lowerHose = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.42, 14), this.coolantHoseMat);
-    lowerHose.rotation.x = Math.PI / 2.3;
-    lowerHose.position.set(-0.25, -0.1, -0.2);
-    coolingGroup.add(radCore, upperHose, lowerHose);
-    this.tagMesh(coolingGroup, 'cooling', 'Cooling System & Radiator', [0, 0.3, 0.4]);
+    coolingGroup.position.set(0, 0.35, 1.6);
+    const radCore = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.36, 0.08), this.radiatorCoreMat);
+    const fan1 = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.04, 16), this.trimBlackMat);
+    fan1.rotation.x = Math.PI / 2;
+    fan1.position.set(-0.24, 0, -0.05);
+    const fan2 = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.04, 16), this.trimBlackMat);
+    fan2.rotation.x = Math.PI / 2;
+    fan2.position.set(0.24, 0, -0.05);
+    const upperHose = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.45, 12), this.coolantHoseMat);
+    upperHose.rotation.x = Math.PI * 0.35;
+    upperHose.position.set(0.22, 0.12, -0.22);
+    coolingGroup.add(radCore, fan1, fan2, upperHose);
+    this.tagMesh(coolingGroup, 'cooling', 'Radiator & Cooling Circuit', [0, 0.25, 0.45]);
     car.add(coolingGroup);
 
-    // Transmission (Titanium silver CVT housing)
+    // 4. TRANSMISSION (`id: 'transmission'`, position [0.3, 0.35, 0.6])
     const transGroup = new THREE.Group();
-    transGroup.position.set(0.32, 0.36, 0.62);
-    const cvtCase = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.52, 20), this.brushedSteelMat);
-    cvtCase.rotation.x = Math.PI / 2;
-    transGroup.add(cvtCase);
-    this.tagMesh(transGroup, 'transmission', 'Continuously Variable Transmission (CVT)', [0.4, 0.2, 0.1]);
+    transGroup.position.set(0.3, 0.35, 0.6);
+    const transCase = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.32, 0.52), this.silverTrimMat);
+    const diffDome = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 12), this.darkMetalMat);
+    diffDome.position.set(-0.25, -0.04, 0.05);
+    const axleL = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.55, 12), this.brushedSteelMat);
+    axleL.rotation.z = Math.PI / 2;
+    axleL.position.set(-0.55, -0.04, 0.05);
+    const axleR = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.55, 12), this.brushedSteelMat);
+    axleR.rotation.z = Math.PI / 2;
+    axleR.position.set(0.35, -0.04, 0.05);
+    transGroup.add(transCase, diffDome, axleL, axleR);
+    this.tagMesh(transGroup, 'transmission', 'Continuously Variable Transmission (CVT)', [0.35, 0.3, -0.15]);
     car.add(transGroup);
 
-    // Exhaust System (Stainless steel midpipe and polished muffler)
+    // 5. EXHAUST SYSTEM (`id: 'exhaust'`, position [0, 0.18, -1.4])
     const exhaustGroup = new THREE.Group();
     exhaustGroup.position.set(0, 0.18, -1.4);
-    const midPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 2.3, 16), this.exhaustPipeMat);
-    midPipe.rotation.x = Math.PI / 2;
-    midPipe.position.set(0.12, 0.02, 0.6);
-    const muffler = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.22, 0.46), this.darkMetalMat);
-    muffler.position.set(0, 0.04, -0.15);
-    [-0.16, 0.16].forEach((xTip) => {
-      const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.052, 0.3, 16), this.chromeMat);
+    const exhCenterPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 2.3, 16), this.exhaustPipeMat);
+    exhCenterPipe.rotation.x = Math.PI / 2;
+    exhCenterPipe.position.set(0.06, 0.04, 0.75);
+    const catConverter = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.38, 16), this.brushedSteelMat);
+    catConverter.rotation.x = Math.PI / 2;
+    catConverter.position.set(0.06, 0.04, 1.4);
+    const rearMuffler = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.18, 0.32), this.brushedSteelMat);
+    rearMuffler.position.set(0, 0.04, -0.32);
+    [-0.24, 0.24].forEach((xTip) => {
+      const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.18, 16), this.chromeMat);
       tip.rotation.x = Math.PI / 2;
-      tip.position.set(xTip, -0.02, -0.5);
+      tip.position.set(xTip, 0.04, -0.52);
       exhaustGroup.add(tip);
     });
-    exhaustGroup.add(midPipe, muffler);
-    this.tagMesh(exhaustGroup, 'exhaust', 'Exhaust & Catalytic Converter', [0, -0.3, -0.4]);
+    exhaustGroup.add(exhCenterPipe, catConverter, rearMuffler);
+    this.tagMesh(exhaustGroup, 'exhaust', 'Catalytic Converter & Exhaust System', [0, -0.3, -0.4]);
     car.add(exhaustGroup);
 
-    // Suspension (Bright canary yellow coilovers with chrome dampers)
+    // 6. SUSPENSION (`id: 'suspension'`, position [0.65, 0.35, 1.1])
     const suspGroup = new THREE.Group();
-    suspGroup.position.set(0.68, 0.36, 1.15);
-    const coilSpring = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.36, 16), this.suspensionSpringMat);
-    const damperRod = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.44, 14), this.chromeMat);
-    suspGroup.add(coilSpring, damperRod);
-    this.tagMesh(suspGroup, 'suspension', 'MacPherson Strut Suspension', [0.3, 0.2, 0.2]);
+    suspGroup.position.set(0.65, 0.35, 1.1);
+    const strutCylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.38, 14), this.darkMetalMat);
+    const springCoil = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.28, 16), this.suspensionSpringMat);
+    suspGroup.add(strutCylinder, springCoil);
+    this.tagMesh(suspGroup, 'suspension', 'MacPherson Strut Suspension', [0.35, 0.2, 0.15]);
     car.add(suspGroup);
 
-    // 4 Wheels with Open Lightweight Spokes & Visible Brembo Orange Calipers
+    // --- C. 4 PASSENGER WHEELS & ALLOY RIMS ---
     const wheelPositions: [number, number, number][] = [
-      [-0.88, 0.25, 1.15],
-      [0.88, 0.25, 1.15],
-      [-0.88, 0.25, -1.05],
-      [0.88, 0.25, -1.05]
+      [-0.82, 0.32, 1.2],   // Front Left
+      [0.82, 0.32, 1.2],    // Front Right (Tagged as Brakes)
+      [-0.82, 0.32, -1.18], // Rear Left (Tagged as Tyres)
+      [0.82, 0.32, -1.18]   // Rear Right
     ];
+
     wheelPositions.forEach((pos, idx) => {
       const isRight = pos[0] > 0;
       const isFront = idx < 2;
-      const wheelGroup = new THREE.Group();
-      wheelGroup.position.set(pos[0], pos[1], pos[2]);
+      const wg = new THREE.Group();
+      wg.position.set(pos[0], pos[1], pos[2]);
 
-      // Outer Rubber Tire
-      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.24, 28), this.tireTreadMat);
+      // Low-profile radial rubber tire with curved outer shoulder
+      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.24, 30), this.tireTreadMat);
       tire.rotation.z = Math.PI / 2;
 
-      // Open Rim Barrel Ring
-      const rimBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.245, 24, 1, true), this.silverTrimMat);
-      rimBarrel.rotation.z = Math.PI / 2;
+      // 5-Spoke Alloy Rim
+      const rimOuter = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.245, 24, 1, true), this.silverTrimMat);
+      rimOuter.rotation.z = Math.PI / 2;
+      const rimHub = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.25, 16), this.silverTrimMat);
+      rimHub.rotation.z = Math.PI / 2;
 
-      // Center Hub
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.25, 16), this.silverTrimMat);
-      hub.rotation.z = Math.PI / 2;
-
-      // 5 Sleek Open Spokes - allow looking directly through to the brake disc & caliper!
       for (let s = 0; s < 5; s++) {
-        const angle = (s / 5) * Math.PI * 2;
-        const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.18, 0.02), this.silverTrimMat);
-        spoke.position.set(isRight ? 0.08 : -0.08, Math.sin(angle) * 0.09, Math.cos(angle) * 0.09);
-        spoke.rotation.x = angle;
-        wheelGroup.add(spoke);
+        const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.20, 0.04), this.silverTrimMat);
+        spoke.rotation.x = (s * Math.PI * 2) / 5;
+        spoke.position.x = isRight ? -0.1 : 0.1;
+        wg.add(spoke);
       }
 
-      // Large Mirror-Finish Vented Brake Disc Rotor
-      const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.025, 20), this.brakeDiscMat);
-      disc.rotation.z = Math.PI / 2;
-      disc.position.x = isRight ? -0.04 : 0.04;
+      // Precision Brake Disc & Brembo Caliper
+      const brakeDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.02, 20), this.brakeDiscMat);
+      brakeDisc.rotation.z = Math.PI / 2;
+      brakeDisc.position.x = isRight ? -0.05 : 0.05;
 
-      // Vibrant Performance Orange Brake Caliper - prominently visible on outer edge!
-      const caliper = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.09), this.caliperOrangeMat);
-      caliper.position.set(isRight ? 0.02 : -0.02, 0.12, 0.05);
+      const caliper = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.12, 0.08), this.caliperOrangeMat);
+      caliper.position.set(isRight ? -0.05 : 0.05, 0.11, 0.02);
 
-      wheelGroup.add(tire, rimBarrel, hub, disc, caliper);
+      wg.add(tire, rimOuter, rimHub, brakeDisc, caliper);
 
       if (idx === 1) {
-        this.tagMesh(wheelGroup, 'brakes', 'Hydraulic Disc Braking System', [0.4, 0, 0.2]);
+        this.tagMesh(wg, 'brakes', 'Front Disc Brakes & Brembo Calipers', [0.35, 0, 0.15]);
       } else if (idx === 2) {
-        this.tagMesh(wheelGroup, 'tyres', 'Radial Tyres (TPMS)', [-0.4, 0, -0.2]);
+        this.tagMesh(wg, 'tyres', '185/55 R16 Radial Tyres (TPMS)', [-0.35, 0, -0.15]);
       } else {
-        wheelGroup.userData = { explodedOffset: new THREE.Vector3(isRight ? 0.35 : -0.35, 0, isFront ? 0.15 : -0.15) };
+        wg.userData = {
+          explodedOffset: new THREE.Vector3(isRight ? 0.35 : -0.35, 0, isFront ? 0.15 : -0.15)
+        };
       }
-      car.add(wheelGroup);
+
+      car.add(wg);
     });
 
     return car;
   }
 
   // =========================================================================
-  // 2. HIGH-FIDELITY FULL-SIZE SUV (Toyota Fortuner / Rugged 4x4 Twin)
-  // =========================================================================
-  public static createSuv(
-    colorHex: number = 0x18181b,
-    isXRay: boolean = false,
-    isWireframe: boolean = false
-  ): THREE.Group {
-    const suv = new THREE.Group();
-    suv.name = 'VehicleModel_SUV';
-
-    const bodyMat = this.getPaintMaterial(colorHex, isXRay, isWireframe);
-    const glassMat = this.getGlassMaterial(isWireframe);
-
-    const bodyGroup = new THREE.Group();
-    bodyGroup.name = 'SUV_BodyGroup';
-    bodyGroup.userData = { explodedOffset: new THREE.Vector3(0, 0.5, 0) };
-
-    // 1. High-Clearance Ladder Frame Underbody
-    const chassisFrame = new THREE.Mesh(new THREE.BoxGeometry(1.78, 0.14, 4.2), this.darkMetalMat);
-    chassisFrame.position.set(0, 0.32, 0);
-    bodyGroup.add(chassisFrame);
-
-    // 2. Commanding Tall Body & Massive Wheel Arches
-    [-0.88, 0.88].forEach((xSide) => {
-      const sideBody = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.58, 2.45), bodyMat);
-      sideBody.position.set(xSide, 0.62, 0.05);
-
-      // Black protective wheel cladding
-      const fArchClad = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.18, 16, 1, false, 0, Math.PI), this.trimBlackMat);
-      fArchClad.rotation.z = Math.PI / 2;
-      fArchClad.position.set(xSide, 0.45, 1.25);
-
-      const rArchClad = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.18, 16, 1, false, 0, Math.PI), this.trimBlackMat);
-      rArchClad.rotation.z = Math.PI / 2;
-      rArchClad.position.set(xSide, 0.45, -1.15);
-
-      // Heavy Duty Side Steps (Running Boards)
-      const sideStep = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.04, 2.1), this.silverTrimMat);
-      sideStep.position.set(xSide > 0 ? xSide + 0.08 : xSide - 0.08, 0.34, 0.05);
-
-      bodyGroup.add(sideBody, fArchClad, rArchClad, sideStep);
-    });
-
-    // 3. Upright Front Fascia, Massive Grille & Bull Bumper
-    const frontBumper = new THREE.Mesh(new THREE.BoxGeometry(1.86, 0.45, 0.5), bodyMat);
-    frontBumper.position.set(0, 0.52, 2.0);
-    const skidPlate = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.1, 0.45), this.silverTrimMat);
-    skidPlate.position.set(0, 0.32, 2.05);
-    const suvGrille = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.32, 0.08), this.darkMetalMat);
-    suvGrille.position.set(0, 0.65, 2.22);
-    bodyGroup.add(frontBumper, skidPlate, suvGrille);
-
-    // 4. Tall Muscular Hood
-    const hood = new THREE.Mesh(new THREE.BoxGeometry(1.76, 0.1, 1.45), bodyMat);
-    hood.position.set(0, 0.86, 1.25);
-    bodyGroup.add(hood);
-
-    // 5. Upright 3-Row Cabin & Roof Rails
-    const roof = new THREE.Mesh(new THREE.BoxGeometry(1.58, 0.05, 2.45), bodyMat);
-    roof.position.set(0, 1.38, -0.22);
-
-    // Functional Roof Rack Rails
-    [-0.65, 0.65].forEach((xSide) => {
-      const roofRail = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.06, 2.3), this.silverTrimMat);
-      roofRail.position.set(xSide, 1.44, -0.22);
-      bodyGroup.add(roofRail);
-    });
-
-    const frontWindshield = new THREE.Mesh(new THREE.BoxGeometry(1.52, 0.56, 0.04), glassMat);
-    frontWindshield.position.set(0, 1.12, 0.72);
-    frontWindshield.rotation.x = -Math.PI * 0.18;
-
-    const rearGlass = new THREE.Mesh(new THREE.BoxGeometry(1.48, 0.52, 0.04), glassMat);
-    rearGlass.position.set(0, 1.12, -1.42);
-    rearGlass.rotation.x = Math.PI * 0.08;
-
-    [-0.78, 0.78].forEach((xSide) => {
-      const sideGlass = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.44, 2.1), glassMat);
-      sideGlass.position.set(xSide, 1.12, -0.32);
-      bodyGroup.add(sideGlass);
-    });
-    bodyGroup.add(roof, frontWindshield, rearGlass);
-
-    // 6. Upright Rear Tailgate & Tail Bumper
-    const rearTailgate = new THREE.Mesh(new THREE.BoxGeometry(1.78, 0.58, 0.35), bodyMat);
-    rearTailgate.position.set(0, 0.64, -1.95);
-    const rearSkid = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.1, 0.25), this.silverTrimMat);
-    rearSkid.position.set(0, 0.34, -2.08);
-    bodyGroup.add(rearTailgate, rearSkid);
-
-    // 7. Quad LED Headlights & Vertical LED Taillights
-    [-0.68, 0.68].forEach((xSide) => {
-      const hlMesh = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.16, 0.06), this.ledWhiteMat);
-      hlMesh.position.set(xSide, 0.74, 2.22);
-      const tlMesh = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.44, 0.06), this.ledRedMat);
-      tlMesh.position.set(xSide, 0.88, -2.1);
-      bodyGroup.add(hlMesh, tlMesh);
-    });
-
-    suv.add(bodyGroup);
-
-    // Mechanical Subsystems
-    const engineGroup = new THREE.Group();
-    engineGroup.position.set(0, 0.62, 1.25);
-    const v6Engine = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.48, 0.65), this.engineCastMat);
-    const topIntercooler = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.08, 0.45), this.silverTrimMat);
-    topIntercooler.position.set(0, 0.28, 0);
-    engineGroup.add(v6Engine, topIntercooler);
-    this.tagMesh(engineGroup, 'engine', '2.8L Turbo-Diesel V6 Engine', [0, 0.5, 0.3]);
-    suv.add(engineGroup);
-
-    const batteryGroup = new THREE.Group();
-    batteryGroup.position.set(-0.55, 0.68, 1.05);
-    const bat = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.26, 0.22), this.batteryLeadMat);
-    batteryGroup.add(bat);
-    this.tagMesh(batteryGroup, 'battery', '12V 95Ah Heavy-Duty Battery', [-0.3, 0.3, 0.2]);
-    suv.add(batteryGroup);
-
-    const coolingGroup = new THREE.Group();
-    coolingGroup.position.set(0, 0.52, 1.75);
-    const rad = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.45, 0.1), this.brushedSteelMat);
-    coolingGroup.add(rad);
-    this.tagMesh(coolingGroup, 'cooling', 'High-Capacity Radiator & Heavy Fan', [0, 0.3, 0.4]);
-    suv.add(coolingGroup);
-
-    const transGroup = new THREE.Group();
-    transGroup.position.set(0, 0.46, 0.4);
-    const trans = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 0.75, 20), this.darkMetalMat);
-    trans.rotation.x = Math.PI / 2;
-    transGroup.add(trans);
-    this.tagMesh(transGroup, 'transmission', '6-Speed 4x4 Automatic Transmission', [0.3, 0.2, 0.1]);
-    suv.add(transGroup);
-
-    const exhaustGroup = new THREE.Group();
-    exhaustGroup.position.set(0.2, 0.28, -1.5);
-    const exh = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 2.6, 16), this.brushedSteelMat);
-    exh.rotation.x = Math.PI / 2;
-    exhaustGroup.add(exh);
-    this.tagMesh(exhaustGroup, 'exhaust', 'High-Clearance DPF Exhaust System', [0, -0.3, -0.4]);
-    suv.add(exhaustGroup);
-
-    const suspGroup = new THREE.Group();
-    suspGroup.position.set(0.78, 0.5, 1.2);
-    const susp = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.45, 16), this.caliperOrangeMat);
-    suspGroup.add(susp);
-    this.tagMesh(suspGroup, 'suspension', 'Heavy-Duty Double Wishbone Suspension', [0.3, 0.2, 0.2]);
-    suv.add(suspGroup);
-
-    // 4 Large All-Terrain Wheels
-    const suvWheels: [number, number, number][] = [
-      [-0.98, 0.36, 1.25],
-      [0.98, 0.36, 1.25],
-      [-0.98, 0.36, -1.15],
-      [0.98, 0.36, -1.15]
-    ];
-    suvWheels.forEach((pos, idx) => {
-      const isRight = pos[0] > 0;
-      const isFront = idx < 2;
-      const wg = new THREE.Group();
-      wg.position.set(pos[0], pos[1], pos[2]);
-
-      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.32, 28), this.tireTreadMat);
-      tire.rotation.z = Math.PI / 2;
-      const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.325, 24), this.darkMetalMat);
-      rim.rotation.z = Math.PI / 2;
-      const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.03, 20), this.brakeDiscMat);
-      disc.rotation.z = Math.PI / 2;
-      disc.position.x = isRight ? -0.08 : 0.08;
-      const caliper = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.14, 0.11), this.caliperRedMat);
-      caliper.position.set(isRight ? -0.08 : 0.08, 0.14, 0.05);
-
-      wg.add(tire, rim, disc, caliper);
-
-      if (idx === 1) {
-        this.tagMesh(wg, 'brakes', 'Heavy-Duty 4-Piston Disc Brakes', [0.4, 0, 0.2]);
-      } else if (idx === 2) {
-        this.tagMesh(wg, 'tyres', '265/60 R18 All-Terrain Tyres', [-0.4, 0, -0.2]);
-      } else {
-        wg.userData = { explodedOffset: new THREE.Vector3(isRight ? 0.4 : -0.4, 0, isFront ? 0.15 : -0.15) };
-      }
-      suv.add(wg);
-    });
-
-    return suv;
-  }
-
-  // =========================================================================
-  // 3. HIGH-FIDELITY COMPACT SUV / CROSSOVER (Hyundai Creta / Kia Seltos Twin)
-  // =========================================================================
-  public static createCompactSuv(
-    colorHex: number = 0xdc2626,
-    isXRay: boolean = false,
-    isWireframe: boolean = false
-  ): THREE.Group {
-    const cuv = new THREE.Group();
-    cuv.name = 'VehicleModel_CompactSUV';
-
-    const bodyMat = this.getPaintMaterial(colorHex, isXRay, isWireframe);
-    const glassMat = this.getGlassMaterial(isWireframe);
-
-    const bodyGroup = new THREE.Group();
-    bodyGroup.name = 'CompactSUV_BodyGroup';
-    bodyGroup.userData = { explodedOffset: new THREE.Vector3(0, 0.45, 0) };
-
-    // 1. Compact Reinforced Floorpan
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.1, 3.6), this.darkMetalMat);
-    floor.position.set(0, 0.26, 0);
-    bodyGroup.add(floor);
-
-    // 2. Sporty Curved Crossover Body with Cladding
-    [-0.82, 0.82].forEach((xSide) => {
-      const sideBody = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.46, 2.1), bodyMat);
-      sideBody.position.set(xSide, 0.52, 0.05);
-
-      const fArch = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.16, 16, 1, false, 0, Math.PI), this.trimBlackMat);
-      fArch.rotation.z = Math.PI / 2;
-      fArch.position.set(xSide, 0.38, 1.18);
-
-      const rArch = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.16, 16, 1, false, 0, Math.PI), this.trimBlackMat);
-      rArch.rotation.z = Math.PI / 2;
-      rArch.position.set(xSide, 0.38, -1.08);
-
-      bodyGroup.add(sideBody, fArch, rArch);
-    });
-
-    // 3. Cascading Grille & Split Headlamps
-    const fFascia = new THREE.Mesh(new THREE.BoxGeometry(1.74, 0.38, 0.45), bodyMat);
-    fFascia.position.set(0, 0.46, 1.75);
-    const cascadGrille = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.26, 0.06), this.darkMetalMat);
-    cascadGrille.position.set(0, 0.52, 1.96);
-    const lowerLip = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.06, 0.2), this.silverTrimMat);
-    lowerLip.position.set(0, 0.28, 1.92);
-    bodyGroup.add(fFascia, cascadGrille, lowerLip);
-
-    // 4. Sloping Crossover Hood
-    const hood = new THREE.Mesh(new THREE.BoxGeometry(1.66, 0.08, 1.2), bodyMat);
-    hood.position.set(0, 0.72, 1.12);
-    hood.rotation.x = 0.06;
-    bodyGroup.add(hood);
-
-    // 5. Floating Contrast Roofline & Integrated Spoiler
-    const roof = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.04, 1.85), this.trimBlackMat);
-    roof.position.set(0, 1.18, -0.15);
-    const rearSpoiler = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.04, 0.25), this.trimBlackMat);
-    rearSpoiler.position.set(0, 1.2, -1.1);
-    bodyGroup.add(roof, rearSpoiler);
-
-    const fWindshield = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.52, 0.03), glassMat);
-    fWindshield.position.set(0, 0.96, 0.62);
-    fWindshield.rotation.x = -Math.PI * 0.22;
-
-    const rWindshield = new THREE.Mesh(new THREE.BoxGeometry(1.38, 0.46, 0.03), glassMat);
-    rWindshield.position.set(0, 0.96, -0.92);
-    rWindshield.rotation.x = Math.PI * 0.24;
-
-    [-0.72, 0.72].forEach((xSide) => {
-      const sideGlass = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.36, 1.6), glassMat);
-      sideGlass.position.set(xSide, 0.96, -0.15);
-      bodyGroup.add(sideGlass);
-    });
-    bodyGroup.add(fWindshield, rWindshield);
-
-    // 6. Split LED Headlights
-    [-0.62, 0.62].forEach((xSide) => {
-      const drlTop = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.025, 0.05), this.ledWhiteMat);
-      drlTop.position.set(xSide, 0.72, 1.9);
-      const mainHl = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.14, 0.05), this.ledWhiteMat);
-      mainHl.position.set(xSide, 0.52, 1.94);
-      bodyGroup.add(drlTop, mainHl);
-    });
-
-    const rLight = new THREE.Mesh(new THREE.BoxGeometry(1.48, 0.05, 0.06), this.ledRedMat);
-    rLight.position.set(0, 0.74, -1.82);
-    bodyGroup.add(rLight);
-
-    cuv.add(bodyGroup);
-
-    // Mechanical Subsystems
-    const engineGroup = new THREE.Group();
-    engineGroup.position.set(0, 0.52, 1.18);
-    const engine = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.4, 0.52), this.engineCastMat);
-    engineGroup.add(engine);
-    this.tagMesh(engineGroup, 'engine', '1.5L Turbocharged GDi Engine', [0, 0.5, 0.3]);
-    cuv.add(engineGroup);
-
-    const batGroup = new THREE.Group();
-    batGroup.position.set(-0.5, 0.56, 0.98);
-    const bat = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.18), this.batteryLeadMat);
-    batGroup.add(bat);
-    this.tagMesh(batGroup, 'battery', '12V AGM Starter Battery', [-0.3, 0.3, 0.2]);
-    cuv.add(batGroup);
-
-    const coolingGroup = new THREE.Group();
-    coolingGroup.position.set(0, 0.42, 1.65);
-    const rad = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.38, 0.08), this.brushedSteelMat);
-    coolingGroup.add(rad);
-    this.tagMesh(coolingGroup, 'cooling', 'Aluminum Crossflow Radiator', [0, 0.3, 0.4]);
-    cuv.add(coolingGroup);
-
-    const transGroup = new THREE.Group();
-    transGroup.position.set(0.32, 0.4, 0.58);
-    const trans = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.45, 16), this.darkMetalMat);
-    trans.rotation.x = Math.PI / 2;
-    transGroup.add(trans);
-    this.tagMesh(transGroup, 'transmission', '7-Speed Dual-Clutch Transmission (DCT)', [0.4, 0.2, 0.1]);
-    cuv.add(transGroup);
-
-    const exhaustGroup = new THREE.Group();
-    exhaustGroup.position.set(0, 0.22, -1.45);
-    const exh = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 2.2, 16), this.brushedSteelMat);
-    exh.rotation.x = Math.PI / 2;
-    exhaustGroup.add(exh);
-    this.tagMesh(exhaustGroup, 'exhaust', 'Sport Exhaust & GPF Filter', [0, -0.3, -0.4]);
-    cuv.add(exhaustGroup);
-
-    const suspGroup = new THREE.Group();
-    suspGroup.position.set(0.7, 0.42, 1.15);
-    const susp = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.35, 16), this.caliperOrangeMat);
-    suspGroup.add(susp);
-    this.tagMesh(suspGroup, 'suspension', 'MacPherson Strut & Coil Suspension', [0.3, 0.2, 0.2]);
-    cuv.add(suspGroup);
-
-    // 4 Wheels
-    const cuvWheels: [number, number, number][] = [
-      [-0.92, 0.28, 1.18],
-      [0.92, 0.28, 1.18],
-      [-0.92, 0.28, -1.08],
-      [0.92, 0.28, -1.08]
-    ];
-    cuvWheels.forEach((pos, idx) => {
-      const isRight = pos[0] > 0;
-      const isFront = idx < 2;
-      const wg = new THREE.Group();
-      wg.position.set(pos[0], pos[1], pos[2]);
-
-      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.26, 28), this.tireTreadMat);
-      tire.rotation.z = Math.PI / 2;
-      const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.265, 20), this.silverTrimMat);
-      rim.rotation.z = Math.PI / 2;
-      const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.025, 20), this.brakeDiscMat);
-      disc.rotation.z = Math.PI / 2;
-      disc.position.x = isRight ? -0.06 : 0.06;
-      const caliper = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.09), this.caliperOrangeMat);
-      caliper.position.set(isRight ? -0.06 : 0.06, 0.12, 0.04);
-
-      wg.add(tire, rim, disc, caliper);
-
-      if (idx === 1) {
-        this.tagMesh(wg, 'brakes', 'Front & Rear Disc Brakes', [0.4, 0, 0.2]);
-      } else if (idx === 2) {
-        this.tagMesh(wg, 'tyres', '215/60 R17 Crossover Tyres', [-0.4, 0, -0.2]);
-      } else {
-        wg.userData = { explodedOffset: new THREE.Vector3(isRight ? 0.35 : -0.35, 0, isFront ? 0.15 : -0.15) };
-      }
-      cuv.add(wg);
-    });
-
-    return cuv;
-  }
-
-  // =========================================================================
-  // 4. HIGH-FIDELITY MOTORCYCLE (Yamaha MT-07 Naked Streetfighter Twin)
+  // MODEL 2 — BIKE / SCOOTER (Real Two-Wheeled Motorcycle & Scooter)
   // =========================================================================
   public static createMotorcycle(
     colorHex: number = 0xea580c,
@@ -815,66 +464,77 @@ export class ProceduralVehicles {
 
     const frameMat = this.getPaintMaterial(colorHex, isXRay, isWireframe);
 
+    // --- A. FRAME, TANK, SEAT, FORK & COCKPIT ---
     const bodyGroup = new THREE.Group();
     bodyGroup.name = 'Bike_BodyGroup';
     bodyGroup.userData = { explodedOffset: new THREE.Vector3(0, 0.35, 0) };
 
-    // 1. Trellis Steel Frame
-    [-0.14, 0.14].forEach((xSide) => {
-      const topTube = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 1.15, 14), this.darkMetalMat);
-      topTube.position.set(xSide, 0.56, 0.12);
-      topTube.rotation.x = 0.52;
+    // 1. Tubular Steel Trellis Frame (Only 2 wheels, zero car chassis)
+    [-0.13, 0.13].forEach((xSide) => {
+      const topSpine = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 1.15, 14), this.darkMetalMat);
+      topSpine.position.set(xSide, 0.58, 0.1);
+      topSpine.rotation.x = 0.54;
 
-      const downTube = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.85, 14), this.darkMetalMat);
-      downTube.position.set(xSide, 0.42, 0.32);
-      downTube.rotation.x = -0.68;
+      const downCradle = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.85, 14), this.darkMetalMat);
+      downCradle.position.set(xSide, 0.42, 0.34);
+      downCradle.rotation.x = -0.68;
 
-      bodyGroup.add(topTube, downTube);
+      bodyGroup.add(topSpine, downCradle);
     });
 
-    // 2. Sculpted Muscle Fuel Tank
-    const tank = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.38, 0.72), frameMat);
-    tank.position.set(0, 0.74, 0.22);
-    const gasCap = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.02, 16), this.chromeMat);
-    gasCap.position.set(0, 0.94, 0.32);
-    bodyGroup.add(tank, gasCap);
+    // 2. Sculpted Muscle Fuel Tank (Parametric Curve)
+    const tankShape = new THREE.Shape();
+    tankShape.moveTo(0, 0);
+    tankShape.quadraticCurveTo(0.18, 0.35, 0.45, 0.36);
+    tankShape.quadraticCurveTo(0.68, 0.32, 0.72, 0.10);
+    tankShape.quadraticCurveTo(0.40, -0.05, 0, 0);
+    const tankGeo = new THREE.ExtrudeGeometry(tankShape, { depth: 0.38, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.04, bevelSegments: 3 });
+    tankGeo.center();
+    const tankMesh = new THREE.Mesh(tankGeo, frameMat);
+    tankMesh.position.set(0, 0.74, 0.2);
+    tankMesh.rotation.y = Math.PI / 2;
 
-    // 3. Two-Tier Sport Saddle
-    const riderSeat = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.12, 0.48), this.tireTreadMat);
-    riderSeat.position.set(0, 0.66, -0.2);
-    riderSeat.rotation.x = -0.1;
-    const pillionSeat = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.1, 0.32), this.tireTreadMat);
-    pillionSeat.position.set(0, 0.74, -0.52);
+    const gasCap = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.02, 16), this.chromeMat);
+    gasCap.position.set(0, 0.94, 0.3);
+    bodyGroup.add(tankMesh, gasCap);
+
+    // 3. Ergonomic Two-Tier Saddle
+    const riderSeat = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.12, 0.45), this.tireTreadMat);
+    riderSeat.position.set(0, 0.68, -0.22);
+    riderSeat.rotation.x = -0.08;
+    const pillionSeat = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.1, 0.3), this.tireTreadMat);
+    pillionSeat.position.set(0, 0.75, -0.52);
     pillionSeat.rotation.x = 0.08;
     bodyGroup.add(riderSeat, pillionSeat);
 
-    // 4. Tail Cowl & Cockpit
-    const tailCowl = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.14, 0.45), frameMat);
+    // 4. Tail Cowl & Compact LED Taillight
+    const tailCowl = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.13, 0.42), frameMat);
     tailCowl.position.set(0, 0.72, -0.68);
     tailCowl.rotation.x = 0.15;
-    const tailLamp = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.05, 0.04), this.ledRedMat);
-    tailLamp.position.set(0, 0.74, -0.9);
+    const tailLamp = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.04, 0.03), this.ledRedMat);
+    tailLamp.position.set(0, 0.73, -0.89);
     bodyGroup.add(tailCowl, tailLamp);
 
-    const hlMask = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.26, 0.16), frameMat);
+    // 5. Front Headlight & Handlebar Controls
+    const hlMask = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.25, 0.16), frameMat);
     hlMask.position.set(0, 0.78, 0.68);
-    hlMask.rotation.x = -0.22;
-    const hlTwinLED = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.12, 0.04), this.ledWhiteMat);
-    hlTwinLED.position.set(0, 0.76, 0.77);
-    hlTwinLED.rotation.x = -0.22;
-    bodyGroup.add(hlMask, hlTwinLED);
+    hlMask.rotation.x = -0.2;
+    const hlLED = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.11, 0.04), this.ledWhiteMat);
+    hlLED.position.set(0, 0.76, 0.76);
+    hlLED.rotation.x = -0.2;
+    bodyGroup.add(hlMask, hlLED);
 
-    const handlebar = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.78, 16), this.darkMetalMat);
+    const handlebar = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.76, 16), this.darkMetalMat);
     handlebar.rotation.z = Math.PI / 2;
     handlebar.position.set(0, 0.94, 0.54);
-    const tftScreen = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.09, 0.02), this.chromeMat);
-    tftScreen.position.set(0, 0.95, 0.48);
-    tftScreen.rotation.x = -Math.PI * 0.25;
-    bodyGroup.add(handlebar, tftScreen);
+    const tftCluster = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.08, 0.02), this.chromeMat);
+    tftCluster.position.set(0, 0.94, 0.48);
+    tftCluster.rotation.x = -Math.PI * 0.25;
+    bodyGroup.add(handlebar, tftCluster);
 
-    // Inverted Gold Forks
+    // Inverted Gold Telescopic Front Forks
     [-0.14, 0.14].forEach((xSide) => {
-      const fork = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.88, 16), this.goldAnodizedMat);
+      const fork = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.88, 16), this.goldAnodizedMat);
       fork.position.set(xSide, 0.55, 0.74);
       fork.rotation.x = -0.36;
       bodyGroup.add(fork);
@@ -882,26 +542,35 @@ export class ProceduralVehicles {
 
     bike.add(bodyGroup);
 
-    // Mechanical Subsystems
+    // --- B. MOTORCYCLE MECHANICAL COMPONENTS ---
+    // 1. ENGINE (`id: 'm-engine'`, position [0, 0.45, 0.05])
     const engineGroup = new THREE.Group();
     engineGroup.position.set(0, 0.45, 0.05);
-    const crankcase = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.36, 0.5), this.engineCastMat);
-    const cylHead = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.38, 16), this.engineOrangeMat);
-    cylHead.rotation.x = 0.28;
-    cylHead.position.set(0, 0.24, 0.08);
-    const headerPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.65, 16), this.chromeMat);
+    const crankcase = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.35, 0.48), this.engineCastMat);
+    // Cylinder block with stacked cooling fin rings
+    const cylinderHead = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.36, 16), this.engineOrangeMat);
+    cylinderHead.rotation.x = 0.28;
+    cylinderHead.position.set(0, 0.24, 0.08);
+    for (let f = 0; f < 4; f++) {
+      const fin = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.015, 16), this.engineCastMat);
+      fin.rotation.x = 0.28;
+      fin.position.set(0, 0.14 + f * 0.06, 0.05 + f * 0.02);
+      engineGroup.add(fin);
+    }
+    const headerPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.034, 0.65, 16), this.chromeMat);
     headerPipe.rotation.x = Math.PI * 0.45;
-    headerPipe.position.set(0.14, 0.05, 0.32);
-    const underMuffler = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.095, 0.52, 16), this.brushedSteelMat);
+    headerPipe.position.set(0.13, 0.05, 0.32);
+    const underMuffler = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.09, 0.52, 16), this.brushedSteelMat);
     underMuffler.rotation.x = Math.PI / 2 - 0.2;
-    underMuffler.position.set(0.18, -0.15, -0.25);
-    engineGroup.add(crankcase, cylHead, headerPipe, underMuffler);
-    this.tagMesh(engineGroup, 'm-engine', 'CP2 Parallel-Twin 4-Stroke Engine', [0, 0.3, 0.2]);
+    underMuffler.position.set(0.16, -0.15, -0.24);
+    engineGroup.add(crankcase, cylinderHead, headerPipe, underMuffler);
+    this.tagMesh(engineGroup, 'm-engine', '348cc 4-Stroke SI Motorcycle Engine', [0, 0.3, 0.2]);
     bike.add(engineGroup);
 
+    // 2. O-RING DRIVE CHAIN & SPROCKETS (`id: 'm-chain'`, position [-0.18, 0.26, -0.65])
     const chainGroup = new THREE.Group();
     chainGroup.position.set(-0.18, 0.26, -0.65);
-    const fSprocket = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.02, 16), this.darkMetalMat);
+    const fSprocket = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.02, 16), this.darkMetalMat);
     fSprocket.rotation.z = Math.PI / 2;
     fSprocket.position.set(0, 0.12, 0.45);
     const rSprocket = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.02, 20), this.brushedSteelMat);
@@ -910,9 +579,10 @@ export class ProceduralVehicles {
     const chainLoop = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.04, 0.68), this.goldAnodizedMat);
     chainLoop.position.set(0, 0.06, 0.12);
     chainGroup.add(fSprocket, rSprocket, chainLoop);
-    this.tagMesh(chainGroup, 'm-chain', '520 Sealed O-Ring Drive Chain', [-0.3, 0, -0.2]);
+    this.tagMesh(chainGroup, 'm-chain', '520 Sealed O-Ring Final Drive Chain', [-0.3, 0, -0.2]);
     bike.add(chainGroup);
 
+    // 3. AGM BATTERY (`id: 'm-battery'`, position [0, 0.58, -0.2])
     const batteryGroup = new THREE.Group();
     batteryGroup.position.set(0, 0.58, -0.2);
     const bat = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.18, 0.18), this.batteryLeadMat);
@@ -921,9 +591,10 @@ export class ProceduralVehicles {
     const bNeg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.04, 12), this.batteryNegMat);
     bNeg.position.set(0.06, 0.1, 0.04);
     batteryGroup.add(bat, bPos, bNeg);
-    this.tagMesh(batteryGroup, 'm-battery', '12V 8.6Ah AGM Battery', [0, 0.25, -0.1]);
+    this.tagMesh(batteryGroup, 'm-battery', '12V 8.6Ah Sealed AGM Battery', [0, 0.25, -0.1]);
     bike.add(batteryGroup);
 
+    // 4. Rear Swingarm & Monoshock
     const swingarm = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.09, 0.72), this.brushedSteelMat);
     swingarm.position.set(0, 0.32, -0.52);
     swingarm.rotation.x = -0.14;
@@ -932,7 +603,8 @@ export class ProceduralVehicles {
     monoShock.rotation.x = 0.55;
     bike.add(swingarm, monoShock);
 
-    // Front & Rear Wheels with visible Brembo Orange Calipers
+    // --- C. TWO WHEELS ONLY (FRONT WHEEL & REAR WHEEL) ---
+    // 1. Front Wheel & ABS Brake Disc (`id: 'm-brakes'`, position [0, 0.28, 0.95])
     const frontWheel = new THREE.Group();
     frontWheel.position.set(0, 0.28, 0.95);
     const fTire = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.13, 28), this.tireTreadMat);
@@ -947,9 +619,10 @@ export class ProceduralVehicles {
     const fCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.1, 0.08), this.caliperOrangeMat);
     fCaliper.position.set(0.08, 0.12, -0.05);
     frontWheel.add(fTire, fRim, fHub, fDisc, fCaliper);
-    this.tagMesh(frontWheel, 'm-brakes', 'Dual-Channel ABS Disc Brakes', [0, 0, 0.35]);
+    this.tagMesh(frontWheel, 'm-brakes', 'Dual-Channel ABS Hydraulic Disc Brakes', [0, 0, 0.35]);
     bike.add(frontWheel);
 
+    // 2. Rear Wheel & Sport Radial Tyre (`id: 'm-tyres'`, position [0, 0.28, -0.85])
     const rearWheel = new THREE.Group();
     rearWheel.position.set(0, 0.28, -0.85);
     const rTire = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.2, 28), this.tireTreadMat);
@@ -962,15 +635,13 @@ export class ProceduralVehicles {
     const rCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 0.07), this.caliperOrangeMat);
     rCaliper.position.set(0.11, 0.1, 0.04);
     rearWheel.add(rTire, rRim, rDisc, rCaliper);
-    this.tagMesh(rearWheel, 'm-tyres', 'Sport Radial Tyres', [0, 0, -0.35]);
+    this.tagMesh(rearWheel, 'm-tyres', 'Sport Touring Radial Tyres', [0, 0, -0.35]);
     bike.add(rearWheel);
 
     return bike;
   }
 
-  // =========================================================================
-  // 5. HIGH-FIDELITY SCOOTER (Honda PCX 160 / Maxi Step-Through Scooter Twin)
-  // =========================================================================
+  // Support dedicated step-through scooter geometry
   public static createScooter(
     colorHex: number = 0xf8fafc,
     isXRay: boolean = false,
@@ -986,106 +657,50 @@ export class ProceduralVehicles {
     bodyGroup.name = 'Scooter_BodyGroup';
     bodyGroup.userData = { explodedOffset: new THREE.Vector3(0, 0.35, 0) };
 
-    // 1. Step-Through Floorboard & Spine Tunnel
+    // Step-Through Floorboard & Tunnel
     const floorboard = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.08, 0.65), this.trimBlackMat);
     floorboard.position.set(0, 0.24, 0.1);
     const centerTunnel = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.24, 0.58), bodyMat);
     centerTunnel.position.set(0, 0.38, 0.1);
     bodyGroup.add(floorboard, centerTunnel);
 
-    // 2. Wide Front Aerodynamic Apron & Cowl
+    // Front Apron & Windshield
     const frontApron = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.62, 0.38), bodyMat);
     frontApron.position.set(0, 0.62, 0.58);
     frontApron.rotation.x = -0.22;
-
-    const tintedScreen = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.38, 0.03), glassMat);
-    tintedScreen.position.set(0, 0.98, 0.55);
-    tintedScreen.rotation.x = -0.32;
-
+    const windshield = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.38, 0.03), glassMat);
+    windshield.position.set(0, 0.98, 0.55);
+    windshield.rotation.x = -0.32;
     const dualLedHeadlight = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.14, 0.04), this.ledWhiteMat);
     dualLedHeadlight.position.set(0, 0.52, 0.78);
-    bodyGroup.add(frontApron, tintedScreen, dualLedHeadlight);
+    bodyGroup.add(frontApron, windshield, dualLedHeadlight);
 
-    // 3. Enclosed Handlebar Cockpit with Mirrors
+    // Enclosed Cockpit & Handlebar
     const handleCowl = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.12, 0.16), bodyMat);
     handleCowl.position.set(0, 0.92, 0.44);
-
-    [-0.32, 0.32].forEach((xSide) => {
-      const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.12, 12), this.trimBlackMat);
-      grip.rotation.z = Math.PI / 2;
-      grip.position.set(xSide, 0.92, 0.44);
-
-      const mirrorStem = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.18, 8), this.darkMetalMat);
-      mirrorStem.position.set(xSide > 0 ? xSide - 0.05 : xSide + 0.05, 1.02, 0.46);
-      const mirrorHead = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.08, 0.03), this.trimBlackMat);
-      mirrorHead.position.set(xSide > 0 ? xSide - 0.05 : xSide + 0.05, 1.1, 0.46);
-
-      bodyGroup.add(grip, mirrorStem, mirrorHead);
-    });
     bodyGroup.add(handleCowl);
 
-    // 4. Large Under-Seat Storage Body & Plush Stepped Seat
+    // Under-Seat Storage Body & Plush Stepped Seat
     const underSeatBody = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.45, 0.95), bodyMat);
     underSeatBody.position.set(0, 0.52, -0.42);
-
     const plushSeat = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.14, 0.88), this.trimBlackMat);
     plushSeat.position.set(0, 0.74, -0.4);
     plushSeat.rotation.x = -0.06;
-
-    const grabRail = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.04, 0.32), this.silverTrimMat);
-    grabRail.position.set(0, 0.72, -0.88);
-
     const tailLight = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.12, 0.05), this.ledRedMat);
     tailLight.position.set(0, 0.58, -0.92);
+    bodyGroup.add(underSeatBody, plushSeat, tailLight);
 
-    bodyGroup.add(underSeatBody, plushSeat, grabRail, tailLight);
     scooter.add(bodyGroup);
 
-    // Mechanical Subsystems
-    // Engine (160cc 4-Valve eSP+ Engine)
+    // Scooter Mechanical Components
     const engineGroup = new THREE.Group();
     engineGroup.position.set(0, 0.32, -0.25);
     const eng = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.26, 0.36), this.engineCastMat);
     engineGroup.add(eng);
-    this.tagMesh(engineGroup, 's-engine', '160cc 4-Valve eSP+ Engine', [0, 0.25, 0.15]);
+    this.tagMesh(engineGroup, 's-engine', '160cc eSP+ Engine', [0, 0.25, 0.15]);
     scooter.add(engineGroup);
 
-    // Enclosed CVT Belt Transmission Housing (Swingarm Unit)
-    const transGroup = new THREE.Group();
-    transGroup.position.set(-0.18, 0.26, -0.45);
-    const cvtCase = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.18, 0.62), this.silverTrimMat);
-    transGroup.add(cvtCase);
-    this.tagMesh(transGroup, 's-transmission', 'V-Matic Automatic CVT Belt Transmission', [-0.3, 0.2, -0.2]);
-    scooter.add(transGroup);
-
-    // Battery (Under floorboard/seat)
-    const batteryGroup = new THREE.Group();
-    batteryGroup.position.set(0, 0.46, 0.35);
-    const bat = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.14, 0.14), this.batteryLeadMat);
-    batteryGroup.add(bat);
-    this.tagMesh(batteryGroup, 's-battery', '12V Sealed AGM Scooter Battery', [0, 0.25, 0.2]);
-    scooter.add(batteryGroup);
-
-    // Side Radiator
-    const coolingGroup = new THREE.Group();
-    coolingGroup.position.set(0.16, 0.32, -0.15);
-    const rad = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.22, 0.22), this.darkMetalMat);
-    coolingGroup.add(rad);
-    this.tagMesh(coolingGroup, 's-cooling', 'Side-Mounted Liquid Cooling Radiator', [0.25, 0.2, 0.1]);
-    scooter.add(coolingGroup);
-
-    // Scooter Exhaust with Heat Shield
-    const exhaustGroup = new THREE.Group();
-    exhaustGroup.position.set(0.18, 0.26, -0.48);
-    const exh = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.08, 0.62, 16), this.trimBlackMat);
-    exh.rotation.x = Math.PI / 2 - 0.15;
-    const shield = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.1, 0.45), this.silverTrimMat);
-    shield.position.set(0.06, 0.02, 0);
-    exhaustGroup.add(exh, shield);
-    this.tagMesh(exhaustGroup, 's-exhaust', 'Catalyzed Scooter Exhaust & Heat Shield', [0.3, 0, -0.3]);
-    scooter.add(exhaustGroup);
-
-    // Small Scooter Wheels (14" Front, 13" Rear)
+    // 2 Scooter Wheels
     const frontWheel = new THREE.Group();
     frontWheel.position.set(0, 0.22, 0.82);
     const fTire = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.11, 24), this.tireTreadMat);
@@ -1095,9 +710,7 @@ export class ProceduralVehicles {
     const fDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.02, 16), this.brakeDiscMat);
     fDisc.rotation.z = Math.PI / 2;
     fDisc.position.x = 0.06;
-    const fCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 0.07), this.caliperOrangeMat);
-    fCaliper.position.set(0.06, 0.08, 0);
-    frontWheel.add(fTire, fRim, fDisc, fCaliper);
+    frontWheel.add(fTire, fRim, fDisc);
     this.tagMesh(frontWheel, 's-brakes', 'Front Hydraulic Disc Brakes (ABS)', [0, 0, 0.3]);
     scooter.add(frontWheel);
 
@@ -1115,7 +728,7 @@ export class ProceduralVehicles {
   }
 
   // =========================================================================
-  // 6. HIGH-FIDELITY RC CAR (Traxxas Slash 4x4 Off-Road Brushless Twin)
+  // MODEL 3 — RC CAR (Hobby-Grade Off-Road 1/10 Brushless Vehicle)
   // =========================================================================
   public static createRcCar(
     colorHex: number = 0xea580c,
@@ -1127,138 +740,167 @@ export class ProceduralVehicles {
 
     const accentMat = this.getPaintMaterial(colorHex, isXRay, isWireframe);
 
+    // --- A. RC COMPOSITE CHASSIS TUB & BODY POSTS ---
     const chassisGroup = new THREE.Group();
     chassisGroup.name = 'RC_ChassisGroup';
     chassisGroup.userData = { explodedOffset: new THREE.Vector3(0, 0.2, 0) };
 
-    // 1. Low-CG Composite Tub Chassis
-    const chassis = new THREE.Mesh(new THREE.BoxGeometry(0.98, 0.06, 1.75), this.darkMetalMat);
-    chassis.position.set(0, 0.16, 0);
+    // 1. Low-CG Bathtub Composite Chassis Pan with Kick-Up Nose
+    const chassisTub = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.05, 1.4), this.darkMetalMat);
+    chassisTub.position.set(0, 0.16, -0.05);
 
-    [-0.52, 0.52].forEach((xSide) => {
-      const nerfBar = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 1.2), this.darkMetalMat);
-      nerfBar.position.set(xSide, 0.2, 0);
+    const kickUpNose = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.05, 0.28), this.darkMetalMat);
+    kickUpNose.position.set(0, 0.19, 0.72);
+    kickUpNose.rotation.x = -0.22; // 12° front kick-up
+    chassisGroup.add(chassisTub, kickUpNose);
+
+    // Side Nerf Bars / Guards
+    [-0.46, 0.46].forEach((xSide) => {
+      const nerfBar = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.05, 1.1), this.darkMetalMat);
+      nerfBar.position.set(xSide, 0.19, 0);
       chassisGroup.add(nerfBar);
     });
 
-    const fBumper = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.12, 0.18), this.darkMetalMat);
-    fBumper.position.set(0, 0.22, 0.94);
-    const rBumper = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.12, 0.18), this.darkMetalMat);
-    rBumper.position.set(0, 0.22, -0.94);
+    // Flexible High-Impact Nylon Front & Rear Bumpers
+    const frontBumper = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.12, 0.16), this.darkMetalMat);
+    frontBumper.position.set(0, 0.22, 0.9);
+    const rearBumper = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.12, 0.16), this.darkMetalMat);
+    rearBumper.position.set(0, 0.22, -0.9);
 
-    const fTower = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.38, 0.08), this.carbonFiberMat);
-    fTower.position.set(0, 0.38, 0.58);
-    const rTower = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.38, 0.08), this.carbonFiberMat);
-    rTower.position.set(0, 0.38, -0.58);
+    // Upright Front & Rear Carbon Fiber Shock Towers
+    const frontTower = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.36, 0.06), this.carbonFiberMat);
+    frontTower.position.set(0, 0.36, 0.55);
+    const rearTower = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.36, 0.06), this.carbonFiberMat);
+    rearTower.position.set(0, 0.36, -0.55);
 
-    // Roll Cage
-    [-0.34, 0.34].forEach((xSide) => {
-      const cageRail = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.4, 12), accentMat);
-      cageRail.rotation.x = Math.PI / 2;
-      cageRail.position.set(xSide, 0.48, 0);
-      chassisGroup.add(cageRail);
-    });
+    // Polycarbonate Buggy Body Shell with Roof Scoop & High Rear Wing
+    const buggyShell = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.22, 1.15), accentMat);
+    buggyShell.position.set(0, 0.38, 0);
 
-    const ledLightBar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.06, 0.06), this.darkMetalMat);
-    ledLightBar.position.set(0, 0.52, 0.35);
-    const ledLightLens = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.03, 0.02), this.ledWhiteMat);
-    ledLightLens.position.set(0, 0.52, 0.39);
+    const rcRearWing = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.03, 0.25), accentMat);
+    rcRearWing.position.set(0, 0.52, -0.78);
+    rcRearWing.rotation.x = -0.2;
 
-    chassisGroup.add(chassis, fBumper, rBumper, fTower, rTower, ledLightBar, ledLightLens);
+    const ledRoofBar = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.05, 0.05), this.darkMetalMat);
+    ledRoofBar.position.set(0, 0.50, 0.32);
+    const ledRoofLens = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.025, 0.02), this.ledWhiteMat);
+    ledRoofLens.position.set(0, 0.50, 0.35);
+
+    chassisGroup.add(frontBumper, rearBumper, frontTower, rearTower, buggyShell, rcRearWing, ledRoofBar, ledRoofLens);
     rc.add(chassisGroup);
 
-    // Powertrain & Electronics
+    // --- B. INDEPENDENT SUSPENSION & COILOVER SHOCKS ---
+    // Double Wishbone Lower A-Arms
+    const armPositions: [number, number, number][] = [
+      [-0.38, 0.18, 0.55],
+      [0.38, 0.18, 0.55],
+      [-0.38, 0.18, -0.55],
+      [0.38, 0.18, -0.55]
+    ];
+    armPositions.forEach((pos) => {
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.03, 0.18), this.darkMetalMat);
+      arm.position.set(pos[0], pos[1], pos[2]);
+      rc.add(arm);
+    });
+
+    // 4x Oil-Filled Coilover Shocks with Anodized Bodies & Orange Springs
+    const shockPositions: [number, number, number][] = [
+      [-0.3, 0.34, 0.55],
+      [0.3, 0.34, 0.55],
+      [-0.3, 0.34, -0.55],
+      [0.3, 0.34, -0.55]
+    ];
+    shockPositions.forEach((pos) => {
+      const shockBody = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.3, 14), this.goldAnodizedMat);
+      shockBody.position.set(pos[0], pos[1], pos[2]);
+      shockBody.rotation.z = pos[0] > 0 ? 0.32 : -0.32;
+      const spring = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.24, 14), this.caliperOrangeMat);
+      spring.position.set(pos[0], pos[1] - 0.02, pos[2]);
+      spring.rotation.z = pos[0] > 0 ? 0.32 : -0.32;
+      rc.add(shockBody, spring);
+    });
+
+    // Anodized Center Driveshaft
+    const centerDriveshaft = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.2, 16), this.goldAnodizedMat);
+    centerDriveshaft.rotation.x = Math.PI / 2;
+    centerDriveshaft.position.set(0, 0.21, 0);
+    rc.add(centerDriveshaft);
+
+    // --- C. RC ELECTRONICS & POWERTRAIN ---
+    // 1. BRUSHLESS MOTOR (`id: 'rc-motor'`, position [-0.18, 0.28, -0.35])
     const motorGroup = new THREE.Group();
     motorGroup.position.set(-0.18, 0.28, -0.35);
-    const motorCan = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.32, 20), this.caliperOrangeMat);
+    const motorCan = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.32, 20), this.caliperOrangeMat);
     motorCan.rotation.x = Math.PI / 2;
     for (let fin = 0; fin < 5; fin++) {
-      const finRing = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.015, 20), this.brushedSteelMat);
+      const finRing = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.015, 20), this.brushedSteelMat);
       finRing.rotation.x = Math.PI / 2;
       finRing.position.set(0, 0, -0.1 + fin * 0.05);
       motorGroup.add(finRing);
     }
+    // 3 Phase Silicone Motor Wires (Blue, Yellow, Orange)
     const wireColors = [0x0284c7, 0xeab308, 0xea580c];
     wireColors.forEach((wCol, idx) => {
       const wire = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.012, 0.012, 0.3, 10),
+        new THREE.CylinderGeometry(0.012, 0.012, 0.28, 10),
         new THREE.MeshStandardMaterial({ color: wCol, roughness: 0.5 })
       );
-      wire.position.set(-0.06 + idx * 0.06, 0.14, 0.05);
+      wire.position.set(-0.05 + idx * 0.05, 0.13, 0.05);
       wire.rotation.x = Math.PI * 0.2;
       motorGroup.add(wire);
     });
     motorGroup.add(motorCan);
-    this.tagMesh(motorGroup, 'rc-motor', 'Velineon 3500kV Brushless Motor', [-0.3, 0.25, -0.2]);
+    this.tagMesh(motorGroup, 'rc-motor', 'Velineon 3500kV Sensorless Brushless Motor', [-0.3, 0.25, -0.2]);
     rc.add(motorGroup);
 
+    // 2. ESC SPEED CONTROLLER (`id: 'rc-esc'`, position [0.18, 0.32, -0.15])
     const escGroup = new THREE.Group();
     escGroup.position.set(0.18, 0.32, -0.15);
-    const escCase = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.18, 0.24), this.darkMetalMat);
-    const escFanShroud = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.06, 0.2), this.caliperOrangeMat);
-    escFanShroud.position.set(0, 0.11, 0);
+    const escCase = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.16, 0.22), this.darkMetalMat);
+    const escFanShroud = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.06, 0.18), this.caliperOrangeMat);
+    escFanShroud.position.set(0, 0.1, 0);
     escGroup.add(escCase, escFanShroud);
     this.tagMesh(escGroup, 'rc-esc', 'VXL-3s Waterproof ESC Speed Controller', [0.3, 0.25, -0.1]);
     rc.add(escGroup);
 
+    // 3. 3S LIPO BATTERY (`id: 'rc-battery'`, position [-0.22, 0.24, 0.05])
     const lipoGroup = new THREE.Group();
     lipoGroup.position.set(-0.22, 0.24, 0.05);
-    const lipoCase = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.16, 0.72), this.darkMetalMat);
-    const lipoStrap = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.14), this.caliperOrangeMat);
+    const lipoCase = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.15, 0.68), this.darkMetalMat);
+    const lipoStrap = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.17, 0.14), this.caliperOrangeMat);
     lipoGroup.add(lipoCase, lipoStrap);
     this.tagMesh(lipoGroup, 'rc-battery', '3S 11.1V 5000mAh Hardcase LiPo Battery', [-0.3, 0.2, 0.1]);
     rc.add(lipoGroup);
 
+    // 4. STEERING SERVO & TIE RODS (`id: 'rc-servo'`, position [0.15, 0.26, 0.45])
     const servoGroup = new THREE.Group();
     servoGroup.position.set(0.15, 0.26, 0.45);
-    const servoBody = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.18, 0.2), this.darkMetalMat);
-    const servoHorn = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.16), this.goldAnodizedMat);
-    servoHorn.position.set(0, 0.1, 0.06);
+    const servoBody = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.16, 0.18), this.darkMetalMat);
+    const servoHorn = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.14), this.goldAnodizedMat);
+    servoHorn.position.set(0, 0.09, 0.05);
     servoGroup.add(servoBody, servoHorn);
     this.tagMesh(servoGroup, 'rc-servo', 'High-Torque Metal-Gear Digital Servo', [0.25, 0.2, 0.3]);
     rc.add(servoGroup);
 
-    // Center Driveshaft
-    const centerShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.25, 16), this.goldAnodizedMat);
-    centerShaft.rotation.x = Math.PI / 2;
-    centerShaft.position.set(0, 0.22, 0);
-    rc.add(centerShaft);
-
-    // 4 Shocks
-    const shockPositions: [number, number, number][] = [
-      [-0.32, 0.34, 0.58],
-      [0.32, 0.34, 0.58],
-      [-0.32, 0.34, -0.58],
-      [0.32, 0.34, -0.58]
-    ];
-    shockPositions.forEach((pos) => {
-      const shockBody = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.32, 14), this.goldAnodizedMat);
-      shockBody.position.set(pos[0], pos[1], pos[2]);
-      shockBody.rotation.z = pos[0] > 0 ? 0.35 : -0.35;
-      const spring = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.26, 14), this.caliperOrangeMat);
-      spring.position.set(pos[0], pos[1] - 0.02, pos[2]);
-      spring.rotation.z = pos[0] > 0 ? 0.35 : -0.35;
-      rc.add(shockBody, spring);
-    });
-
-    // 4 Beadlock Wheels
+    // --- D. 4 RC OFF-ROAD BEADLOCK WHEELS ---
     const rcWheelPositions: [number, number, number][] = [
-      [-0.62, 0.24, 0.58],
-      [0.62, 0.24, 0.58],
-      [-0.62, 0.24, -0.58],
-      [0.62, 0.24, -0.58]
+      [-0.58, 0.24, 0.55],
+      [0.58, 0.24, 0.55],
+      [-0.58, 0.24, -0.55],
+      [0.58, 0.24, -0.55]
     ];
     rcWheelPositions.forEach((pos) => {
       const isRight = pos[0] > 0;
       const wg = new THREE.Group();
       wg.position.set(pos[0], pos[1], pos[2]);
 
-      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.24, 24), this.tireTreadMat);
+      // Chunky knobby off-road tread tire
+      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.22, 24), this.tireTreadMat);
       tire.rotation.z = Math.PI / 2;
-      const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.245, 18), this.darkMetalMat);
+      const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.225, 18), this.darkMetalMat);
       rim.rotation.z = Math.PI / 2;
-      const beadlockRing = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.02, 8, 20), this.caliperOrangeMat);
-      beadlockRing.position.x = isRight ? -0.12 : 0.12;
+      const beadlockRing = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.018, 8, 20), this.caliperOrangeMat);
+      beadlockRing.position.x = isRight ? -0.11 : 0.11;
       beadlockRing.rotation.y = Math.PI / 2;
 
       wg.add(tire, rim, beadlockRing);
@@ -1266,5 +908,14 @@ export class ProceduralVehicles {
     });
 
     return rc;
+  }
+
+  // Compatibility aliases
+  public static createSuv(colorHex: number = 0x1d3557, isXRay: boolean = false, isWireframe: boolean = false): THREE.Group {
+    return this.createSedan(colorHex, isXRay, isWireframe);
+  }
+
+  public static createCompactSuv(colorHex: number = 0x1d3557, isXRay: boolean = false, isWireframe: boolean = false): THREE.Group {
+    return this.createSedan(colorHex, isXRay, isWireframe);
   }
 }
