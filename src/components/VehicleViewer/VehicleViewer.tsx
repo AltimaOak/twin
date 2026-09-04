@@ -52,9 +52,15 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
     });
 
     scene.setOnSelectPartClick((componentId) => {
+      if (!componentId) {
+        onSelectComponent(null);
+        return;
+      }
       const match = vehicleConfig.components.find(c => c.id === componentId);
       if (match) {
         onSelectComponent(match);
+      } else {
+        onSelectComponent(null);
       }
     });
 
@@ -76,6 +82,8 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
   useEffect(() => {
     if (sceneRef.current && selectedComponent) {
       sceneRef.current.focusComponent(selectedComponent);
+    } else if (sceneRef.current && !selectedComponent) {
+      sceneRef.current.clearHighlight();
     }
   }, [selectedComponent]);
 
@@ -130,7 +138,6 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
       <div
         ref={containerRef}
         className="w-full h-full cursor-grab active:cursor-grabbing touch-none"
-        onClick={() => onSelectComponent(null)}
       />
 
       {/* Floating 2D Callouts */}

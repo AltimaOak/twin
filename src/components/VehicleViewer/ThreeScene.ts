@@ -91,6 +91,7 @@ export class ThreeScene {
     this.setupLighting();
     this.setupGroundPodium();
     this.setupScanLaser();
+    this.setupFocusRing();
 
     // 5. Interactive Event Listeners
     this.setupEvents();
@@ -98,6 +99,20 @@ export class ThreeScene {
     // 6. Animation Loop
     this.animate = this.animate.bind(this);
     this.animate();
+  }
+
+  private setupFocusRing(): void {
+    const ringGeo = new THREE.RingGeometry(0.38, 0.42, 36);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xea580c,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false
+    });
+    this.focusRing = new THREE.Mesh(ringGeo, ringMat);
+    this.focusRing.rotation.x = Math.PI / 2;
+    this.scene.add(this.focusRing);
   }
 
   private setupLighting(): void {
@@ -265,37 +280,75 @@ export class ThreeScene {
     this.onSelectPartClick = cb;
   }
 
-  private highlightedMeshes: Array<{ mesh: THREE.Mesh; origEmissive: THREE.Color; origIntensity: number }> = [];
+  private focusRing: THREE.Mesh | null = null;
+  private selectedComponentId: string | null = null;
+  private highlightedItems: Array<{
+    mesh: THREE.Mesh;
+    origMaterial: THREE.Material | THREE.Material[];
+    highlightMaterial: THREE.MeshStandardMaterial;
+  }> = [];
+
+  public getSelectedComponentId(): string | null {
+    return this.selectedComponentId;
+  }
 
   public highlightComponent(componentId: string | null): void {
     this.clearHighlight();
-    if (!componentId || !this.currentVehicleGroup) return;
+    this.selectedComponentId = componentId;
+    if (!componentId || !this.currentVehicleGroup) {
+      if (this.focusRing) {
+        (this.focusRing.material as THREE.MeshBasicMaterial).opacity = 0;
+      }
+      return;
+    }
+
+    let foundTargetPos: THREE.Vector3 | null = null;
 
     this.currentVehicleGroup.traverse((child) => {
       if (child instanceof THREE.Mesh && child.userData && child.userData.componentId === componentId) {
-        if (child.material && 'emissive' in child.material) {
-          const mat = child.material as THREE.MeshStandardMaterial;
-          this.highlightedMeshes.push({
-            mesh: child,
-            origEmissive: mat.emissive.clone(),
-            origIntensity: mat.emissiveIntensity
-          });
-          mat.emissive.setHex(0xea580c);
-          mat.emissiveIntensity = 1.6;
+        if (!foundTargetPos) {
+          foundTargetPos = new THREE.Vector3();
+          child.getWorldPosition(foundTargetPos);
         }
+
+        const highlightMat = new THREE.MeshStandardMaterial({
+          color: 0xf97316,
+          emissive: new THREE.Color(0xea580c),
+          emissiveIntensity: 2.2,
+          roughness: 0.12,
+          metalness: 0.85,
+          wireframe: this.isWireframe
+        });
+
+        this.highlightedItems.push({
+          mesh: child,
+          origMaterial: child.material,
+          highlightMaterial: highlightMat
+        });
+
+        child.material = highlightMat;
       }
     });
+
+    if (this.focusRing && foundTargetPos) {
+      this.focusRing.position.set(
+        (foundTargetPos as THREE.Vector3).x,
+        Math.max(0.015, (foundTargetPos as THREE.Vector3).y - 0.22),
+        (foundTargetPos as THREE.Vector3).z
+      );
+      (this.focusRing.material as THREE.MeshBasicMaterial).opacity = 0.9;
+    }
   }
 
   public clearHighlight(): void {
-    for (const item of this.highlightedMeshes) {
-      if (item.mesh.material && 'emissive' in item.mesh.material) {
-        const mat = item.mesh.material as THREE.MeshStandardMaterial;
-        mat.emissive.copy(item.origEmissive);
-        mat.emissiveIntensity = item.origIntensity;
-      }
+    for (const item of this.highlightedItems) {
+      item.mesh.material = item.origMaterial;
     }
-    this.highlightedMeshes = [];
+    this.highlightedItems = [];
+    this.selectedComponentId = null;
+    if (this.focusRing) {
+      (this.focusRing.material as THREE.MeshBasicMaterial).opacity = 0;
+    }
   }
 
   public focusComponent(component: VehicleComponentData): void {
@@ -493,6 +546,7 @@ export class ThreeScene {
     }
 
     if (foundPart) {
+      this.renderer.domElement.style.cursor = 'pointer';
       if (this.hoveredPartId !== foundPart.componentId) {
         this.hoveredPartId = foundPart.componentId;
         this.onHoverPartChange({
@@ -503,6 +557,7 @@ export class ThreeScene {
         });
       }
     } else {
+      this.renderer.domElement.style.cursor = this.pointerDown ? 'grabbing' : 'grab';
       if (this.hoveredPartId !== null) {
         this.hoveredPartId = null;
         this.onHoverPartChange(null);
@@ -516,15 +571,26 @@ export class ThreeScene {
     this.raycaster.setFromCamera(this.mouseVec, this.camera);
     const intersects = this.raycaster.intersectObjects(this.currentVehicleGroup.children, true);
 
+    let clickedComponentId: string | null = null;
+
     for (const hit of intersects) {
       let obj: THREE.Object3D | null = hit.object;
       while (obj && obj !== this.currentVehicleGroup) {
         if (obj.userData && obj.userData.componentId) {
-          this.onSelectPartClick(obj.userData.componentId);
-          return;
+          clickedComponentId = obj.userData.componentId;
+          break;
         }
         obj = obj.parent;
       }
+      if (clickedComponentId) break;
+    }
+
+    if (clickedComponentId) {
+      this.onSelectPartClick(clickedComponentId);
+      this.highlightComponent(clickedComponentId);
+    } else {
+      this.onSelectPartClick('');
+      this.clearHighlight();
     }
   }
 
@@ -550,6 +616,19 @@ export class ThreeScene {
     // Auto-Rotate
     if (this.isAutoRotate && !this.pointerDown && this.currentVehicleGroup) {
       this.currentVehicleGroup.rotation.y += 0.004;
+    }
+
+    // High-visibility animated pulse for highlighted meshes & focus ring
+    if (this.highlightedItems.length > 0) {
+      const pulse = Math.sin(Date.now() * 0.007) * 0.6 + 2.2;
+      for (const item of this.highlightedItems) {
+        item.highlightMaterial.emissiveIntensity = pulse;
+      }
+      if (this.focusRing) {
+        this.focusRing.rotation.z += 0.018;
+        const ringScale = 1.0 + Math.sin(Date.now() * 0.006) * 0.08;
+        this.focusRing.scale.set(ringScale, ringScale, ringScale);
+      }
     }
 
     // Exploded View Spring Animation
