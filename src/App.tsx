@@ -5,6 +5,7 @@ import { VehicleProvider } from './context/VehicleContext';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
+import { GoogleAuthPage } from './pages/GoogleAuthPage';
 import { VehicleSelectionPage } from './pages/VehicleSelectionPage';
 import { VehicleSetupPage } from './pages/VehicleSetupPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -18,6 +19,7 @@ export const App: React.FC = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/auth/google" element={<GoogleAuthPage />} />
 
           {/* Vehicle Selection & Setup Flow */}
           <Route path="/select-vehicle" element={<VehicleSelectionPage />} />

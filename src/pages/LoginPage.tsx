@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useVehicle } from '../context/VehicleContext';
 import type { VehicleCategory } from '../data/vehicleConfigurations';
@@ -11,19 +11,35 @@ import {
   ShieldCheck,
   Mail,
   Lock,
-  Users
+  Users,
+  Sparkles,
+  Radio,
+  Cpu
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, setSelectedCategory } = useVehicle();
 
-  const [email, setEmail] = useState('demo.driver@motomindx.io');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const handleAuthMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+        const { name: googleName, email: googleEmail } = event.data;
+        login(googleEmail, 'google-oauth', googleName);
+        navigate('/dashboard');
+      }
+    };
+
+    window.addEventListener('message', handleAuthMessage);
+    return () => window.removeEventListener('message', handleAuthMessage);
+  }, [login, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,94 +69,125 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    login('google.user@motomindx.io', 'google-auth', 'Alex Mercer');
-    navigate('/dashboard');
+    const width = 500;
+    const height = 620;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+    const popup = window.open(
+      '/auth/google?mode=login',
+      'google_auth_popup',
+      `width=${width},height=${height},left=${left},top=${top},status=no,menubar=no,toolbar=no`
+    );
+
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      navigate('/auth/google?mode=login');
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-stone-900 font-sans flex items-center justify-center p-4 sm:p-6">
-      <div className="max-w-5xl w-full mx-auto">
-        {/* Main Split Card: Wider & More Compact in Height */}
-        <div className="bg-white border border-stone-200/90 rounded-2xl sm:rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.06)] overflow-hidden grid grid-cols-1 md:grid-cols-2">
-          {/* Left Panel: Warm Cream Telematics & Digital Twin */}
-          <div className="bg-[#fef9f3] p-6 sm:p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-stone-200/60 relative">
-            <div>
-              {/* Brand Logo */}
-              <Link to="/" className="inline-flex items-center gap-2.5 group">
-                <div className="w-7 h-7 rounded-xl bg-[#f9570c] flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105">
-                  <Activity className="w-3.5 h-3.5 stroke-[2.5]" />
-                </div>
-                <span className="text-lg font-bold tracking-tight text-stone-900">
-                  MotoMind<span className="text-[#f9570c]">X</span>
-                </span>
-              </Link>
+    <div className="min-h-screen bg-gradient-to-br from-[#faf8f5] via-[#f7f3eb] to-[#ede5d8] text-stone-900 font-sans flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+      {/* Subtle Background Glow Orbs */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-orange-200/35 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-amber-200/30 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Headline & Description */}
-              <div className="mt-4 sm:mt-5 space-y-1.5">
-                <h2 className="text-xl sm:text-2xl font-bold text-stone-950 tracking-tight leading-snug">
-                  Real-time telematics<br />&amp; 3D digital twins.
+      <div className="max-w-5xl w-full mx-auto relative z-10">
+        {/* Main Split Card: Premium Glassmorphic Studio Container */}
+        <div className="bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-2xl sm:rounded-3xl shadow-[0_25px_60px_-15px_rgba(234,88,12,0.08),0_12px_32px_-4px_rgba(0,0,0,0.04)] overflow-hidden grid grid-cols-1 md:grid-cols-2">
+          
+          {/* Left Panel: Warm Telematics & Digital Twin Showcase */}
+          <div className="bg-gradient-to-b from-[#fffbf5] via-[#fef7ee] to-[#fbf1e3] p-6 sm:p-8 md:p-10 flex flex-col justify-between border-b md:border-b-0 md:border-r border-orange-100/80 relative overflow-hidden">
+            {/* Ambient Corner Flare */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-radial from-orange-400/10 to-transparent blur-2xl pointer-events-none" />
+
+            <div>
+              {/* Brand Logo & Live Status Pill */}
+              <div className="flex items-center justify-between">
+                <Link to="/" className="inline-flex items-center gap-2.5 group">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#f9570c] to-[#ea580c] flex items-center justify-center text-white shadow-md shadow-orange-500/25 transition-transform duration-200 group-hover:scale-105">
+                    <Activity className="w-4 h-4 stroke-[2.5]" />
+                  </div>
+                  <span className="text-xl font-bold tracking-tight text-stone-950">
+                    MotoMind<span className="text-[#f9570c]">X</span>
+                  </span>
+                </Link>
+
+                <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-semibold text-emerald-700">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Live Vehicle Sync</span>
+                </div>
+              </div>
+
+              {/* Headline & Subtitle */}
+              <div className="mt-6 space-y-2">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-950 tracking-tight leading-tight">
+                  Real-time telematics<br />
+                  <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+                    &amp; 3D digital twins.
+                  </span>
                 </h2>
-                <p className="text-xs text-stone-600 leading-relaxed">
-                  Stream sensor channels, diagnose vehicle fault codes, and inspect sub-assemblies all in one workspace.
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed max-w-sm">
+                  Stream live vehicle stats, monitor health warnings, and inspect mechanical parts all in one workspace.
                 </p>
               </div>
 
-              {/* Bullet Features with Orange Icon Badges */}
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-4 h-4 rounded-full bg-orange-100/80 border border-orange-200/90 flex items-center justify-center text-[#f9570c] shrink-0">
-                    <Activity className="w-2.5 h-2.5 stroke-[2.5]" />
+              {/* Feature Cards / Bullets */}
+              <div className="mt-5 space-y-2.5">
+                <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/70 border border-orange-100/80 shadow-2xs hover:bg-white/90 transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#f9570c] shrink-0">
+                    <Radio className="w-3.5 h-3.5 stroke-[2.5]" />
                   </div>
-                  <span className="text-xs text-stone-700 font-medium">
-                    High-frequency CAN-bus streaming
-                  </span>
+                  <div>
+                    <span className="text-xs text-stone-900 font-semibold block">Live vehicle data streaming</span>
+                    <span className="text-[11px] text-stone-500">Real-time speed, engine temps, battery &amp; performance</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  <div className="w-4 h-4 rounded-full bg-orange-100/80 border border-orange-200/90 flex items-center justify-center text-[#f9570c] shrink-0">
-                    <ShieldCheck className="w-2.5 h-2.5 stroke-[2.5]" />
+                <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/70 border border-orange-100/80 shadow-2xs hover:bg-white/90 transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#f9570c] shrink-0">
+                    <Cpu className="w-3.5 h-3.5 stroke-[2.5]" />
                   </div>
-                  <span className="text-xs text-stone-700 font-medium">
-                    Interactive 3D subsystem inspection
-                  </span>
+                  <div>
+                    <span className="text-xs text-stone-900 font-semibold block">Interactive 3D part inspection</span>
+                    <span className="text-[11px] text-stone-500">Exploded assemblies, X-Ray views &amp; diagnostic focus</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  <div className="w-4 h-4 rounded-full bg-orange-100/80 border border-orange-200/90 flex items-center justify-center text-[#f9570c] shrink-0">
-                    <ShieldCheck className="w-2.5 h-2.5 stroke-[2.5]" />
+                <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/70 border border-orange-100/80 shadow-2xs hover:bg-white/90 transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#f9570c] shrink-0">
+                    <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
                   </div>
-                  <span className="text-xs text-stone-700 font-medium">
-                    Standard OBD-II hardware support
-                  </span>
+                  <div>
+                    <span className="text-xs text-stone-900 font-semibold block">Universal vehicle adapter support</span>
+                    <span className="text-[11px] text-stone-500">Works with wireless Bluetooth &amp; USB scanners</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Car Wireframe Line-Art Illustration (visible on tablet/desktop) */}
-            <div className="my-3 hidden md:flex items-center justify-center">
-              <img
-                src="/images/car_wireframe_telematics.jpg"
-                alt="3D Digital Twin Vehicle Wireframe"
-                className="w-full max-w-[280px] max-h-[140px] object-contain mix-blend-multiply drop-shadow-xs"
-              />
-            </div>
 
             {/* Bottom Security Note */}
-            <div className="pt-2.5 border-t border-stone-200/50 hidden md:flex items-center gap-2 text-[11px] text-stone-500 font-medium">
-              <div className="w-3.5 h-3.5 rounded-full border border-stone-300 flex items-center justify-center text-stone-500">
-                <ShieldCheck className="w-2.5 h-2.5" />
+            <div className="pt-3 border-t border-stone-200/60 flex items-center justify-between text-[11px] text-stone-500 font-medium">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full bg-stone-200/70 border border-stone-300/80 flex items-center justify-center text-stone-600">
+                  <ShieldCheck className="w-2.5 h-2.5" />
+                </div>
+                <span>Secure connection • Compatible with all standard vehicles</span>
               </div>
-              <span>Encrypted local session • ISO 15765-4</span>
+              <span className="hidden sm:inline-block text-stone-400 text-[10px]">Plug &amp; Play Ready</span>
             </div>
           </div>
 
-          {/* Right Panel: Clean White Sign-in Form */}
-          <div className="bg-white p-6 sm:p-8 flex flex-col justify-center space-y-3.5">
+          {/* Right Panel: Clean Sign-in Form */}
+          <div className="bg-white p-6 sm:p-8 md:p-10 flex flex-col justify-center space-y-4">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-stone-950 tracking-tight">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-orange-50 border border-orange-200/80 text-[11px] font-semibold text-orange-800 mb-2">
+                <Sparkles className="w-3 h-3 text-orange-600" />
+                <span>Secure Garage Login</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-950 tracking-tight">
                 Welcome back
               </h1>
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs sm:text-sm text-stone-500 mt-1">
                 Sign in to your garage and telemetry workspace.
               </p>
             </div>
@@ -149,9 +196,9 @@ export const LoginPage: React.FC = () => {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl border border-stone-200/90 bg-white text-stone-700 text-xs font-medium hover:bg-stone-50 hover:border-stone-300 transition-colors shadow-xs"
+              className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-xl border border-stone-200/90 bg-white text-stone-700 text-xs sm:text-sm font-semibold hover:bg-stone-50 hover:border-stone-300 hover:shadow-xs active:scale-[0.99] transition-all cursor-pointer shadow-2xs"
             >
-              <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -173,32 +220,32 @@ export const LoginPage: React.FC = () => {
             </button>
 
             {/* Divider */}
-            <div className="relative">
+            <div className="relative my-1">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-stone-200/80" />
+                <div className="w-full border-t border-stone-200/90" />
               </div>
-              <div className="relative flex justify-center text-[11px] text-stone-400">
-                <span className="bg-white px-3">or continue with email</span>
+              <div className="relative flex justify-center text-[11px] font-medium text-stone-400">
+                <span className="bg-white px-3 tracking-wider uppercase">or email</span>
               </div>
             </div>
 
             {/* Error banner */}
             {errorMessage && (
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700">
-                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                <span>{errorMessage}</span>
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-200/90 text-xs text-red-700 shadow-2xs animate-shake">
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+                <span className="font-medium">{errorMessage}</span>
               </div>
             )}
 
             {/* Email & Password Form */}
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
-                <label htmlFor="login-email" className="block text-xs font-semibold text-stone-800 mb-1">
+                <label htmlFor="login-email" className="block text-xs font-semibold text-stone-800 mb-1.5">
                   Email address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
-                    <Mail className="w-3.5 h-3.5" />
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+                    <Mail className="w-4 h-4" />
                   </div>
                   <input
                     id="login-email"
@@ -207,29 +254,28 @@ export const LoginPage: React.FC = () => {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
                     required
-                    className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-stone-200/90 text-stone-900 text-xs sm:text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200/90 bg-stone-50/50 text-stone-900 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all shadow-2xs"
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-1.5">
                   <label htmlFor="login-password" className="block text-xs font-semibold text-stone-800">
                     Password
                   </label>
                   <button
                     type="button"
                     onClick={() => alert('Password reset instructions sent to your email address.')}
-                    className="text-[11px] font-medium text-[#f9570c] hover:text-orange-700"
+                    className="text-[11px] font-semibold text-[#f9570c] hover:text-orange-700 transition-colors"
                   >
                     Forgot password?
                   </button>
                 </div>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
-                    <Lock className="w-3.5 h-3.5" />
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+                    <Lock className="w-4 h-4" />
                   </div>
                   <input
                     id="login-password"
@@ -238,33 +284,32 @@ export const LoginPage: React.FC = () => {
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
                     required
-                    className="w-full pl-9 pr-9 py-2 rounded-xl border border-stone-200/90 text-stone-900 text-xs sm:text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200/90 bg-stone-50/50 text-stone-900 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all shadow-2xs"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-stone-400 hover:text-stone-600 transition-colors cursor-pointer"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
               {/* Remember me */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pt-0.5">
                 <input
                   id="login-rememberMe"
                   name="rememberMe"
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded text-[#f9570c] accent-[#f9570c] focus:ring-orange-500 border-stone-300"
+                  className="w-4 h-4 rounded text-[#f9570c] accent-[#f9570c] focus:ring-orange-500 border-stone-300 cursor-pointer"
                 />
-                <label htmlFor="login-rememberMe" className="text-xs text-stone-700 select-none cursor-pointer">
-                  Remember me
+                <label htmlFor="login-rememberMe" className="text-xs text-stone-700 select-none cursor-pointer font-medium">
+                  Remember me on this browser
                 </label>
               </div>
 
@@ -272,9 +317,9 @@ export const LoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-[#f9570c] hover:bg-[#ea4e05] text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#f9570c] to-[#ea580c] hover:from-[#ea4e05] hover:to-[#d94806] text-white text-xs sm:text-sm font-semibold shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/30 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-70"
               >
-                <span>{isLoading ? 'Signing in...' : 'Sign in'}</span>
+                <span>{isLoading ? 'Signing in...' : 'Sign in to Workspace'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
@@ -282,18 +327,18 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleQuickDemo('car')}
-                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl border border-stone-200/90 bg-white text-stone-700 text-xs font-semibold hover:bg-stone-50 transition-colors shadow-2xs cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-stone-200/90 bg-stone-50 hover:bg-stone-100/80 text-stone-700 text-xs font-semibold transition-all shadow-2xs hover:shadow-xs active:scale-[0.99] cursor-pointer"
               >
-                <Users className="w-3.5 h-3.5 text-stone-500" />
+                <Users className="w-4 h-4 text-stone-500" />
                 <span>Explore with Demo Account</span>
               </button>
             </form>
 
             {/* Footer Link */}
-            <p className="text-center text-xs text-stone-500 pt-0.5">
+            <p className="text-center text-xs text-stone-500 pt-1">
               Don't have an account?{' '}
-              <Link to="/signup" className="text-[#f9570c] font-semibold hover:underline">
-                Sign up
+              <Link to="/signup" className="text-[#f9570c] font-bold hover:underline transition-colors">
+                Sign up for free
               </Link>
             </p>
           </div>

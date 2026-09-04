@@ -10,9 +10,7 @@ import {
   ChevronRight,
   CheckCircle2,
   ArrowRight,
-  Sparkles,
   Box,
-  CheckCircle,
   Menu,
   X,
   Gauge,
@@ -163,103 +161,125 @@ export const LandingPage: React.FC = () => {
       {/* 2. Hero Section */}
       <section
         id="home"
-        className="relative pt-8 pb-10 sm:pt-10 sm:pb-14 lg:pt-12 lg:pb-16 px-4 sm:px-8 overflow-hidden bg-cover bg-center border-b border-stone-200"
-        style={{
-          backgroundImage: `radial-gradient(circle at 75% 40%, rgba(255, 237, 213, 0.4) 0%, rgba(248, 246, 240, 0.75) 55%, rgba(248, 246, 240, 0.98) 100%), url('/images/hero-architecture-bg.jpg')`
-        }}
+        className="relative pt-10 pb-12 sm:pt-14 sm:pb-16 lg:pt-16 lg:pb-20 px-4 sm:px-8 overflow-hidden bg-gradient-to-b from-[#faf9f6] via-[#f4f3ef] to-[#eceae4] border-b border-stone-200/80"
       >
-        {/* Ambient Glow Orbs */}
-        <div className="absolute top-1/4 left-1/3 w-64 sm:w-96 h-64 sm:h-96 bg-orange-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 right-10 w-56 sm:w-80 h-56 sm:h-80 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Subtle Ambient Studio Flares */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-200/25 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-stone-300/30 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto space-y-8 relative z-10">
-          {/* Hero Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+        <div className="max-w-7xl mx-auto space-y-12 relative z-10">
+          {/* Hero Main Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             {/* Left Content */}
-            <div className="lg:col-span-6 space-y-5 text-center lg:text-left">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-orange-200/90 shadow-sm text-xs font-mono font-bold text-orange-800">
-                <Sparkles className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                <span>Next-Generation Automotive Telematics</span>
+            <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
+              {/* Overline Accent Dash */}
+              <div className="inline-flex items-center gap-2.5">
+                <span className="w-5 h-[2.5px] bg-[#f9570c] rounded-full inline-block" />
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] text-stone-500 font-mono">
+                  Next-Generation Automotive Telematics
+                </span>
               </div>
 
               {/* Headline */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-black font-display tracking-tight text-stone-950 leading-[1.12]">
+              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-black font-display tracking-tight text-stone-950 leading-[1.1]">
                 Know Your Vehicle.<br />
-                Drive with{' '}
-                <span className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
-                  Confidence.
-                </span>
+                Drive with <span className="text-[#f9570c]">Confidence.</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-base text-stone-600 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Real-time OBD-II telematics, interactive 3D digital twin diagnostics, and smart health alerts for cars, motorcycles, and RC rigs.
+              <p className="text-sm sm:text-base text-stone-600 max-w-lg mx-auto lg:mx-0 leading-relaxed font-normal">
+                Real-time OBD-II telematics, 3D digital twin diagnostics, and smart health alerts for cars and motorcycles.
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
                 <button
                   onClick={handleGetStarted}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white text-sm font-bold shadow-lg shadow-orange-600/30 transition-all hover:scale-[1.02] active:scale-95"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#f9570c] hover:bg-[#ea580c] text-white text-sm font-bold shadow-md shadow-orange-500/25 transition-all hover:scale-[1.02] active:scale-95"
                 >
                   <span>Get Started Free</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => scrollToSection('features')}
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white/90 hover:bg-white text-stone-800 border border-stone-200/90 text-sm font-bold shadow-warm-sm backdrop-blur-md transition-all hover:scale-[1.02] active:scale-95"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 text-sm font-bold shadow-xs transition-all hover:scale-[1.02] active:scale-95"
                 >
-                  Explore Features
+                  <span>Explore Features</span>
                 </button>
-              </div>
-
-              {/* Tech Specs Strip */}
-              <div className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs text-stone-500 font-mono">
-                {['Real-time CAN Stream', '3D Digital Twin', 'Instant Diagnostics'].map(label => (
-                  <span key={label} className="flex items-center gap-1.5">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> {label}
-                  </span>
-                ))}
               </div>
             </div>
 
-            {/* Right: Vehicle Image */}
-            <div className="lg:col-span-6 relative flex justify-center items-center">
-              <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/15 via-amber-500/10 to-transparent rounded-3xl blur-2xl pointer-events-none" />
-              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-xl mx-auto">
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[90%] h-6 bg-stone-950/20 blur-xl rounded-full pointer-events-none" />
+            {/* Right: Studio Vehicles Showcase */}
+            <div className="lg:col-span-6 relative flex justify-center lg:justify-end items-center">
+              <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-2xl flex items-center justify-center">
+                {/* Soft Contact Ground Shadow underneath transparent vehicle cutout */}
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[88%] h-7 bg-stone-900/20 blur-xl rounded-full pointer-events-none" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[75%] h-3 bg-stone-950/25 blur-md rounded-full pointer-events-none" />
                 <img
                   src="/images/hero-vehicles.png"
                   alt="Audi Sedan and Yamaha R1 Superbike with MotoMindX Telematics"
-                  className="w-full max-h-[220px] sm:max-h-[280px] lg:max-h-[340px] object-contain drop-shadow-[0_16px_24px_rgba(0,0,0,0.14)] relative z-10 transform hover:scale-[1.01] transition-transform duration-500"
+                  className="w-full max-h-[320px] sm:max-h-[380px] lg:max-h-[420px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.14)] relative z-10 transition-transform duration-500 hover:scale-[1.01]"
                 />
               </div>
             </div>
           </div>
 
-          {/* 3-Feature Bar */}
-          <div className="max-w-5xl mx-auto">
-            <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/90 backdrop-blur-xl border border-white/90 shadow-xl shadow-stone-900/5 grid grid-cols-1 sm:grid-cols-3 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-stone-200/80">
-              {[
-                { icon: <Activity className="w-5 h-5 stroke-[2.5]" />, title: 'Real-time OBD-II & CAN', desc: 'Live sensor data streaming from vehicle ECU systems.', grad: 'from-orange-500 to-amber-500' },
-                { icon: <Box className="w-5 h-5 stroke-[2.5]" />, title: '3D Digital Twin Visualizer', desc: 'Interactive 3D model with component-level inspection.', grad: 'from-amber-500 to-orange-500' },
-                { icon: <ShieldCheck className="w-5 h-5 stroke-[2.5]" />, title: 'Plain-English Diagnostics', desc: 'Instant fault code explanation and severity ratings.', grad: 'from-orange-600 to-amber-600' },
-              ].map((feat, i) => (
-                <div
-                  key={i}
-                  className={`flex items-center gap-3 pt-3 sm:pt-0 ${i > 0 ? 'sm:pl-6' : ''} first:pt-0 group cursor-pointer hover:translate-x-0.5 transition-transform`}
-                  onClick={() => scrollToSection('features')}
-                >
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${feat.grad} flex items-center justify-center text-white shrink-0 shadow-md group-hover:scale-105 transition-transform`}>
-                    {feat.icon}
-                  </div>
-                  <div>
-                    <div className="text-xs sm:text-sm font-black font-display text-stone-900 leading-snug group-hover:text-orange-600 transition-colors">{feat.title}</div>
-                    <div className="text-[10px] sm:text-[11px] text-stone-600 mt-0.5 leading-tight">{feat.desc}</div>
-                  </div>
+          {/* 3-Feature Bar (Matching Reference Layout) */}
+          <div className="pt-4 sm:pt-6 border-t border-stone-200/80">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0 md:divide-x divide-stone-200/90">
+              {/* Feature 1 */}
+              <div
+                className="flex items-start gap-4 md:pr-6 cursor-pointer group"
+                onClick={() => scrollToSection('features')}
+              >
+                <div className="w-11 h-11 rounded-full bg-orange-100/90 flex items-center justify-center text-[#f9570c] shrink-0 group-hover:scale-105 transition-transform">
+                  <Activity className="w-5 h-5 stroke-[2.2]" />
                 </div>
-              ))}
+                <div className="space-y-0.5">
+                  <h2 className="text-sm sm:text-base font-bold text-stone-900 group-hover:text-[#f9570c] transition-colors">
+                    Real-time OBD-II &amp; CAN
+                  </h2>
+                  <p className="text-xs text-stone-500 leading-relaxed">
+                    Live sensor data from vehicle ECU systems.
+                  </p>
+                </div>
+              </div>
+
+              {/* Feature 2 */}
+              <div
+                className="flex items-start gap-4 md:px-6 cursor-pointer group"
+                onClick={() => scrollToSection('features')}
+              >
+                <div className="w-11 h-11 rounded-full bg-orange-100/90 flex items-center justify-center text-[#f9570c] shrink-0 group-hover:scale-105 transition-transform">
+                  <Box className="w-5 h-5 stroke-[2.2]" />
+                </div>
+                <div className="space-y-0.5">
+                  <h2 className="text-sm sm:text-base font-bold text-stone-900 group-hover:text-[#f9570c] transition-colors">
+                    3D Digital Twin
+                  </h2>
+                  <p className="text-xs text-stone-500 leading-relaxed">
+                    Interactive 3D model with component-level inspection.
+                  </p>
+                </div>
+              </div>
+
+              {/* Feature 3 */}
+              <div
+                className="flex items-start gap-4 md:pl-6 cursor-pointer group"
+                onClick={() => scrollToSection('features')}
+              >
+                <div className="w-11 h-11 rounded-full bg-orange-100/90 flex items-center justify-center text-[#f9570c] shrink-0 group-hover:scale-105 transition-transform">
+                  <ShieldCheck className="w-5 h-5 stroke-[2.2]" />
+                </div>
+                <div className="space-y-0.5">
+                  <h2 className="text-sm sm:text-base font-bold text-stone-900 group-hover:text-[#f9570c] transition-colors">
+                    Plain-English Diagnostics
+                  </h2>
+                  <p className="text-xs text-stone-500 leading-relaxed">
+                    Instant fault code explanation and severity ratings.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
