@@ -39,6 +39,7 @@ const defaultFallbackValue: VehicleContextType = {
   userVehicles: [
     VEHICLE_CONFIGURATIONS.car,
     VEHICLE_CONFIGURATIONS.motorcycle,
+    VEHICLE_CONFIGURATIONS.scooter,
     VEHICLE_CONFIGURATIONS.rc_car
   ],
   activeVehicle: VEHICLE_CONFIGURATIONS.car,
@@ -75,7 +76,7 @@ export const VehicleProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [selectedCategory, setSelectedCategoryState] = useState<VehicleCategory>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CAT);
-      if (saved && (saved === 'car' || saved === 'motorcycle' || saved === 'rc_car')) {
+      if (saved && (saved === 'car' || saved === 'motorcycle' || saved === 'scooter' || saved === 'rc_car')) {
         return saved as VehicleCategory;
       }
     } catch (_e) {
@@ -98,6 +99,7 @@ export const VehicleProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return [
       VEHICLE_CONFIGURATIONS.car,
       VEHICLE_CONFIGURATIONS.motorcycle,
+      VEHICLE_CONFIGURATIONS.scooter,
       VEHICLE_CONFIGURATIONS.rc_car
     ];
   });

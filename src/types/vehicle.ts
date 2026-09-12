@@ -1,4 +1,4 @@
-export type VehicleType = 'car' | 'bike' | 'rcCar';
+export type VehicleType = 'car' | 'bike' | 'rcCar' | 'scooter' | 'electricScooter';
 
 export type ComponentStatus = 'normal' | 'warning' | 'critical' | 'inactive';
 

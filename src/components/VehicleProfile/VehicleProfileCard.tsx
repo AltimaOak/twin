@@ -3,6 +3,7 @@ import type { VehicleConfig } from '../../data/vehicleConfigurations';
 import {
   Car,
   Bike,
+  Zap,
   Gamepad2,
   Gauge,
   Cpu,
@@ -20,6 +21,8 @@ export const VehicleProfileCard: React.FC<VehicleProfileCardProps> = ({ vehicleC
     switch (vehicleConfig.type) {
       case 'motorcycle':
         return <Bike className="w-6 h-6 text-orange-600" />;
+      case 'scooter':
+        return <Zap className="w-6 h-6 text-emerald-600" />;
       case 'rc_car':
         return <Gamepad2 className="w-6 h-6 text-orange-600" />;
       default:

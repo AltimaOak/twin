@@ -1,5 +1,5 @@
 import type { Vehicle } from '../types/vehicle';
-import { carComponents, bikeComponents, rcCarComponents } from './vehicleComponents';
+import { carComponents, bikeComponents, rcCarComponents, electricScooterComponents } from './vehicleComponents';
 
 export const DEFAULT_VEHICLES: Record<string, Vehicle> = {
   car: {
@@ -27,6 +27,19 @@ export const DEFAULT_VEHICLES: Record<string, Vehicle> = {
     ecuProtocol: 'Yamaha CAN Diagnostic (K-Line / CAN)',
     connectionType: '6-Pin Diagnostic Connector (MMX-00124)',
     components: bikeComponents
+  },
+  scooter: {
+    id: 'veh-scooter-04',
+    type: 'scooter',
+    make: 'Ather',
+    model: '450X Gen 3',
+    year: 2024,
+    fuelType: 'Electric (3.7 kWh Li-ion)',
+    mileageKm: 8640,
+    vinOrSerial: 'ME4ATH450XN881920',
+    ecuProtocol: 'Smart EV CAN / Bluetooth BLE (ISO 11898)',
+    connectionType: 'Direct BLE Wireless / Diagnostic Connector',
+    components: electricScooterComponents
   },
   rcCar: {
     id: 'veh-rc-03',

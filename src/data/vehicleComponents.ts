@@ -456,3 +456,151 @@ export const rcCarComponents: VehicleComponent[] = [
     recommendedAction: 'Ensure antenna tube stays perpendicular to ground for max transmission range.'
   }
 ];
+
+export const electricScooterComponents: VehicleComponent[] = [
+  {
+    id: 'esc-battery',
+    name: '3.7 kWh IP67 High-Voltage Lithium-Ion Battery Pack',
+    shortName: 'Battery Pack',
+    category: 'electrical',
+    position3D: [0, 0.28, 0.12],
+    cameraFocusPosition: [0, 0.28, 0.12],
+    cameraPosition: [1.2, 0.65, 0.3],
+    status: 'normal',
+    metrics: [
+      { label: 'State of Charge (SOC)', value: 84, unit: '%', nominalRange: [15, 100], min: 0, max: 100, status: 'normal' },
+      { label: 'Pack Voltage', value: 51.2, unit: 'V', nominalRange: [42.0, 58.8], min: 38, max: 62, status: 'normal' },
+      { label: 'Pack Temperature', value: 34, unit: '°C', nominalRange: [20, 48], min: 0, max: 65, status: 'normal' },
+      { label: 'State of Health (SOH)', value: 98, unit: '%', nominalRange: [80, 100], min: 0, max: 100, status: 'normal' }
+    ],
+    description: 'High-density 21700 lithium-ion NMC cell module with die-cast aluminum enclosure and smart thermal monitoring.',
+    whatDoesThisMean: 'Your battery pack is at 84% charge with perfectly balanced cell voltages and healthy operating temperature.',
+    recommendedAction: 'No action needed. Charge on standard home socket (5A) to keep battery conditioned.'
+  },
+  {
+    id: 'esc-motor',
+    name: '6.4 kW High-Torque PMSM Mid-Drive Motor',
+    shortName: 'PMSM Motor',
+    category: 'powertrain',
+    position3D: [0, 0.32, -0.3],
+    cameraFocusPosition: [0, 0.32, -0.3],
+    cameraPosition: [1.2, 0.6, -0.2],
+    status: 'normal',
+    metrics: [
+      { label: 'Motor Speed', value: 3850, unit: 'RPM', nominalRange: [0, 7500], min: 0, max: 8000, status: 'normal' },
+      { label: 'Motor Temperature', value: 48, unit: '°C', nominalRange: [25, 85], min: 0, max: 115, status: 'normal' },
+      { label: 'Instant Torque', value: 26.0, unit: 'Nm', nominalRange: [0, 26.0], min: 0, max: 32, status: 'normal' },
+      { label: 'Efficiency Index', value: 94.5, unit: '%', nominalRange: [85, 98], min: 0, max: 100, status: 'normal' }
+    ],
+    description: 'Permanent Magnet Synchronous Motor delivering 26 Nm instantaneous torque with Gates carbon belt final drive.',
+    whatDoesThisMean: 'Electric motor coils, rotor magnets, and bearings are operating at maximum efficiency with zero vibration.',
+    recommendedAction: 'Check carbon drive belt tension at scheduled 10,000 km maintenance.'
+  },
+  {
+    id: 'esc-bms',
+    name: 'Smart Battery Management System (BMS)',
+    shortName: 'Smart BMS',
+    category: 'electrical',
+    position3D: [0, 0.36, 0.32],
+    cameraFocusPosition: [0, 0.36, 0.32],
+    cameraPosition: [0.9, 0.75, 0.45],
+    status: 'normal',
+    metrics: [
+      { label: 'Max Cell Delta', value: '4 mV (Balanced)', unit: '', status: 'normal' },
+      { label: 'Thermal Sensors', value: '6/6 Active', unit: '', status: 'normal' },
+      { label: 'Insulation Resistance', value: '> 500 MΩ', unit: '', status: 'normal' }
+    ],
+    description: 'Automotive-grade micro-controller monitoring individual cell voltages, over-current protection, and thermal throttling.',
+    whatDoesThisMean: 'Active cell balancing is operational with zero insulation leakage or thermal hot spots.',
+    recommendedAction: 'Firmware is running latest OTA release v2.4.1.'
+  },
+  {
+    id: 'esc-controller',
+    name: 'FOC (Field-Oriented Control) Motor Controller Inverter',
+    shortName: 'Motor Controller',
+    category: 'electrical',
+    position3D: [0, 0.44, 0.05],
+    cameraFocusPosition: [0, 0.44, 0.05],
+    cameraPosition: [1.1, 0.8, 0.15],
+    status: 'normal',
+    metrics: [
+      { label: 'MOSFET Inverter Temp', value: 40, unit: '°C', nominalRange: [25, 75], min: 0, max: 95, status: 'normal' },
+      { label: 'Peak Current Output', value: 125, unit: 'A', nominalRange: [0, 150], min: 0, max: 180, status: 'normal' },
+      { label: 'Throttle Response', value: '12 ms', unit: '', status: 'normal' }
+    ],
+    description: 'High frequency vector motor controller managing power delivery and variable regenerative energy recovery.',
+    whatDoesThisMean: 'Inverter transistors and heatsink heat dissipation are completely stable.',
+    recommendedAction: 'No action needed.'
+  },
+  {
+    id: 'esc-brakes',
+    name: 'Hydraulic Disc Brakes & Regenerative CBS System',
+    shortName: 'Brakes & Regen',
+    category: 'braking',
+    position3D: [0, 0.22, 0.82],
+    cameraFocusPosition: [0, 0.22, 0.82],
+    cameraPosition: [1.2, 0.5, 0.95],
+    status: 'normal',
+    metrics: [
+      { label: 'Front 200mm Pad Life', value: 85, unit: '%', nominalRange: [30, 100], min: 0, max: 100, status: 'normal' },
+      { label: 'Rear 190mm Pad Life', value: 82, unit: '%', nominalRange: [30, 100], min: 0, max: 100, status: 'normal' },
+      { label: 'Regen Braking Recovery', value: 14.2, unit: 'A', nominalRange: [0, 30], min: 0, max: 35, status: 'normal' }
+    ],
+    description: '200mm front & 190mm rear disc brakes with Combined Braking System (CBS) and magnetic regenerative energy recovery.',
+    whatDoesThisMean: 'Mechanical brake pads have generous life thanks to regenerative electronic engine braking.',
+    recommendedAction: 'Inspect DOT 4 brake fluid level at regular service.'
+  },
+  {
+    id: 'esc-tyres',
+    name: '12-Inch Low-Rolling-Resistance Tubeless Tyres',
+    shortName: 'Tyres (12-inch)',
+    category: 'chassis',
+    position3D: [0, 0.22, -0.72],
+    cameraFocusPosition: [0, 0.22, -0.72],
+    cameraPosition: [1.3, 0.5, -0.85],
+    status: 'normal',
+    metrics: [
+      { label: 'Front Pressure', value: 30.0, unit: 'PSI', nominalRange: [28, 33], min: 0, max: 45, status: 'normal' },
+      { label: 'Rear Pressure', value: 32.5, unit: 'PSI', nominalRange: [30, 35], min: 0, max: 45, status: 'normal' },
+      { label: 'Tread Depth', value: 4.2, unit: 'mm', nominalRange: [2.0, 5.5], min: 0, max: 6, status: 'normal' }
+    ],
+    description: '90/90-12 front and 100/80-12 rear tubeless tyres engineered for low rolling drag and wet road grip.',
+    whatDoesThisMean: 'Tread depth and cold inflation pressures are optimal for maximum true riding range.',
+    recommendedAction: 'Check tire pressures weekly with digital gauge.'
+  },
+  {
+    id: 'esc-display',
+    name: '7-inch Capacitive Touchscreen TFT Smart Dashboard',
+    shortName: 'Smart Dashboard',
+    category: 'telemetry',
+    position3D: [0, 0.98, 0.44],
+    cameraFocusPosition: [0, 0.98, 0.44],
+    cameraPosition: [0.6, 1.25, 0.65],
+    status: 'normal',
+    metrics: [
+      { label: 'LTE / BLE Signal', value: '-62 dBm (Strong)', unit: '', status: 'normal' },
+      { label: 'TrueRange Estimate', value: 118, unit: 'km', nominalRange: [20, 150], min: 0, max: 160, status: 'normal' },
+      { label: 'Riding Mode', value: 'Ride (Eco/Sport/Warp)', unit: '', status: 'normal' }
+    ],
+    description: 'IP65-rated 7-inch color display running onboard navigation, live telemetry diagnostics, and BLE connectivity.',
+    whatDoesThisMean: 'Dashboard touch response and cloud telematics sync are active with zero latency.',
+    recommendedAction: 'Keep screen clean with microfiber cloth.'
+  },
+  {
+    id: 'esc-suspension',
+    name: 'Front Telescopic Forks & Offset Rear Monoshock',
+    shortName: 'Suspension',
+    category: 'chassis',
+    position3D: [0, 0.45, 0.65],
+    cameraFocusPosition: [0, 0.45, 0.65],
+    cameraPosition: [1.2, 0.75, 0.85],
+    status: 'normal',
+    metrics: [
+      { label: 'Front Travel', value: '110 mm', unit: '', status: 'normal' },
+      { label: 'Rear Preload', value: 'Nominal (Stage 3)', unit: '', status: 'normal' }
+    ],
+    description: 'Telescopic hydraulic front suspension and rear asymmetrical progressive monoshock tuned for urban comfort.',
+    whatDoesThisMean: 'Dampers absorb potholes smoothly with zero oil seepage from seals.',
+    recommendedAction: 'Inspect fork seals during periodic washes.'
+  }
+];

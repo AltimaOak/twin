@@ -78,5 +78,23 @@ export const DTC_DATABASE: DiagnosticCode[] = [
     whatShouldIDo: 'Let the RC vehicle rest for 5–10 minutes and check gear mesh / pinion teeth for proper clearance.',
     affectedComponents: ['rc-motor', 'rc-esc'],
     timestamp: '15 mins ago'
+  },
+  {
+    code: 'MMX-EV-01',
+    title: 'BMS Cell Balance & Voltage Symmetry',
+    subsystem: 'EV High-Voltage Battery',
+    urgency: 'normal',
+    description: 'Battery management system reports nominal cell delta under 5mV across all 14 series groups.',
+    whatHappened: 'All 21700 lithium cells are uniformly balanced with 3.92V per cell at 88% SOC.',
+    whyItMatters: 'Proper cell balancing extends lithium pack lifespan and preserves TrueRange distance.',
+    whatShouldIDo: 'No action needed. Periodic slow charging ensures continued cell balance.',
+    affectedComponents: ['esc-battery', 'esc-bms'],
+    freezeFrame: {
+      'Pack Voltage': '51.4V',
+      'Cell Delta': '4mV',
+      'Pack Temp': '34°C',
+      'State of Health': '98%'
+    },
+    timestamp: '1 hour ago'
   }
 ];

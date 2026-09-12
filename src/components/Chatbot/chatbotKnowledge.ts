@@ -15,6 +15,7 @@ export interface ChatMessage {
 export const getInitialSuggestedPrompts = (vehicleConfig: VehicleConfig): string[] => {
   const isRC = vehicleConfig.type === 'rc_car';
   const isBike = vehicleConfig.type === 'motorcycle';
+  const isScooter = vehicleConfig.type === 'scooter';
 
   if (isRC) {
     return [
@@ -22,6 +23,15 @@ export const getInitialSuggestedPrompts = (vehicleConfig: VehicleConfig): string
       'What is my LiPo voltage health?',
       'How do I calibrate steering trim?',
       'Check motor ESC temperatures'
+    ];
+  }
+
+  if (isScooter) {
+    return [
+      'What is my battery State of Health (SOH)?',
+      'How is my TrueRange calculated?',
+      'Check BMS cell balancing and thermals',
+      'When is my next belt tension check?'
     ];
   }
 
@@ -49,6 +59,7 @@ export const generateDiagnosticResponse = (
   const query = userPrompt.toLowerCase().trim();
   const isRC = vehicleConfig.type === 'rc_car';
   const isBike = vehicleConfig.type === 'motorcycle';
+  const isScooter = vehicleConfig.type === 'scooter';
   const vehicleName = vehicleConfig.model.name;
 
   // 1. ACTIVE ALERTS / FAULT CODES / WARNINGS
@@ -105,6 +116,19 @@ export const generateDiagnosticResponse = (
       };
     }
 
+    if (isScooter) {
+      return {
+        reply: `### Smart EV Scooter Maintenance Schedule for ${vehicleName}:\n` +
+          `• **Next Service Due:** In **1,550 km** or **30 days**.\n` +
+          `• **Gates Carbon Belt Tension & Alignment:** Inspect sonic frequency (45–55 Hz). Belt replacement cost estimate: **₹2,200 – ₹2,800**.\n` +
+          `• **Hydraulic Disc Brake Pads & Fluid:** Front pad life 78%, Rear pad life 82%. Estimated pad replacement: **₹850 – ₹1,200**.\n` +
+          `• **BMS Cell Calibration & Deep Balancing:** Recommended every 5,000 km (completed automatically during slow home AC charging).\n` +
+          `• **Tyre Pressure Check:** 30 PSI Front / 32 PSI Rear (maintains peak 105 km TrueRange).\n\n` +
+          `All maintenance items are tracked with Indian Rupee (₹) estimates to prevent service center overcharging.`,
+        action: { label: 'View Service Schedule', tab: 'maintenance' }
+      };
+    }
+
     if (isBike) {
       return {
         reply: `### Service Advisory for ${vehicleName}:\n` +
@@ -136,6 +160,10 @@ export const generateDiagnosticResponse = (
     query.includes('charging') ||
     query.includes('alternator') ||
     query.includes('stator') ||
+    query.includes('soh') ||
+    query.includes('bms') ||
+    query.includes('truerange') ||
+    query.includes('range') ||
     query.includes('lipo')
   ) {
     if (isRC) {
@@ -146,6 +174,18 @@ export const generateDiagnosticResponse = (
           `• **Battery Health:** 88% remaining health (126 cycles completed).\n` +
           `• **Recommendation:** If you are not driving in the next 48 hours, put the battery in **Storage Mode (11.55V / 3.85V per cell)** to prevent swelling.`,
         action: { label: 'View Live Battery Sensor', tab: 'liveData' }
+      };
+    }
+
+    if (isScooter) {
+      return {
+        reply: `### High-Voltage Li-ion Battery & Smart BMS Telemetry:\n` +
+          `• **State of Charge (SOC):** **88%** (~98 km TrueRange in Eco / 76 km in Warp mode).\n` +
+          `• **Pack Terminal Voltage:** **51.4 V** (Nominal 48V / 14S Lithium-ion architecture).\n` +
+          `• **State of Health (SOH):** **98%** (142 charge cycles logged, IP67 sealed aluminium enclosure).\n` +
+          `• **Cell Temperature & Balance:** 34°C pack temp with only **4mV cell variance**.\n` +
+          `• **Charging Tip:** For optimum cell lifespan, keep daily charging within 20% to 80% using regular 5A home AC charging.`,
+        action: { label: 'View Live Battery Telemetry', tab: 'liveData' }
       };
     }
 
@@ -162,7 +202,7 @@ export const generateDiagnosticResponse = (
     };
   }
 
-  // 4. COOLANT / TEMPERATURE / OVERHEATING / ESC TEMP
+  // 4. COOLANT / TEMPERATURE / OVERHEATING / ESC TEMP / MOTOR TEMP
   if (
     query.includes('temp') ||
     query.includes('coolant') ||
@@ -177,6 +217,17 @@ export const generateDiagnosticResponse = (
           `• **Motor Can Temp:** **48 °C**.\n` +
           `• **Recommendation:** Running on tall grass or loose sand will increase thermal load. If temperatures exceed 75°C, consider gearing down 2 teeth on the pinion.`,
         action: { label: 'View Live Telemetry', tab: 'liveData' }
+      };
+    }
+
+    if (isScooter) {
+      return {
+        reply: `### EV Motor & Inverter Thermal Status for ${vehicleName}:\n` +
+          `• **PMSM Motor Stator Temp:** **48 °C** (Nominal safe threshold up to 90 °C).\n` +
+          `• **Battery Pack Temp:** **34 °C** (Optimum thermal operating zone 25°C – 38°C).\n` +
+          `• **FOC Inverter MOSFETs:** **41 °C**.\n\n` +
+          `All thermal dissipation loops and passive fin cooling are functioning at peak efficiency.`,
+        action: { label: 'Inspect EV Motor in 3D', tab: 'digitalTwin' }
       };
     }
 
@@ -198,7 +249,8 @@ export const generateDiagnosticResponse = (
     query.includes('motor') ||
     query.includes('powertrain') ||
     query.includes('gear') ||
-    query.includes('transmission')
+    query.includes('transmission') ||
+    query.includes('belt')
   ) {
     if (isRC) {
       return {
@@ -208,6 +260,17 @@ export const generateDiagnosticResponse = (
           `• **Drive:** 4WD Shaft-Driven steel outdrives.\n` +
           `• **Recommendation:** Check front & rear diff lube every 25 runs.`,
         action: { label: 'Inspect 3D Twin', tab: 'digitalTwin' }
+      };
+    }
+
+    if (isScooter) {
+      return {
+        reply: `### Electric Scooter Powertrain Status:\n` +
+          `• **Motor:** 6.4 kW Permanent Magnet Synchronous Motor (PMSM).\n` +
+          `• **Motor RPM:** **4,200 rpm** (Peak output 26 Nm instantaneous torque).\n` +
+          `• **Transmission:** Single-Speed Direct Reduction with Carbon Fiber Gates Belt.\n` +
+          `• **Regen Braking:** Auto-regen active on throttle roll-off, recapturing up to 5% battery energy.`,
+        action: { label: 'Inspect EV Powertrain in 3D', tab: 'digitalTwin' }
       };
     }
 

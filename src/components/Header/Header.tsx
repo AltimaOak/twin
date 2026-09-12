@@ -5,6 +5,7 @@ import type { ConnectionState } from '../../types/device';
 import {
   Car,
   Bike,
+  Zap,
   Gamepad2,
   Bell,
   Check,
@@ -47,6 +48,9 @@ export const Header: React.FC<HeaderProps> = ({
   const renderVehicleIcon = () => {
     if (vehicleConfig.type === 'motorcycle') {
       return <Bike className="w-6 h-6 text-orange-600 stroke-[2]" />;
+    }
+    if (vehicleConfig.type === 'scooter') {
+      return <Zap className="w-6 h-6 text-emerald-600 stroke-[2]" />;
     }
     if (vehicleConfig.type === 'rc_car') {
       return <Gamepad2 className="w-6 h-6 text-orange-600 stroke-[2]" />;
@@ -146,7 +150,7 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <Car className="w-3.5 h-3.5 text-orange-600" />
-                      <span>Honda City i-VTEC (Car)</span>
+                      <span>Honda City (Car)</span>
                     </div>
                     {selectedCategory === 'car' && <Check className="w-3.5 h-3.5 text-orange-600" />}
                   </button>
@@ -165,9 +169,28 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <Bike className="w-3.5 h-3.5 text-orange-600" />
-                      <span>Honda CB350 (Motorcycle)</span>
+                      <span>Honda CB350 (Bike)</span>
                     </div>
                     {selectedCategory === 'motorcycle' && <Check className="w-3.5 h-3.5 text-orange-600" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectCategory('scooter');
+                      setShowVehicleDropdown(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-colors ${
+                      selectedCategory === 'scooter'
+                        ? 'bg-orange-50 text-orange-700 font-semibold'
+                        : 'text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Ather 450X (EV Scooter)</span>
+                    </div>
+                    {selectedCategory === 'scooter' && <Check className="w-3.5 h-3.5 text-orange-600" />}
                   </button>
 
                   <button
@@ -184,7 +207,7 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <Gamepad2 className="w-3.5 h-3.5 text-orange-600" />
-                      <span>Traxxas Slash (RC Model)</span>
+                      <span>Traxxas Slash (RC Rig)</span>
                     </div>
                     {selectedCategory === 'rc_car' && <Check className="w-3.5 h-3.5 text-orange-600" />}
                   </button>

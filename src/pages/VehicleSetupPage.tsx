@@ -7,6 +7,7 @@ import {
   Activity,
   Car,
   Bike,
+  Zap,
   Gamepad2,
   ArrowRight,
   ArrowLeft,
@@ -40,6 +41,14 @@ export const VehicleSetupPage: React.FC = () => {
   const [bikeFuel, setBikeFuel] = useState('Petrol');
   const [bikeKm, setBikeKm] = useState('12420');
 
+  // ELECTRIC SCOOTER state
+  const [scooterMake, setScooterMake] = useState('Ather');
+  const [scooterModel, setScooterModel] = useState('450X Gen 3');
+  const [scooterYear, setScooterYear] = useState('2024');
+  const [scooterBattery, setScooterBattery] = useState('3.7 kWh Li-ion Pack (IP67)');
+  const [scooterMotor, setScooterMotor] = useState('6.4 kW PMSM Mid-Drive Motor');
+  const [scooterKm, setScooterKm] = useState('8450');
+
   // RC CAR state
   const [rcName, setRcName] = useState('Traxxas Slash 4x4 Brushless');
   const [rcMotor, setRcMotor] = useState('Velineon 3500kV Brushless');
@@ -48,7 +57,7 @@ export const VehicleSetupPage: React.FC = () => {
   const [rcCycles, setRcCycles] = useState('126');
 
   useEffect(() => {
-    if (typeParam && (typeParam === 'car' || typeParam === 'motorcycle' || typeParam === 'rc_car')) {
+    if (typeParam && (typeParam === 'car' || typeParam === 'motorcycle' || typeParam === 'scooter' || typeParam === 'rc_car')) {
       setActiveType(typeParam);
       setSelectedCategory(typeParam);
     }
@@ -75,6 +84,15 @@ export const VehicleSetupPage: React.FC = () => {
         engineOrMotor: `${bikeCapacity} 4-Stroke Engine`,
         fuelOrBatteryType: bikeFuel,
         mileageOrCycles: `${Number(bikeKm).toLocaleString()} km`
+      });
+    } else if (activeType === 'scooter') {
+      newConfig = createCustomVehicleConfig('scooter', {
+        make: scooterMake,
+        model: scooterModel,
+        year: scooterYear,
+        engineOrMotor: scooterMotor,
+        fuelOrBatteryType: scooterBattery,
+        mileageOrCycles: `${Number(scooterKm).toLocaleString()} km`
       });
     } else {
       newConfig = createCustomVehicleConfig('rc_car', {
@@ -135,6 +153,8 @@ export const VehicleSetupPage: React.FC = () => {
                 <Car className="w-3.5 h-3.5 text-orange-600" />
               ) : activeType === 'motorcycle' ? (
                 <Bike className="w-3.5 h-3.5 text-orange-600" />
+              ) : activeType === 'scooter' ? (
+                <Zap className="w-3.5 h-3.5 text-emerald-600" />
               ) : (
                 <Gamepad2 className="w-3.5 h-3.5 text-orange-600" />
               )}
@@ -144,7 +164,7 @@ export const VehicleSetupPage: React.FC = () => {
 
           <div>
             <h1 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-stone-900">
-              Configure Your {activeType === 'car' ? 'Passenger Car' : activeType === 'motorcycle' ? 'Motorcycle' : 'RC Vehicle'}
+              Configure Your {activeType === 'car' ? 'Passenger Car' : activeType === 'motorcycle' ? 'Motorcycle' : activeType === 'scooter' ? 'Electric Scooter' : 'RC Vehicle'}
             </h1>
             <p className="text-xs text-stone-500 mt-1">
               Enter your vehicle specifications to initialize the diagnostic telemetry monitors.
@@ -355,6 +375,107 @@ export const VehicleSetupPage: React.FC = () => {
               </div>
             )}
 
+            {/* ELECTRIC SCOOTER FORM */}
+            {activeType === 'scooter' && (
+              <div className="space-y-3.5 animate-in fade-in">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 uppercase font-mono mb-1">
+                      EV Brand / Make
+                    </label>
+                    <input
+                      type="text"
+                      value={scooterMake}
+                      onChange={(e) => setScooterMake(e.target.value)}
+                      placeholder="e.g. Ather, Ola Electric, TVS, Simple Energy"
+                      className="w-full bg-[#fbf9f4] border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-900 focus:outline-none focus:border-orange-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 uppercase font-mono mb-1">
+                      Model / Variant
+                    </label>
+                    <input
+                      type="text"
+                      value={scooterModel}
+                      onChange={(e) => setScooterModel(e.target.value)}
+                      placeholder="e.g. 450X Gen 3, S1 Pro, iQube ST"
+                      className="w-full bg-[#fbf9f4] border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-900 focus:outline-none focus:border-orange-500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 uppercase font-mono mb-1">
+                      Year
+                    </label>
+                    <input
+                      type="number"
+                      value={scooterYear}
+                      onChange={(e) => setScooterYear(e.target.value)}
+                      placeholder="2024"
+                      className="w-full bg-[#fbf9f4] border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-900 focus:outline-none focus:border-orange-500 font-mono"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 uppercase font-mono mb-1">
+                      Battery Pack
+                    </label>
+                    <select
+                      value={scooterBattery}
+                      onChange={(e) => setScooterBattery(e.target.value)}
+                      className="w-full bg-[#fbf9f4] border border-stone-300 rounded-xl px-3 py-2.5 text-xs font-bold text-stone-900 focus:outline-none focus:border-orange-500"
+                    >
+                      <option value="3.7 kWh Li-ion Pack (IP67)">3.7 kWh Li-ion (IP67)</option>
+                      <option value="4.0 kWh Li-ion High Capacity">4.0 kWh Li-ion</option>
+                      <option value="2.9 kWh Li-ion Fast Charge">2.9 kWh Li-ion</option>
+                      <option value="5.1 kWh Dual Battery Pack">5.1 kWh Dual Pack</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-700 uppercase font-mono mb-1">
+                      Motor Rating
+                    </label>
+                    <select
+                      value={scooterMotor}
+                      onChange={(e) => setScooterMotor(e.target.value)}
+                      className="w-full bg-[#fbf9f4] border border-stone-300 rounded-xl px-3 py-2.5 text-xs font-bold text-stone-900 focus:outline-none focus:border-orange-500"
+                    >
+                      <option value="6.4 kW PMSM Mid-Drive Motor">6.4 kW PMSM Mid-Drive</option>
+                      <option value="8.5 kW Peak IPM Mid-Drive">8.5 kW Peak IPM</option>
+                      <option value="4.4 kW BLDC Hub Motor">4.4 kW BLDC Hub Motor</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 uppercase font-mono mb-1">
+                    Current Odometer (Kilometres)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={scooterKm}
+                      onChange={(e) => setScooterKm(e.target.value)}
+                      placeholder="e.g. 8450"
+                      className="w-full bg-[#fbf9f4] border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-900 focus:outline-none focus:border-orange-500 font-mono"
+                      required
+                    />
+                    <span className="absolute right-3.5 top-2.5 text-xs font-mono font-bold text-stone-400">
+                      KM
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* RC CAR FORM */}
             {activeType === 'rc_car' && (
               <div className="space-y-3.5 animate-in fade-in">
@@ -449,6 +570,8 @@ export const VehicleSetupPage: React.FC = () => {
                   ? 'ISO 15765-4 OBD-II CAN bus'
                   : activeType === 'motorcycle'
                   ? 'Motorcycle CAN bus'
+                  : activeType === 'scooter'
+                  ? 'EV CAN 2.0B & BLE 5.2 Smart Dashboard Link'
                   : '915MHz LoRa direct telemetry receiver'}
                 .
               </span>

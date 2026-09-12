@@ -141,6 +141,69 @@ export const BIKE_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
   }
 ];
 
+export const SCOOTER_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
+  {
+    id: 'maint-scooter-belt',
+    name: 'Gates Carbon Belt Tension & Sonic Frequency',
+    category: 'powertrain',
+    intervalKm: 5000,
+    intervalDays: 180,
+    lastPerformedKm: 5000,
+    lastPerformedDate: '2026-05-15',
+    dueKm: 10000,
+    remainingKm: 1550,
+    status: 'due_soon',
+    urgencyDescription: 'Inspect belt teeth mesh and tension frequency (45–55 Hz)',
+    recommendedAction: 'Inspect belt wear, clean drive pulley sprockets, and tension with Gates gauge.',
+    estimatedCostRange: '₹500 – ₹2,800'
+  },
+  {
+    id: 'maint-scooter-brakes',
+    name: 'Hydraulic Disc Brake Pad & Fluid Bleed',
+    category: 'brakes',
+    intervalKm: 10000,
+    intervalDays: 365,
+    lastPerformedKm: 0,
+    lastPerformedDate: '2024-01-10',
+    dueKm: 10000,
+    remainingKm: 1550,
+    status: 'good',
+    urgencyDescription: 'Front pad 78%, Rear pad 82% life remaining',
+    recommendedAction: 'Inspect pad friction material thickness and bleed DOT 4 fluid.',
+    estimatedCostRange: '₹850 – ₹1,500'
+  },
+  {
+    id: 'maint-scooter-bms',
+    name: 'BMS Deep Cell Calibration & Health Audit',
+    category: 'powertrain',
+    intervalKm: 5000,
+    intervalDays: 180,
+    lastPerformedKm: 5000,
+    lastPerformedDate: '2026-05-15',
+    dueKm: 10000,
+    remainingKm: 1550,
+    status: 'good',
+    urgencyDescription: 'Cell delta balanced (4mV variance, SOH 98%)',
+    recommendedAction: 'Execute slow 5A AC deep charge cycle to equalize lithium cell voltages.',
+    estimatedCostRange: '₹0'
+  },
+  {
+    id: 'maint-scooter-tyres',
+    name: 'MRF Zapper EV Tyre Pressure & Wear',
+    category: 'tyres',
+    intervalKm: 2500,
+    intervalDays: 60,
+    lastPerformedKm: 7500,
+    lastPerformedDate: '2026-08-01',
+    dueKm: 10000,
+    remainingKm: 1550,
+    status: 'good',
+    urgencyDescription: 'Cold pressure 30 PSI Front / 32 PSI Rear (4.8mm tread)',
+    recommendedAction: 'Maintain target PSI to prevent range degradation and inspect sidewalls.',
+    estimatedCostRange: '₹0 – ₹1,950'
+  }
+];
+
 export const RC_MAINTENANCE_SCHEDULE: MaintenanceScheduleItem[] = [
   {
     id: 'maint-rc-lipo',

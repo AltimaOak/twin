@@ -34,6 +34,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
   onOpenReportModal
 }) => {
   const isBike = vehicleConfig.type === 'motorcycle';
+  const isScooter = vehicleConfig.type === 'scooter';
   const isRC = vehicleConfig.type === 'rc_car';
 
   const score = vehicleConfig.healthIndex.overallScore;
@@ -49,6 +50,13 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         { label: 'ESC Temp', value: '42 °C', icon: <Thermometer className="w-4 h-4 text-stone-400" /> },
         { label: 'LiPo Voltage', value: '11.8 V', icon: <Battery className="w-4 h-4 text-stone-400" /> },
         { label: 'Battery Level', value: '85 %', icon: <Zap className="w-4 h-4 text-stone-400" /> }
+      ]
+    : isScooter
+    ? [
+        { label: 'Motor RPM', value: '4,200 rpm', icon: <Gauge className="w-4 h-4 text-stone-400" /> },
+        { label: 'Battery Temp', value: '34 °C', icon: <Thermometer className="w-4 h-4 text-stone-400" /> },
+        { label: 'Battery SOC', value: '88 %', icon: <Battery className="w-4 h-4 text-stone-400" /> },
+        { label: 'TrueRange', value: '98 km', icon: <Zap className="w-4 h-4 text-emerald-500" /> }
       ]
     : isBike
     ? [
@@ -80,6 +88,23 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
           time: 'Yesterday, 04:20 PM',
           severity: 'Check soon',
           icon: <Activity className="w-4 h-4 text-orange-500" />
+        }
+      ]
+    : isScooter
+    ? [
+        {
+          id: 'a1',
+          title: 'BMS cell delta balanced (4mV variance)',
+          time: 'Today, 08:30 AM',
+          severity: 'Good',
+          icon: <Activity className="w-4 h-4 text-emerald-500" />
+        },
+        {
+          id: 'a2',
+          title: 'Rear tyre cold pressure 29 PSI (nominal: 32)',
+          time: 'Yesterday, 05:40 PM',
+          severity: 'Check soon',
+          icon: <AlertTriangle className="w-4 h-4 text-amber-500" />
         }
       ]
     : isBike
@@ -125,6 +150,14 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         { name: 'Steering Servo & Linkages', status: 'Good', isDue: false, icon: <Shield className="w-4 h-4 text-stone-400" /> },
         { name: 'Drivetrain Pinion Inspection', status: 'Due Soon', isDue: true, icon: <Wrench className="w-4 h-4 text-stone-400" /> }
       ]
+    : isScooter
+    ? [
+        { name: 'EV High-Voltage Battery Pack', status: 'Good', isDue: false, icon: <Battery className="w-4 h-4 text-stone-400" /> },
+        { name: '6.4 kW PMSM Mid-Drive Motor', status: 'Good', isDue: false, icon: <Cpu className="w-4 h-4 text-stone-400" /> },
+        { name: 'Smart BMS & Inverter System', status: 'Good', isDue: false, icon: <Zap className="w-4 h-4 text-stone-400" /> },
+        { name: 'Regen Hydraulic Disc Brakes', status: 'Good', isDue: false, icon: <Shield className="w-4 h-4 text-stone-400" /> },
+        { name: 'Carbon Belt Tension Inspection', status: 'Due Soon', isDue: true, icon: <Wrench className="w-4 h-4 text-stone-400" /> }
+      ]
     : isBike
     ? [
         { name: 'Engine & Gearbox Assembly', status: 'Good', isDue: false, icon: <Cpu className="w-4 h-4 text-stone-400" /> },
@@ -142,10 +175,12 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
       ];
 
   // Tailored Service Due & Tips
-  const serviceDistance = isRC ? '15 cycles' : isBike ? '1,200 km' : '2,350 km';
-  const serviceDays = isRC ? '10 days' : isBike ? '25 days' : '45 days';
+  const serviceDistance = isRC ? '15 cycles' : isScooter ? '1,550 km' : isBike ? '1,200 km' : '2,350 km';
+  const serviceDays = isRC ? '10 days' : isScooter ? '30 days' : isBike ? '25 days' : '45 days';
   const personalizedTip = isRC
     ? 'Always store LiPo batteries at 3.85V per cell nominal storage voltage when unused.'
+    : isScooter
+    ? 'Maintain tyre pressure at 30 PSI front / 32 PSI rear to maximize TrueRange by up to 8%.'
     : isBike
     ? 'Keep drive chain tension within 25–35mm and lube every 500 km for optimal power transfer.'
     : 'Keep your coolant level between MIN and MAX for best engine performance.';
@@ -208,7 +243,29 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
 
                 {/* Vector illustration matching category */}
                 <div className="relative z-10 w-full px-1">
-                  {isBike ? (
+                  {isScooter ? (
+                    /* Electric Scooter Outline SVG */
+                    <svg viewBox="0 0 160 100" className="w-full h-auto text-stone-700 stroke-current" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      {/* Wheels */}
+                      <circle cx="36" cy="70" r="16" strokeWidth="2.8" />
+                      <circle cx="36" cy="70" r="6" strokeWidth="1.8" />
+                      <circle cx="124" cy="70" r="16" strokeWidth="2.8" />
+                      <circle cx="124" cy="70" r="6" strokeWidth="1.8" />
+                      {/* Floorboard & Monocoque */}
+                      <path d="M36 70 L52 64 L96 64 L114 44 L118 30 L110 28" />
+                      {/* Step-through Floorboard */}
+                      <path d="M52 64 L52 48 C52 44 60 40 76 40 L96 46 L96 64" strokeWidth="2.2" />
+                      {/* Seat */}
+                      <path d="M42 42 C48 38 72 38 80 44" strokeWidth="3.2" stroke="#ea580c" />
+                      {/* Front Fairing & Steering Col */}
+                      <path d="M118 30 L124 70" strokeWidth="2.8" />
+                      <path d="M106 28 L124 30" strokeWidth="3" />
+                      {/* Battery Floorboard Highlight */}
+                      <rect x="60" y="60" width="28" height="6" rx="2" fill="#10b981" fillOpacity="0.3" stroke="#10b981" strokeWidth="1.5" />
+                      {/* Headlight beam */}
+                      <path d="M120 36 L134 40" strokeWidth="2" stroke="#06b6d4" />
+                    </svg>
+                  ) : isBike ? (
                     /* Motorcycle Outline SVG */
                     <svg viewBox="0 0 160 100" className="w-full h-auto text-stone-700 stroke-current" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       {/* Rear Wheel */}

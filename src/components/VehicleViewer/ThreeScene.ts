@@ -6,6 +6,8 @@ export interface ProjectedCallout {
   id: string;
   x: number;
   y: number;
+  depth?: number;
+  staggerLevel?: number;
   visible: boolean;
   component: VehicleComponentData;
 }
@@ -225,8 +227,8 @@ export class ThreeScene {
 
     const name = (this.vehicleModelName || '').toLowerCase();
 
-    if (type === 'scooter' || name.includes('scooter') || name.includes('pcx') || name.includes('activa') || name.includes('vespa') || name.includes('nmax') || name.includes('aerox') || name.includes('ather')) {
-      this.currentVehicleGroup = ProceduralVehicles.createScooter(this.paintColorHex, isXRay, this.isWireframe);
+    if (type === 'scooter' || (type as string) === 'electric_scooter' || (type as string) === 'electricScooter' || name.includes('scooter') || name.includes('ather') || name.includes('ola') || name.includes('chetak') || name.includes('iqube') || name.includes('pcx') || name.includes('activa') || name.includes('vespa') || name.includes('nmax') || name.includes('aerox')) {
+      this.currentVehicleGroup = ProceduralVehicles.createElectricScooter(this.paintColorHex, isXRay, this.isWireframe);
     } else if (type === 'motorcycle' || type as string === 'bike') {
       this.currentVehicleGroup = ProceduralVehicles.createMotorcycle(this.paintColorHex, isXRay, this.isWireframe);
     } else if (type === 'rc_car' || type as string === 'rc') {
@@ -665,30 +667,54 @@ export class ThreeScene {
     const halfW = width / 2;
     const halfH = height / 2;
 
-    const callouts: ProjectedCallout[] = this.components.map((comp) => {
+    const rawCallouts: ProjectedCallout[] = this.components.map((comp) => {
       const pos3D = new THREE.Vector3(comp.position3D[0], comp.position3D[1], comp.position3D[2]);
 
       if (this.currentVehicleGroup) {
         pos3D.applyEuler(this.currentVehicleGroup.rotation);
       }
 
+      const worldPos = pos3D.clone();
+      const distToCamera = this.camera.position.distanceTo(worldPos);
+
       const tempVec = pos3D.clone().project(this.camera);
 
       const isBehind = tempVec.z > 1;
       const x = tempVec.x * halfW + halfW;
       const y = -tempVec.y * halfH + halfH;
-      const isVisible = !isBehind && x >= 10 && x <= width - 10 && y >= 10 && y <= height - 10;
+      const isVisible = !isBehind && x >= 15 && x <= width - 15 && y >= 15 && y <= height - 15;
 
       return {
         id: comp.id,
         x: Math.round(x),
         y: Math.round(y),
+        depth: distToCamera,
+        staggerLevel: 0,
         visible: isVisible,
         component: comp
       };
     });
 
-    this.onProjectedCalloutsChange(callouts);
+    // Anti-collision proximity sorting & vertical staggering algorithm
+    // Prevents pins that are close on screen from overlapping horizontally/vertically
+    const visibleCallouts = rawCallouts.filter(c => c.visible);
+    for (let i = 0; i < visibleCallouts.length; i++) {
+      for (let j = i + 1; j < visibleCallouts.length; j++) {
+        const c1 = visibleCallouts[i];
+        const c2 = visibleCallouts[j];
+        const dx = Math.abs(c1.x - c2.x);
+        const dy = Math.abs(c1.y - c2.y);
+
+        // If two callouts are dangerously close horizontally (< 80px) and vertically (< 45px)
+        if (dx < 80 && dy < 45) {
+          if (c1.staggerLevel === c2.staggerLevel) {
+            c2.staggerLevel = ((c1.staggerLevel || 0) + 1) % 3;
+          }
+        }
+      }
+    }
+
+    this.onProjectedCalloutsChange(rawCallouts);
   }
 
   public destroy(): void {

@@ -1237,123 +1237,385 @@ export class ProceduralVehicles {
   }
 
   // =========================================================================
-  // MODEL 2B — SCOOTER (High-Detail Maxi-Scooter Digital Twin)
+  // MODEL 2B — ELECTRIC SCOOTER (High-Fidelity Smart EV Scooter Digital Twin)
   // =========================================================================
-  public static createScooter(
-    colorHex: number = 0xf8fafc,
+  public static createElectricScooter(
+    colorHex: number = 0x1d3557,
     isXRay: boolean = false,
     isWireframe: boolean = false
   ): THREE.Group {
     const scooter = new THREE.Group();
-    scooter.name = 'VehicleModel_Scooter';
+    scooter.name = 'VehicleModel_ElectricScooter';
 
     const bodyMat = this.getPaintMaterial(colorHex, isXRay, isWireframe);
     const glassMat = this.getGlassMaterial(isWireframe);
 
-    const bodyGroup = new THREE.Group();
-    bodyGroup.name = 'Scooter_BodyGroup';
-    bodyGroup.userData = { explodedOffset: new THREE.Vector3(0, 0.40, 0) };
-
-    // 1. Step-Through Floorboard & Central Spine Tunnel
-    const floorboard = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.08, 0.72), this.trimBlackMat);
-    floorboard.position.set(0, 0.24, 0.12);
-    const centerTunnel = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.28, 0.65), bodyMat);
-    centerTunnel.position.set(0, 0.40, 0.12);
-    bodyGroup.add(floorboard, centerTunnel);
-
-    // 2. Sculpted Front Apron, Aerodynamic Fairing & Smoked Windscreen
-    const frontApron = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.65, 0.42), bodyMat);
-    frontApron.position.set(0, 0.64, 0.62);
-    frontApron.rotation.x = -0.24;
-
-    const windscreen = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.42, 0.03), glassMat);
-    windscreen.position.set(0, 1.02, 0.58);
-    windscreen.rotation.x = -0.35;
-
-    // Split Dual LED Projector Headlights
-    [-0.14, 0.14].forEach((xSide) => {
-      const headlight = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.11, 0.04), this.ledWhiteMat);
-      headlight.position.set(xSide, 0.56, 0.82);
-      headlight.rotation.y = xSide > 0 ? -0.15 : 0.15;
-      bodyGroup.add(headlight);
+    // Dedicated Smart EV Materials
+    const evCyanGlowMat = new THREE.MeshStandardMaterial({
+      color: 0x06b6d4,
+      emissive: 0x06b6d4,
+      emissiveIntensity: 2.2,
+      roughness: 0.1
+    });
+    const evBatteryCellMat = new THREE.MeshStandardMaterial({
+      color: 0x10b981,
+      emissive: 0x059669,
+      emissiveIntensity: 1.2,
+      metalness: 0.8,
+      roughness: 0.2
+    });
+    const hvOrangeWireMat = new THREE.MeshStandardMaterial({
+      color: 0xea580c,
+      emissive: 0xea580c,
+      emissiveIntensity: 0.4,
+      roughness: 0.3
+    });
+    const evTftScreenMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      emissive: 0x0284c7,
+      emissiveIntensity: 2.0,
+      roughness: 0.1
     });
 
-    bodyGroup.add(frontApron, windscreen);
+    // --- A. AERODYNAMIC CHASSIS, APRON, FLOORBOARD & SADDLE ---
+    const bodyGroup = new THREE.Group();
+    bodyGroup.name = 'Scooter_BodyGroup';
+    bodyGroup.userData = { explodedOffset: new THREE.Vector3(0, 0.42, 0) };
 
-    // 3. Fully Enclosed Cockpit, Handlebar Cowl & Digital LCD Cluster
-    const handleCowl = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.14, 0.20), bodyMat);
-    handleCowl.position.set(0, 0.94, 0.46);
-    const lcdCluster = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.08), this.ledWhiteMat);
-    lcdCluster.position.set(0, 0.96, 0.42);
-    lcdCluster.rotation.x = -Math.PI * 0.3;
-    bodyGroup.add(handleCowl, lcdCluster);
+    // 1. Aerodynamic Front Apron & Steering Headstock Cowling
+    const frontApronShape = new THREE.Shape();
+    frontApronShape.moveTo(-0.28, 0.22);
+    frontApronShape.lineTo(-0.32, 0.65);
+    frontApronShape.quadraticCurveTo(-0.25, 0.88, 0, 0.94);
+    frontApronShape.quadraticCurveTo(0.25, 0.88, 0.32, 0.65);
+    frontApronShape.lineTo(0.28, 0.22);
+    frontApronShape.closePath();
 
-    // 4. Under-Seat Body Shell, Comfort Saddle & LED Tail Cluster
-    const underSeatBody = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.48, 1.02), bodyMat);
-    underSeatBody.position.set(0, 0.52, -0.42);
+    const apronExtrude = new THREE.ExtrudeGeometry(frontApronShape, {
+      depth: 0.38,
+      bevelEnabled: true,
+      bevelThickness: 0.05,
+      bevelSize: 0.04,
+      bevelSegments: 3
+    });
+    apronExtrude.center();
+    const frontApron = new THREE.Mesh(apronExtrude, bodyMat);
+    frontApron.position.set(0, 0.62, 0.58);
+    frontApron.rotation.x = -0.28;
+    bodyGroup.add(frontApron);
 
-    const plushSeat = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.16, 0.92), this.trimBlackMat);
-    plushSeat.position.set(0, 0.76, -0.40);
-    plushSeat.rotation.x = -0.06;
+    // Front Aerodynamic Smoked Visor / Flyscreen
+    const visor = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.28, 0.02), glassMat);
+    visor.position.set(0, 0.98, 0.52);
+    visor.rotation.x = -0.38;
+    bodyGroup.add(visor);
 
-    const tailLight = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.14, 0.05), this.ledRedMat);
-    tailLight.position.set(0, 0.60, -0.94);
+    // Matrix LED Dual Headlight Projectors & Full-Width Cyan DRL Blade
+    [-0.11, 0.11].forEach((xSide) => {
+      const hlLens = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.04, 16), this.ledWhiteMat);
+      hlLens.rotation.x = Math.PI / 2 - 0.28;
+      hlLens.position.set(xSide, 0.64, 0.76);
+      bodyGroup.add(hlLens);
+    });
 
-    const pillionGrabRails = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.04, 0.32), this.silverTrimMat);
-    pillionGrabRails.position.set(0, 0.78, -0.76);
+    const drlBlade = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.018, 0.03), evCyanGlowMat);
+    drlBlade.position.set(0, 0.74, 0.73);
+    drlBlade.rotation.x = -0.28;
+    bodyGroup.add(drlBlade);
 
-    bodyGroup.add(underSeatBody, plushSeat, tailLight, pillionGrabRails);
+    // 2. Cast Aluminum Step-Through Spine & Floorboard
+    const spineTube = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.75, 16), this.darkMetalMat);
+    spineTube.position.set(0, 0.52, 0.34);
+    spineTube.rotation.x = 0.68;
+    bodyGroup.add(spineTube);
+
+    // Low-CG Step-Through Footboard Deck with Textured Rubber Grips
+    const floorDeck = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.06, 0.72), this.trimBlackMat);
+    floorDeck.position.set(0, 0.24, 0.12);
+
+    [-0.14, 0.14].forEach((xSide) => {
+      const gripStrake = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.015, 0.55), this.darkMetalMat);
+      gripStrake.position.set(xSide, 0.275, 0.12);
+      bodyGroup.add(gripStrake);
+    });
+    bodyGroup.add(floorDeck);
+
+    // 3. Ergonomic Two-Tone Urban Sport Saddle & Storage Sub-Shell
+    const underSeatShell = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.38, 0.94), bodyMat);
+    underSeatShell.position.set(0, 0.50, -0.38);
+
+    const saddle = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.14, 0.88), this.trimBlackMat);
+    saddle.position.set(0, 0.72, -0.36);
+    saddle.rotation.x = -0.05;
+
+    const saddleAccent = new THREE.Mesh(new THREE.BoxGeometry(0.39, 0.02, 0.82), this.goldAnodizedMat);
+    saddleAccent.position.set(0, 0.68, -0.36);
+
+    // Aluminum Pillion Grab Handle Rails
+    const grabRail = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.016, 8, 20, Math.PI), this.silverTrimMat);
+    grabRail.position.set(0, 0.74, -0.76);
+    grabRail.rotation.x = -Math.PI * 0.15;
+
+    // Flush Modern Razor LED Tail Lamp & Turn Signals
+    const tailLamp = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.035, 0.04), this.ledRedMat);
+    tailLamp.position.set(0, 0.62, -0.87);
+
+    const licenseHanger = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 0.04), this.darkMetalMat);
+    licenseHanger.position.set(0, 0.50, -0.90);
+    licenseHanger.rotation.x = -0.4;
+
+    const licensePlate = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.10, 0.01), this.silverTrimMat);
+    licensePlate.position.set(0, 0.42, -0.98);
+
+    bodyGroup.add(underSeatShell, saddle, saddleAccent, grabRail, tailLamp, licenseHanger, licensePlate);
+
+    // 4. Handlebars, Smart Touchscreen TFT Cockpit & Switchgear
+    const handleStem = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.32, 14), this.darkMetalMat);
+    handleStem.position.set(0, 0.86, 0.46);
+    handleStem.rotation.x = -0.28;
+
+    const handlebar = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.68, 16), this.darkMetalMat);
+    handlebar.rotation.z = Math.PI / 2;
+    handlebar.position.set(0, 0.98, 0.42);
+
+    [-0.30, 0.30].forEach((xSide) => {
+      // Rubber Handgrips
+      const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.11, 14), this.tireTreadMat);
+      grip.rotation.z = Math.PI / 2;
+      grip.position.set(xSide > 0 ? xSide - 0.05 : xSide + 0.05, 0.98, 0.42);
+
+      // Bar End Weights
+      const barEnd = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.025, 12), this.goldAnodizedMat);
+      barEnd.rotation.z = Math.PI / 2;
+      barEnd.position.set(xSide > 0 ? xSide + 0.01 : xSide - 0.01, 0.98, 0.42);
+
+      // CNC Brake Levers
+      const leverBlade = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.015, 0.02), this.silverTrimMat);
+      leverBlade.position.set(xSide > 0 ? xSide - 0.06 : xSide + 0.06, 0.97, 0.46);
+      leverBlade.rotation.y = xSide > 0 ? 0.28 : -0.28;
+
+      // Aerodynamic Rear-view Mirrors
+      const mirrorStem = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.16, 8), this.darkMetalMat);
+      mirrorStem.position.set(xSide > 0 ? xSide - 0.08 : xSide + 0.08, 1.06, 0.43);
+      mirrorStem.rotation.z = xSide > 0 ? -0.35 : 0.35;
+
+      const mirrorHousing = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.07, 0.02), bodyMat);
+      mirrorHousing.position.set(xSide > 0 ? xSide - 0.04 : xSide + 0.04, 1.13, 0.44);
+
+      const mirrorFace = new THREE.Mesh(new THREE.PlaneGeometry(0.10, 0.055), this.chromeMat);
+      mirrorFace.position.set(xSide > 0 ? xSide - 0.04 : xSide + 0.04, 1.13, 0.43);
+      mirrorFace.rotation.y = xSide > 0 ? -Math.PI : Math.PI;
+
+      bodyGroup.add(grip, barEnd, leverBlade, mirrorStem, mirrorHousing, mirrorFace);
+    });
+
+    // 7-inch Touchscreen TFT Dashboard Instrument Cluster (`esc-display`)
+    const tftGroup = new THREE.Group();
+    tftGroup.position.set(0, 0.98, 0.44);
+
+    const tftBezel = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.12, 0.03), this.darkMetalMat);
+    tftBezel.rotation.x = -Math.PI * 0.28;
+
+    const tftScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.17, 0.095), evTftScreenMat);
+    tftScreen.position.set(0, 0.005, 0.016);
+    tftScreen.rotation.x = -Math.PI * 0.28;
+
+    tftGroup.add(tftBezel, tftScreen);
+    this.tagMesh(tftGroup, 'esc-display', '7-inch Touchscreen Smart TFT Dashboard', [0, 0.35, 0.15]);
+    scooter.add(tftGroup);
+
+    bodyGroup.add(handleStem, handlebar);
     scooter.add(bodyGroup);
 
-    // --- SCOOTER MECHANICAL COMPONENTS ---
-    // 1. ENGINE & V-MATIC CVT CASE (`id: 's-engine'`, position [0, 0.32, -0.25])
-    const engineGroup = new THREE.Group();
-    engineGroup.position.set(0, 0.32, -0.25);
+    // --- B. HIGH-VOLTAGE BATTERY & SMART BMS SUBSYSTEM (`esc-battery`, `esc-bms`) ---
+    const batteryGroup = new THREE.Group();
+    batteryGroup.position.set(0, 0.28, 0.12);
 
-    const eng = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.28, 0.40), this.engineCastMat);
-    const cvtCase = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.20, 0.62), this.silverTrimMat);
-    cvtCase.position.set(-0.20, -0.04, -0.15);
+    // IP67 Extruded Die-Cast Aluminum Enclosure
+    const batEnclosure = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.18, 0.64), this.batteryLeadMat);
 
-    const scooterExhaust = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.085, 0.58, 16), this.exhaustPipeMat);
-    scooterExhaust.rotation.x = Math.PI / 2 - 0.2;
-    scooterExhaust.position.set(0.22, -0.04, -0.18);
+    // Transparent Top Window displaying 21700 Cylindrical Cell Matrix
+    const batWindow = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.015, 0.54), glassMat);
+    batWindow.position.set(0, 0.095, 0);
 
-    engineGroup.add(eng, cvtCase, scooterExhaust);
-    this.tagMesh(engineGroup, 's-engine', '160cc 4-Valve eSP+ Liquid-Cooled Engine', [0, 0.25, 0.15]);
-    scooter.add(engineGroup);
+    // 4x4 Grid of Glowing Lithium Battery Cells
+    for (let r = -2; r <= 2; r++) {
+      for (let c = -1; c <= 1; c++) {
+        const cell = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.14, 12), evBatteryCellMat);
+        cell.position.set(c * 0.09, 0.01, r * 0.11);
+        batteryGroup.add(cell);
+      }
+    }
 
-    // 2. FRONT WHEEL & HYDRAULIC DISC BRAKE (`id: 's-brakes'`, position [0, 0.22, 0.82])
+    // High Voltage Busbars & Terminal Connectors
+    const posTerminal = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.03, 10), this.batteryPosMat);
+    posTerminal.position.set(-0.12, 0.10, 0.25);
+    const negTerminal = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.03, 10), this.batteryNegMat);
+    negTerminal.position.set(0.12, 0.10, 0.25);
+
+    // Smart Battery Management System (BMS) Board (`esc-bms`)
+    const bmsGroup = new THREE.Group();
+    bmsGroup.position.set(0, 0.36, 0.32);
+    const bmsBoard = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.04, 0.14), this.darkMetalMat);
+    const bmsLed = new THREE.Mesh(new THREE.SphereGeometry(0.012, 8, 8), evCyanGlowMat);
+    bmsLed.position.set(0.06, 0.025, 0.02);
+    bmsGroup.add(bmsBoard, bmsLed);
+    this.tagMesh(bmsGroup, 'esc-bms', 'Smart Battery Management System (BMS)', [0, 0.25, 0.2]);
+    scooter.add(bmsGroup);
+
+    batteryGroup.add(batEnclosure, batWindow, posTerminal, negTerminal);
+    this.tagMesh(batteryGroup, 'esc-battery', '3.7 kWh IP67 High-Voltage Lithium-Ion Battery Pack', [0, -0.28, 0]);
+    scooter.add(batteryGroup);
+
+    // --- C. PMSM MID-DRIVE MOTOR & INVERTER CONTROLLER (`esc-motor`, `esc-controller`) ---
+    // 1. PMSM Motor & Carbon Drive Belt (`esc-motor`)
+    const motorGroup = new THREE.Group();
+    motorGroup.position.set(0, 0.32, -0.30);
+
+    const motorHousing = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.28, 20), this.engineCastMat);
+    motorHousing.rotation.z = Math.PI / 2;
+
+    // Cooling Fin Rings on Motor Stator
+    for (let f = 0; f < 5; f++) {
+      const fin = new THREE.Mesh(new THREE.CylinderGeometry(0.142, 0.142, 0.012, 20), this.darkMetalMat);
+      fin.rotation.z = Math.PI / 2;
+      fin.position.set(-0.10 + f * 0.05, 0, 0);
+      motorGroup.add(fin);
+    }
+
+    // High-Voltage 3-Phase Copper/Silicone Wires
+    [-0.04, 0, 0.04].forEach((xOffset) => {
+      const hvWire = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.24, 8), hvOrangeWireMat);
+      hvWire.position.set(xOffset, 0.10, 0.10);
+      hvWire.rotation.x = -Math.PI * 0.25;
+      motorGroup.add(hvWire);
+    });
+
+    // Carbon-Fiber Reinforced Gates Belt Drive Box
+    const beltCover = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.14, 0.54), this.carbonFiberMat);
+    beltCover.position.set(-0.16, -0.02, -0.18);
+    beltCover.rotation.x = -0.12;
+
+    motorGroup.add(motorHousing, beltCover);
+    this.tagMesh(motorGroup, 'esc-motor', '6.4 kW PMSM Mid-Drive Motor (26 Nm Torque)', [-0.35, 0.1, -0.15]);
+    scooter.add(motorGroup);
+
+    // 2. FOC Inverter / Motor Controller (`esc-controller`)
+    const controllerGroup = new THREE.Group();
+    controllerGroup.position.set(0, 0.44, 0.05);
+
+    const controllerBox = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.12, 0.22), this.silverTrimMat);
+    for (let f = 0; f < 4; f++) {
+      const fin = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.018, 0.015), this.darkMetalMat);
+      fin.position.set(0, 0.065, -0.07 + f * 0.045);
+      controllerGroup.add(fin);
+    }
+    controllerGroup.add(controllerBox);
+    this.tagMesh(controllerGroup, 'esc-controller', 'Vector FOC Motor Controller Inverter', [0.35, 0.2, 0.1]);
+    scooter.add(controllerGroup);
+
+    // --- D. FRONT & REAR SUSPENSION (`esc-suspension`) ---
+    const suspGroup = new THREE.Group();
+    suspGroup.position.set(0, 0.45, 0.65);
+
+    [-0.11, 0.11].forEach((xSide) => {
+      const forkOuter = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.44, 16), this.darkMetalMat);
+      forkOuter.position.set(xSide, 0.05, 0.05);
+      forkOuter.rotation.x = -0.28;
+
+      const forkInner = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.38, 16), this.chromeMat);
+      forkInner.position.set(xSide, -0.18, 0.12);
+      forkInner.rotation.x = -0.28;
+
+      suspGroup.add(forkOuter, forkInner);
+    });
+
+    // Rear Offset Progressive Monoshock
+    const rearShock = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.28, 14), this.chromeMat);
+    rearShock.position.set(0.08, -0.06, -0.85);
+    rearShock.rotation.x = 0.45;
+
+    const rearSpring = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.22, 16), this.suspensionSpringMat);
+    rearSpring.position.set(0.08, -0.06, -0.85);
+    rearSpring.rotation.x = 0.45;
+
+    suspGroup.add(rearShock, rearSpring);
+    this.tagMesh(suspGroup, 'esc-suspension', 'Front Telescopic Forks & Offset Rear Monoshock', [0, 0.3, 0.35]);
+    scooter.add(suspGroup);
+
+    // --- E. 12-INCH WHEELS, TYRES & HYDRAULIC REGEN BRAKES (`esc-brakes`, `esc-tyres`) ---
+    // 1. Front Wheel & 200mm Petal Disc Brakes (`esc-brakes`)
     const frontWheel = new THREE.Group();
     frontWheel.position.set(0, 0.22, 0.82);
 
-    const fTire = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.11, 24), this.tireTreadMat);
+    // 90/90-12 Curved Tubeless Front Tyre
+    const fTire = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.11, 28), this.tireTreadMat);
     fTire.rotation.z = Math.PI / 2;
-    const fRim = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 18), this.darkMetalMat);
-    fRim.rotation.z = Math.PI / 2;
-    const fDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.02, 16), this.brakeDiscMat);
-    fDisc.rotation.z = Math.PI / 2;
-    fDisc.position.x = 0.06;
-    const fCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.07, 0.06), this.caliperOrangeMat);
-    fCaliper.position.set(0.06, 0.08, -0.04);
 
-    frontWheel.add(fTire, fRim, fDisc, fCaliper);
-    this.tagMesh(frontWheel, 's-brakes', 'Front Hydraulic Disc Brakes (Single-Channel ABS)', [0, 0, 0.3]);
+    // 12-Inch 5-Spoke Alloy Rim
+    const fRim = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.115, 20, 1, true), this.darkMetalMat);
+    fRim.rotation.z = Math.PI / 2;
+    const fHub = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.125, 16), this.engineCastMat);
+    fHub.rotation.z = Math.PI / 2;
+
+    for (let s = 0; s < 5; s++) {
+      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.14, 0.025), this.silverTrimMat);
+      spoke.rotation.x = (s * Math.PI * 2) / 5;
+      frontWheel.add(spoke);
+    }
+
+    // 200mm Drilled Floating Brake Disc & ByBre Caliper
+    const fDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.015, 20), this.brakeDiscMat);
+    fDisc.rotation.z = Math.PI / 2;
+    fDisc.position.x = 0.07;
+
+    const fCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.08, 0.07), this.caliperOrangeMat);
+    fCaliper.position.set(0.07, 0.08, -0.04);
+
+    frontWheel.add(fTire, fRim, fHub, fDisc, fCaliper);
+    this.tagMesh(frontWheel, 'esc-brakes', '200mm Front Disc Brake with Combined Braking System (CBS)', [0, 0, 0.35]);
     scooter.add(frontWheel);
 
-    // 3. REAR WHEEL & TUBELESS TYRE (`id: 's-tyres'`, position [0, 0.22, -0.72])
+    // 2. Rear Wheel & Regenerative Drive Assembly (`esc-tyres`)
     const rearWheel = new THREE.Group();
     rearWheel.position.set(0, 0.22, -0.72);
 
-    const rTire = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.14, 24), this.tireTreadMat);
+    const rTire = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.13, 28), this.tireTreadMat);
     rTire.rotation.z = Math.PI / 2;
-    const rRim = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.15, 18), this.darkMetalMat);
-    rRim.rotation.z = Math.PI / 2;
 
-    rearWheel.add(rTire, rRim);
-    this.tagMesh(rearWheel, 's-tyres', '13-Inch Tubeless Rear Scooter Tyre', [0, 0, -0.3]);
+    const rRim = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.135, 20, 1, true), this.darkMetalMat);
+    rRim.rotation.z = Math.PI / 2;
+    const rHub = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.145, 16), this.engineCastMat);
+    rHub.rotation.z = Math.PI / 2;
+
+    for (let s = 0; s < 5; s++) {
+      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.14, 0.025), this.silverTrimMat);
+      spoke.rotation.x = (s * Math.PI * 2) / 5;
+      rearWheel.add(spoke);
+    }
+
+    // Rear 190mm Brake Disc & Regenerative Sensor
+    const rDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.015, 18), this.brakeDiscMat);
+    rDisc.rotation.z = Math.PI / 2;
+    rDisc.position.x = 0.075;
+
+    const rCaliper = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.07, 0.06), this.caliperOrangeMat);
+    rCaliper.position.set(0.075, 0.07, 0.04);
+
+    rearWheel.add(rTire, rRim, rHub, rDisc, rCaliper);
+    this.tagMesh(rearWheel, 'esc-tyres', '12-Inch Low-Rolling-Resistance EV Tubeless Tyres', [0, 0, -0.35]);
     scooter.add(rearWheel);
 
     return scooter;
+  }
+
+  // Alias for compatibility
+  public static createScooter(
+    colorHex: number = 0x1d3557,
+    isXRay: boolean = false,
+    isWireframe: boolean = false
+  ): THREE.Group {
+    return this.createElectricScooter(colorHex, isXRay, isWireframe);
   }
 
   // =========================================================================

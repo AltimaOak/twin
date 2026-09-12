@@ -6,6 +6,7 @@ import {
   FileText,
   Car,
   Bike,
+  Zap,
   Gamepad2,
   ChevronRight,
   CheckCircle2,
@@ -495,7 +496,7 @@ export const LandingPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
               Icon: Car,
@@ -513,7 +514,7 @@ export const LandingPage: React.FC = () => {
             },
             {
               Icon: Bike,
-              label: 'Bikes & City Scooters',
+              label: 'Bikes & Roadsters',
               title: 'Motorcycles',
               desc: 'Tailored for two-wheelers. Keep track of battery charge while parked, monitor engine temperatures during heavy traffic, and get chain service reminders.',
               perks: [
@@ -524,6 +525,20 @@ export const LandingPage: React.FC = () => {
               ],
               btnLabel: 'Select Motorcycle Mode',
               type: 'motorcycle' as const
+            },
+            {
+              Icon: Zap,
+              label: 'Smart EV Two-Wheelers',
+              title: 'Electric Scooters',
+              desc: 'For modern electric scooters. Monitor Li-ion cell balancing, PMSM motor temperatures, TrueRange battery projections, and regenerative braking telemetry.',
+              perks: [
+                'EV CAN & BLE telemetry gateway',
+                'High-voltage BMS SOH tracking',
+                'Gates carbon belt service alerts',
+                'Ather 450X 3D EV visualizer'
+              ],
+              btnLabel: 'Select EV Scooter Mode',
+              type: 'scooter' as const
             },
             {
               Icon: Gamepad2,

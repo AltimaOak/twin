@@ -663,8 +663,7 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
     maintenance: [
       { id: 'mrc-bat', name: 'LiPo Battery Storage Balance', intervalValue: '25 Cycles', dueValue: '140 Cycles', remainingValue: 'After 14 more cycles', remainingNumber: 14, status: 'good', action: 'Cycle test internal resistance & balance discharge.', lastCompleted: '110 Cycles (20 Aug 2026)', costRange: '₹0' },
       { id: 'mrc-gear', name: 'Pinion & Spur Gear Mesh Check', intervalValue: '50 Runs', dueValue: '130 Runs', remainingValue: 'Due Soon (4 runs left)', remainingNumber: 4, status: 'due_soon', action: 'Inspect nylon spur teeth and pinion set screw.', lastCompleted: '80 Runs (28 Jul 2026)', costRange: '₹500 – ₹1,200' },
-      { id: 'mrc-diff', name: 'Front & Rear Differential Fluid', intervalValue: '100 Runs', dueValue: '200 Runs', remainingValue: '72 runs remaining', remainingNumber: 72, status: 'good', action: 'Re-fill 30k wt silicone differential fluid.', lastCompleted: '100 Runs (15 May 2026)', costRange: '₹600 – ₹1,500' },
-      { id: 'mrc-shocks', name: 'Oil-Filled Shock Rebuild', intervalValue: '50 Runs', dueValue: '150 Runs', remainingValue: '24 runs remaining', remainingNumber: 24, status: 'good', action: 'Refill 35wt silicone shock oil.', lastCompleted: '100 Runs (15 May 2026)', costRange: '₹500 – ₹1,100' }
+      { id: 'mrc-shocks', name: 'Oil-Filled Shock Rebuild', intervalValue: '50 Runs', dueValue: '150 Runs', remainingValue: '24 runs remaining', remainingNumber: 24, status: 'good', action: 'Refill 35wt silicone fluid and inspect bladder seals.', lastCompleted: '100 Runs (15 May 2026)', costRange: '₹400 – ₹900' }
     ],
     alerts: [
       {
@@ -677,6 +676,236 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         whatShouldIDo: 'Allow 5 minute cooldown between full packs and check gear mesh.',
         timestamp: '15 mins ago',
         componentId: 'rc-motor'
+      }
+    ]
+  },
+
+  scooter: {
+    id: 'veh-scooter-default',
+    type: 'scooter',
+    categoryLabel: 'Electric Scooter (Smart EV)',
+    detectionLabel: 'Vehicle Detected: Smart Electric Scooter (CAN / BLE Diagnostic)',
+    model: {
+      name: 'Ather 450X Gen 3',
+      year: 2024,
+      make: 'Ather',
+      variant: '450X 3.7 kWh Pro',
+      vinOrSerial: 'ME4ATH450XN881920',
+      model3D: '/models/scooters/electric-scooter.glb',
+      icon: 'Zap'
+    },
+    specifications: {
+      engineOrMotor: '6.4 kW PMSM Mid-Drive Motor (26 Nm)',
+      transmissionOrEsc: 'Single-Speed Belt Reduction (Gates Carbon Drive)',
+      driveType: 'High-Efficiency Belt Final Drive',
+      fuelOrBatteryType: 'Electric (3.7 kWh 21700 Li-ion)',
+      mileageOrCycles: '8,640 km (142 full cycles)',
+      curbWeight: '108 kg',
+      topSpeed: '90 km/h (0-40 in 3.3s)'
+    },
+    hardwareLink: {
+      protocol: 'Smart EV CAN / Bluetooth BLE (ISO 11898)',
+      medium: 'Direct BLE Wireless / Diagnostic Connector',
+      deviceId: 'MMX-00124',
+      latencyMs: 22,
+      signalDbm: -62,
+      baudRateOrFrequency: '250 kbps CAN / BLE 5.2'
+    },
+    healthIndex: {
+      overallScore: 95,
+      grade: 'A',
+      statusText: 'EXCELLENT',
+      summary: '3.7 kWh high-voltage lithium battery pack and PMSM electric motor are in pristine condition. All 21700 cells balanced with zero voltage delta.',
+      subsystems: [
+        { id: 'sub-esc-bat', name: 'High-Voltage Battery & BMS', score: 98, weight: 0.35, status: 'good', iconName: 'Zap', summary: 'Pack SOH 98%, 34°C normal temp' },
+        { id: 'sub-esc-mot', name: 'PMSM Motor & Inverter', score: 96, weight: 0.25, status: 'good', iconName: 'Cpu', summary: 'Vector control efficiency 94.5%' },
+        { id: 'sub-esc-belt', name: 'Gates Carbon Drive Belt', score: 90, weight: 0.15, status: 'good', iconName: 'Activity', summary: 'Tension 45 Hz (Nominal: 40-55 Hz)' },
+        { id: 'sub-esc-brk', name: 'Regen Braking & Discs', score: 94, weight: 0.15, status: 'good', iconName: 'Shield', summary: 'Front & rear pads 85%, Regen active' },
+        { id: 'sub-esc-tyre', name: '12-inch EV Tyres', score: 92, weight: 0.10, status: 'good', iconName: 'Activity', summary: '30.0 PSI Front, 32.5 PSI Rear' }
+      ]
+    },
+    components: [
+      {
+        id: 'esc-battery',
+        name: '3.7 kWh IP67 High-Voltage Lithium-Ion Battery Pack',
+        shortName: 'Battery Pack',
+        category: 'Electrical',
+        status: 'good',
+        healthPct: 98,
+        position3D: [0, 0.28, 0.12],
+        cameraFocusPosition: [0, 0.28, 0.12],
+        cameraPosition: [1.2, 0.65, 0.3],
+        metrics: [
+          { label: 'State of Charge (SOC)', value: 84, unit: '%', nominalRange: [15, 100], status: 'good' },
+          { label: 'Pack Voltage', value: 51.2, unit: 'V', nominalRange: [42.0, 58.8], status: 'good' },
+          { label: 'Pack Temperature', value: 34, unit: '°C', nominalRange: [20, 48], status: 'good' },
+          { label: 'State of Health (SOH)', value: 98, unit: '%', nominalRange: [80, 100], status: 'good' }
+        ],
+        description: 'High-density 21700 lithium-ion NMC cell module sealed in IP67 aluminum chassis under the floorboard.',
+        diagnosticFinding: 'Active cell voltage balancing is operating with less than 4mV delta between series groups.',
+        recommendation: 'Charge to 100% once weekly on standard 5A socket for cell calibration.'
+      },
+      {
+        id: 'esc-motor',
+        name: '6.4 kW High-Torque PMSM Mid-Drive Motor',
+        shortName: 'PMSM Motor',
+        category: 'Powertrain',
+        status: 'good',
+        healthPct: 96,
+        position3D: [0, 0.32, -0.3],
+        cameraFocusPosition: [0, 0.32, -0.3],
+        cameraPosition: [1.2, 0.6, -0.2],
+        metrics: [
+          { label: 'Motor Speed', value: 3850, unit: 'RPM', nominalRange: [0, 7500], status: 'good' },
+          { label: 'Motor Temperature', value: 48, unit: '°C', nominalRange: [25, 85], status: 'good' },
+          { label: 'Instant Torque', value: 26.0, unit: 'Nm', nominalRange: [0, 26.0], status: 'good' },
+          { label: 'Efficiency Index', value: 94.5, unit: '%', nominalRange: [85, 98], status: 'good' }
+        ],
+        description: 'Mid-mounted Permanent Magnet Synchronous Motor delivering 26 Nm instantaneous torque with Gates carbon drive belt.',
+        diagnosticFinding: 'Electric motor coils, rotor magnets, and bearings are operating at nominal peak efficiency.',
+        recommendation: 'Check carbon drive belt tension at scheduled 10,000 km maintenance.'
+      },
+      {
+        id: 'esc-bms',
+        name: 'Smart Battery Management System (BMS)',
+        shortName: 'Smart BMS',
+        category: 'Electrical',
+        status: 'good',
+        healthPct: 98,
+        position3D: [0, 0.36, 0.32],
+        cameraFocusPosition: [0, 0.36, 0.32],
+        cameraPosition: [0.9, 0.75, 0.45],
+        metrics: [
+          { label: 'Max Cell Delta', value: '4 mV (Balanced)', unit: '', status: 'good' },
+          { label: 'Thermal Sensors', value: '6/6 Active', unit: '', status: 'good' },
+          { label: 'Insulation Resistance', value: '> 500 MΩ', unit: '', status: 'good' }
+        ],
+        description: 'Automotive-grade micro-controller monitoring individual cell voltages, over-current protection, and thermal throttling.',
+        diagnosticFinding: 'Cell balancing is active with zero insulation leakage or thermal hot spots.',
+        recommendation: 'Firmware is running latest OTA release v2.4.1.'
+      },
+      {
+        id: 'esc-controller',
+        name: 'FOC (Field-Oriented Control) Motor Controller Inverter',
+        shortName: 'Motor Controller',
+        category: 'Electrical',
+        status: 'good',
+        healthPct: 96,
+        position3D: [0, 0.44, 0.05],
+        cameraFocusPosition: [0, 0.44, 0.05],
+        cameraPosition: [1.1, 0.8, 0.15],
+        metrics: [
+          { label: 'MOSFET Inverter Temp', value: 40, unit: '°C', nominalRange: [25, 75], status: 'good' },
+          { label: 'Peak Current Output', value: 125, unit: 'A', nominalRange: [0, 150], status: 'good' },
+          { label: 'Throttle Response', value: '12 ms', unit: '', status: 'good' }
+        ],
+        description: 'High frequency vector motor controller managing power delivery and variable regenerative energy recovery.',
+        diagnosticFinding: 'Inverter power transistors and heat sink dissipation are completely stable.',
+        recommendation: 'No action needed.'
+      },
+      {
+        id: 'esc-brakes',
+        name: 'Hydraulic Disc Brakes & Regenerative CBS System',
+        shortName: 'Brakes & Regen',
+        category: 'Braking',
+        status: 'good',
+        healthPct: 94,
+        position3D: [0, 0.22, 0.82],
+        cameraFocusPosition: [0, 0.22, 0.82],
+        cameraPosition: [1.2, 0.5, 0.95],
+        metrics: [
+          { label: 'Front Pad Life', value: 85, unit: '%', nominalRange: [30, 100], status: 'good' },
+          { label: 'Rear Pad Life', value: 82, unit: '%', nominalRange: [30, 100], status: 'good' },
+          { label: 'Regen Braking Recovery', value: 14.2, unit: 'A', nominalRange: [0, 30], status: 'good' }
+        ],
+        description: '200mm front & 190mm rear disc brakes with Combined Braking System (CBS) and magnetic regenerative energy recovery.',
+        diagnosticFinding: 'Brake pads have generous thickness thanks to regenerative electric engine braking.',
+        recommendation: 'Inspect DOT 4 brake fluid level at regular service.'
+      },
+      {
+        id: 'esc-tyres',
+        name: '12-Inch Low-Rolling-Resistance Tubeless Tyres',
+        shortName: 'Tyres (12-inch)',
+        category: 'Chassis',
+        status: 'good',
+        healthPct: 92,
+        position3D: [0, 0.22, -0.72],
+        cameraFocusPosition: [0, 0.22, -0.72],
+        cameraPosition: [1.3, 0.5, -0.85],
+        metrics: [
+          { label: 'Front Pressure', value: 30.0, unit: 'PSI', nominalRange: [28, 33], status: 'good' },
+          { label: 'Rear Pressure', value: 32.5, unit: 'PSI', nominalRange: [30, 35], status: 'good' },
+          { label: 'Tread Depth', value: 4.2, unit: 'mm', nominalRange: [2.0, 5.5], status: 'good' }
+        ],
+        description: '90/90-12 front and 100/80-12 rear tubeless tyres engineered for low rolling drag and wet road grip.',
+        diagnosticFinding: 'Tread depth and cold inflation pressures are optimal for maximum true riding range.',
+        recommendation: 'Check tyre pressures weekly with digital gauge.'
+      },
+      {
+        id: 'esc-display',
+        name: '7-inch Capacitive Touchscreen TFT Smart Dashboard',
+        shortName: 'Smart Dashboard',
+        category: 'Telemetry',
+        status: 'good',
+        healthPct: 97,
+        position3D: [0, 0.98, 0.44],
+        cameraFocusPosition: [0, 0.98, 0.44],
+        cameraPosition: [0.6, 1.25, 0.65],
+        metrics: [
+          { label: 'LTE / BLE Signal', value: '-62 dBm (Strong)', unit: '', status: 'good' },
+          { label: 'TrueRange Estimate', value: 118, unit: 'km', nominalRange: [20, 150], status: 'good' },
+          { label: 'Riding Mode', value: 'Ride (Eco/Sport/Warp)', unit: '', status: 'good' }
+        ],
+        description: 'IP65-rated 7-inch color display running onboard navigation, live telemetry diagnostics, and BLE connectivity.',
+        diagnosticFinding: 'Dashboard touch response and cloud telematics sync are active with zero latency.',
+        recommendation: 'Keep screen clean with microfiber cloth.'
+      },
+      {
+        id: 'esc-suspension',
+        name: 'Front Telescopic Forks & Offset Rear Monoshock',
+        shortName: 'Suspension',
+        category: 'Chassis',
+        status: 'good',
+        healthPct: 94,
+        position3D: [0, 0.45, 0.65],
+        cameraFocusPosition: [0, 0.45, 0.65],
+        cameraPosition: [1.2, 0.75, 0.85],
+        metrics: [
+          { label: 'Front Travel', value: '110 mm', unit: '', status: 'good' },
+          { label: 'Rear Preload', value: 'Nominal (Stage 3)', unit: '', status: 'good' }
+        ],
+        description: 'Telescopic hydraulic front suspension and rear asymmetrical progressive monoshock tuned for urban comfort.',
+        diagnosticFinding: 'Dampers absorb potholes smoothly with zero oil seepage from seals.',
+        recommendation: 'Inspect fork seals during periodic washes.'
+      }
+    ],
+    sensors: [
+      { id: 'sesc-soc', label: 'Battery SOC', value: 84, unit: '%', nominalRange: [15, 100], status: 'good', category: 'electrical', isLiveAnimated: true },
+      { id: 'sesc-range', label: 'TrueRange Left', value: 118, unit: 'km', nominalRange: [10, 150], status: 'good', category: 'powertrain', isLiveAnimated: true },
+      { id: 'sesc-speed', label: 'Vehicle Speed', value: 42, unit: 'km/h', nominalRange: [0, 90], status: 'good', category: 'powertrain', isLiveAnimated: true },
+      { id: 'sesc-rpm', label: 'Motor RPM', value: 3850, unit: 'rpm', nominalRange: [0, 7500], status: 'good', category: 'powertrain', isLiveAnimated: true },
+      { id: 'sesc-btemp', label: 'Battery Temp', value: 34, unit: '°C', nominalRange: [20, 48], status: 'good', category: 'thermal' },
+      { id: 'sesc-mtemp', label: 'Motor Temp', value: 48, unit: '°C', nominalRange: [25, 85], status: 'good', category: 'thermal' },
+      { id: 'sesc-regen', label: 'Regen Current', value: 14.2, unit: 'A', nominalRange: [0, 30], status: 'good', category: 'electrical', isLiveAnimated: true },
+      { id: 'sesc-invtemp', label: 'Inverter Temp', value: 40, unit: '°C', nominalRange: [25, 75], status: 'good', category: 'thermal' }
+    ],
+    maintenance: [
+      { id: 'mesc-belt', name: 'Gates Carbon Drive Belt Inspection & Tension', intervalValue: '10,000 km', dueValue: '10,000 km', remainingValue: '1,360 km remaining', remainingNumber: 1360, status: 'good', action: 'Inspect carbon belt teeth and adjust acoustic tension to 45 Hz.', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹400 – ₹1,800' },
+      { id: 'mesc-brake', name: 'Hydraulic Disc Brake Pads & Fluid Bleed', intervalValue: '10,000 km', dueValue: '10,000 km', remainingValue: '1,360 km remaining', remainingNumber: 1360, status: 'good', action: 'Measure front/rear brake pad thickness and check DOT 4 fluid clarity.', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹850 – ₹1,600' },
+      { id: 'mesc-bms', name: 'Battery Pack Health & Active Cell Balancing', intervalValue: '15,000 km', dueValue: '15,000 km', remainingValue: '6,360 km remaining', remainingNumber: 6360, status: 'good', action: 'Full high-voltage BMS conductance diagnostic and capacity test.', lastCompleted: 'First Service (01 Sep 2025)', costRange: '₹0 (Under Warranty)' },
+      { id: 'mesc-tyres', name: 'Tyre Tread & Wheel Alignment', intervalValue: '8,000 km', dueValue: '10,000 km', remainingValue: '1,360 km remaining', remainingNumber: 1360, status: 'good', action: 'Check 12-inch tubeless tire tread and wheel balance.', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹300 – ₹600' }
+    ],
+    alerts: [
+      {
+        id: 'alt-sc1',
+        title: 'Battery Cell Temperature & Balance Optimal',
+        subsystem: 'EV High-Voltage Battery',
+        urgency: 'good',
+        whatHappened: 'All 21700 lithium battery modules are operating within 34°C with balanced 4mV cell delta.',
+        whyItMatters: 'Healthy thermal parameters maximize battery lifespan and preserve 100+ km TrueRange.',
+        whatShouldIDo: 'No action needed. Charge with regular home charger for optimal battery longevity.',
+        timestamp: 'Today, 08:30 AM',
+        componentId: 'esc-battery'
       }
     ]
   }
@@ -698,7 +927,8 @@ export function createCustomVehicleConfig(
     driveType?: string;
   }
 ): VehicleConfig {
-  const base = JSON.parse(JSON.stringify(VEHICLE_CONFIGURATIONS[type])) as VehicleConfig;
+  const baseKey = (type === 'scooter' || (type as string) === 'electric_scooter') ? 'scooter' : type;
+  const base = JSON.parse(JSON.stringify(VEHICLE_CONFIGURATIONS[baseKey] || VEHICLE_CONFIGURATIONS.car)) as VehicleConfig;
   base.id = `veh-${type}-${Date.now()}`;
 
   if (custom.make || custom.model) {
@@ -754,7 +984,7 @@ export function createCustomVehicleConfig(
       base.components.forEach(comp => {
         if (comp.id === 'engine') comp.position3D = [0, 0.62, 1.25];
         if (comp.id === 'battery') comp.position3D = [-0.55, 0.68, 1.05];
-        if (comp.id === 'transmission') comp.position3D = [0, 0.46, 0.4];
+        if (comp.id === 'transmission') comp.position3D = [0.46, 0.46, 0.4];
         if (comp.id === 'brakes') comp.position3D = [0.98, 0.36, 1.25];
         if (comp.id === 'cooling') comp.position3D = [0, 0.52, 1.75];
         if (comp.id === 'tyres') comp.position3D = [-0.98, 0.36, -1.15];

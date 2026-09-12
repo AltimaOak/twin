@@ -3,6 +3,7 @@ import type { VehicleConfig, VehicleComponentData } from '../../data/vehicleConf
 import { ThreeScene } from './ThreeScene';
 import type { ProjectedCallout, HoveredPartInfo } from './ThreeScene';
 import { ComponentCallout } from './ComponentCallout';
+import type { LabelDisplayMode } from './ComponentCallout';
 import { VEHICLE_PAINT_PALETTES } from './ProceduralVehicles';
 import {
   RotateCcw,
@@ -10,7 +11,10 @@ import {
   ZoomOut,
   Layers,
   Sparkles,
-  Sliders
+  Sliders,
+  Tag,
+  Radio,
+  AlertTriangle
 } from 'lucide-react';
 
 interface VehicleViewerProps {
@@ -33,6 +37,7 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
   const [isExploded, setIsExploded] = useState(false);
   const [isAutoRotate, setIsAutoRotate] = useState(false);
   const [activeViewPreset, setActiveViewPreset] = useState<'iso' | 'top' | 'side' | 'front'>('iso');
+  const [labelDisplayMode, setLabelDisplayMode] = useState<LabelDisplayMode>('smart');
 
   const defaultPaintId = vehicleConfig.type === 'car' ? 'sapphire' : 'apex-orange';
 
@@ -146,6 +151,7 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
           <ComponentCallout
             key={callout.id}
             callout={callout}
+            displayMode={labelDisplayMode}
             isSelected={selectedComponent?.id === callout.id}
             onSelect={(comp) => onSelectComponent(comp)}
           />
@@ -160,21 +166,67 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
         <span className="text-stone-500 hidden sm:inline">3D Twin</span>
       </div>
 
-      {/* Top Right: Camera View Presets */}
-      <div className="absolute top-3 right-3 z-10 flex items-center gap-0.5 sm:gap-1 bg-white/90 backdrop-blur-md border border-stone-200/80 p-0.5 sm:p-1 rounded-xl shadow-sm text-xs">
-        {(['iso', 'top', 'side', 'front'] as const).map((preset) => (
+      {/* Top Right: Label Mode & Camera View Presets */}
+      <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5">
+        {/* Label Density / Mode Switcher */}
+        <div className="flex items-center bg-white/90 backdrop-blur-md border border-stone-200/80 p-0.5 rounded-xl shadow-sm text-xs">
           <button
-            key={preset}
-            onClick={() => handleViewPreset(preset)}
-            className={`px-2 sm:px-2.5 py-1 text-xs font-medium rounded-lg capitalize transition-colors ${
-              activeViewPreset === preset
-                ? 'bg-orange-600 text-white font-semibold shadow-sm'
+            type="button"
+            onClick={() => setLabelDisplayMode('smart')}
+            title="Smart Staggered Labels (Uncongested)"
+            className={`flex items-center gap-1 px-2 py-1 text-[11px] font-medium rounded-lg transition-colors ${
+              labelDisplayMode === 'smart'
+                ? 'bg-orange-50 text-orange-700 font-bold border border-orange-200/60'
                 : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
             }`}
           >
-            {preset === 'iso' ? '3D' : preset}
+            <Tag className="w-3 h-3 text-orange-600" />
+            <span className="hidden sm:inline">Labels</span>
           </button>
-        ))}
+          <button
+            type="button"
+            onClick={() => setLabelDisplayMode('hotspots')}
+            title="Minimal Hotspot Beacons"
+            className={`flex items-center gap-1 px-2 py-1 text-[11px] font-medium rounded-lg transition-colors ${
+              labelDisplayMode === 'hotspots'
+                ? 'bg-orange-50 text-orange-700 font-bold border border-orange-200/60'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+            }`}
+          >
+            <Radio className="w-3 h-3 text-orange-600" />
+            <span className="hidden sm:inline">Hotspots</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setLabelDisplayMode('alerts_only')}
+            title="Show Alerts Only"
+            className={`flex items-center gap-1 px-2 py-1 text-[11px] font-medium rounded-lg transition-colors ${
+              labelDisplayMode === 'alerts_only'
+                ? 'bg-orange-50 text-orange-700 font-bold border border-orange-200/60'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+            }`}
+          >
+            <AlertTriangle className="w-3 h-3 text-amber-600" />
+            <span className="hidden sm:inline">Alerts Only</span>
+          </button>
+        </div>
+
+        {/* Camera View Presets */}
+        <div className="flex items-center gap-0.5 sm:gap-1 bg-white/90 backdrop-blur-md border border-stone-200/80 p-0.5 sm:p-1 rounded-xl shadow-sm text-xs">
+          {(['iso', 'top', 'side', 'front'] as const).map((preset) => (
+            <button
+              key={preset}
+              onClick={() => handleViewPreset(preset)}
+              className={`px-2 sm:px-2.5 py-1 text-xs font-medium rounded-lg capitalize transition-colors ${
+                activeViewPreset === preset
+                  ? 'bg-orange-600 text-white font-semibold shadow-sm'
+                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+              }`}
+            >
+              {preset === 'iso' ? '3D' : preset}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Bottom Floating Simple Controls */}

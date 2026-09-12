@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Vehicle, VehicleType } from '../../types/vehicle';
-import { Car, Bike, Gamepad2, Radio, Info } from 'lucide-react';
+import { Car, Bike, Zap, Gamepad2, Radio, Info } from 'lucide-react';
 
 interface VehicleSelectorProps {
   activeVehicle: Vehicle;
@@ -33,6 +33,13 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
       protocol: 'Motorcycle CAN'
     },
     {
+      type: 'scooter',
+      label: 'EV Scooter',
+      sublabel: 'Ather 450X Gen 3 (2024)',
+      icon: <Zap className="w-4 h-4" />,
+      protocol: 'EV CAN / BLE'
+    },
+    {
       type: 'rcCar',
       label: 'RC Car',
       sublabel: 'Traxxas Slash 4x4 Brushless',
@@ -51,19 +58,19 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
           <div className="text-xs font-mono">
             <span className="text-slate-400 uppercase">Auto-Detection: </span>
             <span className="font-bold text-cyan-300">
-              Vehicle Detected: {activeVehicle.type === 'car' ? 'Passenger Car' : activeVehicle.type === 'bike' ? 'Motorcycle' : 'RC Telemetry Vehicle'}
+              Vehicle Detected: {activeVehicle.type === 'car' ? 'Passenger Car' : activeVehicle.type === 'bike' ? 'Motorcycle' : (activeVehicle.type === 'scooter' || activeVehicle.type === 'electricScooter') ? 'Smart Electric Scooter' : 'RC Telemetry Vehicle'}
             </span>
           </div>
         </div>
 
         {/* Switcher Tabs */}
-        <div className="flex bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+        <div className="flex flex-wrap bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
           {vehicleOptions.map((opt) => (
             <button
               key={opt.type}
               onClick={() => onSelectVehicleType(opt.type)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-medium transition-all ${
-                activeVehicle.type === opt.type
+                activeVehicle.type === opt.type || (opt.type === 'scooter' && activeVehicle.type === 'electricScooter')
                   ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
               }`}
@@ -83,6 +90,8 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
               <Car className="w-6 h-6" />
             ) : activeVehicle.type === 'bike' ? (
               <Bike className="w-6 h-6" />
+            ) : (activeVehicle.type === 'scooter' || activeVehicle.type === 'electricScooter') ? (
+              <Zap className="w-6 h-6" />
             ) : (
               <Gamepad2 className="w-6 h-6" />
             )}
@@ -93,6 +102,11 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
               <span>
                 {activeVehicle.make} {activeVehicle.model} {activeVehicle.year}
               </span>
+              {(activeVehicle.type === 'scooter' || activeVehicle.type === 'electricScooter') && (
+                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                  SMART EV BMS LINK
+                </span>
+              )}
               {activeVehicle.type === 'rcCar' && (
                 <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
                   RC TELEMETRY MODE

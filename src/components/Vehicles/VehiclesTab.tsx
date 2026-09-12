@@ -5,6 +5,7 @@ import { VEHICLE_CONFIGURATIONS } from '../../data/vehicleConfigurations';
 import {
   Car,
   Bike,
+  Zap,
   Gamepad2,
   Check,
   Plus,
@@ -23,6 +24,8 @@ export const VehiclesTab: React.FC<VehiclesTabProps> = ({ onNavigateToSetup }) =
     switch (type) {
       case 'motorcycle':
         return <Bike className="w-5 h-5 text-orange-600" />;
+      case 'scooter':
+        return <Zap className="w-5 h-5 text-emerald-600" />;
       case 'rc_car':
         return <Gamepad2 className="w-5 h-5 text-orange-600" />;
       default:
@@ -56,6 +59,15 @@ export const VehiclesTab: React.FC<VehiclesTabProps> = ({ onNavigateToSetup }) =
       mileage: VEHICLE_CONFIGURATIONS.motorcycle.specifications.mileageOrCycles,
       score: VEHICLE_CONFIGURATIONS.motorcycle.healthIndex.overallScore,
       protocol: 'Bluetooth BLE'
+    },
+    {
+      category: 'scooter',
+      name: VEHICLE_CONFIGURATIONS.scooter.model.name,
+      year: VEHICLE_CONFIGURATIONS.scooter.model.year,
+      typeLabel: 'Smart EV Scooter',
+      mileage: VEHICLE_CONFIGURATIONS.scooter.specifications.mileageOrCycles,
+      score: VEHICLE_CONFIGURATIONS.scooter.healthIndex.overallScore,
+      protocol: 'EV CAN / BLE'
     },
     {
       category: 'rc_car',
@@ -94,7 +106,7 @@ export const VehiclesTab: React.FC<VehiclesTabProps> = ({ onNavigateToSetup }) =
       </div>
 
       {/* Vehicle Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {vehicleList.map((veh) => {
           const isActive = selectedCategory === veh.category;
           return (
