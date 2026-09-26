@@ -31,14 +31,14 @@ export const DEFAULT_VEHICLES: Record<string, Vehicle> = {
   scooter: {
     id: 'veh-scooter-04',
     type: 'scooter',
-    make: 'Ather',
-    model: '450X Gen 3',
+    make: 'Hero Electric',
+    model: 'Electric Optima CX 5.0',
     year: 2024,
-    fuelType: 'Electric (3.7 kWh Li-ion)',
+    fuelType: 'Electric (60.8V Dual Li-ion Pack)',
     mileageKm: 8640,
-    vinOrSerial: 'ME4ATH450XN881920',
-    ecuProtocol: 'Smart EV CAN / Bluetooth BLE (ISO 11898)',
-    connectionType: 'Direct BLE Wireless / Diagnostic Connector',
+    vinOrSerial: 'MMX-OPT-CX5-2024',
+    ecuProtocol: 'ESP32 + MPU6050 + A3144 + MAX6675',
+    connectionType: 'ESP32 Direct Telemetry (BLE 5.2 / UART 115200)',
     components: electricScooterComponents
   },
   rcCar: {

@@ -35,9 +35,9 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
     {
       type: 'scooter',
       label: 'EV Scooter',
-      sublabel: 'Ather 450X Gen 3 (2024)',
+      sublabel: 'Electric Optima CX 5.0 (2024)',
       icon: <Zap className="w-4 h-4" />,
-      protocol: 'EV CAN / BLE'
+      protocol: 'ESP32 / BLE'
     },
     {
       type: 'rcCar',

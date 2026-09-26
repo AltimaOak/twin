@@ -30,7 +30,7 @@ export interface VehicleSensorData {
   unit: string;
   nominalRange: [number, number];
   status: ComponentHealthStatus;
-  category: 'powertrain' | 'electrical' | 'thermal' | 'chassis' | 'telemetry';
+  category: 'powertrain' | 'electrical' | 'thermal' | 'braking' | 'chassis' | 'telemetry' | 'fuel';
   isLiveAnimated?: boolean;
 }
 
@@ -684,50 +684,53 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
     id: 'veh-scooter-default',
     type: 'scooter',
     categoryLabel: 'Electric Scooter (Smart EV)',
-    detectionLabel: 'Vehicle Detected: Smart Electric Scooter (CAN / BLE Diagnostic)',
+    detectionLabel: 'Vehicle Detected: Electric Optima CX 5.0 (ESP32 Telemetry)',
     model: {
-      name: 'Hero Electric Optima',
+      name: 'Electric Optima CX 5.0',
       year: 2024,
-      make: 'Ather',
-      variant: '450X 3.7 kWh Pro',
-      vinOrSerial: 'ME4ATH450XN881920',
+      make: 'Hero Electric',
+      variant: 'Optima CX 5.0 Dual Battery (ESP32 Monitored)',
+      vinOrSerial: 'MMX-OPT-CX5-2024',
       model3D: '/models/scooters/electric-scooter.glb',
       icon: 'Zap'
     },
     specifications: {
-      engineOrMotor: '6.4 kW PMSM Mid-Drive Motor (26 Nm)',
-      transmissionOrEsc: 'Single-Speed Belt Reduction (Gates Carbon Drive)',
-      driveType: 'High-Efficiency Belt Final Drive',
-      fuelOrBatteryType: 'Electric (3.7 kWh 21700 Li-ion)',
-      mileageOrCycles: '8,640 km (142 full cycles)',
-      curbWeight: '108 kg',
-      topSpeed: '90 km/h (0-40 in 3.3s)'
+      engineOrMotor: 'PMSM Motor (A3144 Hall Telemetry)',
+      transmissionOrEsc: 'FOC Vector Controller (MAX6675 Thermocouple)',
+      driveType: 'High-Efficiency Mid-Drive Reduction',
+      fuelOrBatteryType: 'Electric (60.8V Dual Advanced Li-ion)',
+      mileageOrCycles: '8,640 km (142 cycles)',
+      curbWeight: '93 kg',
+      topSpeed: '55 km/h'
     },
     hardwareLink: {
-      protocol: 'Smart EV CAN / Bluetooth BLE (ISO 11898)',
-      medium: 'Direct BLE Wireless / Diagnostic Connector',
-      deviceId: 'MMX-00124',
-      latencyMs: 22,
-      signalDbm: -62,
-      baudRateOrFrequency: '250 kbps CAN / BLE 5.2'
+      protocol: 'ESP32 + MPU6050 + A3144 + MAX6675',
+      medium: 'ESP32 Serial (115200 Baud) / Direct BLE 5.2',
+      deviceId: 'MOTOMINDX-CX5-ESP32',
+      latencyMs: 0.6,
+      signalDbm: -58,
+      baudRateOrFrequency: '115200 Baud / 10s Telemetry Cycle'
     },
     healthIndex: {
-      overallScore: 78,
+      overallScore: 80,
       grade: 'B',
-      statusText: 'ATTENTION RECOMMENDED',
-      summary: 'Battery pack SOH (63%) and BMS require balancing inspection. Motor efficiency is at 81% and front suspension dampening should be checked.',
+      statusText: 'CHECK SOON',
+      summary: 'ESP32 Live Diagnostics: 5 components flagged CHECK SOON (Battery Pack 63%, PMSM Motor 81%, Smart BMS 63%, Motor Controller 81%, Suspension 75%). 3 components GOOD (Brakes 85%, Tyres 92%, Dashboard 100%). Reference standard health: 100%.',
       subsystems: [
-        { id: 'sub-esc-bat', name: 'High-Voltage Battery & BMS', score: 63, weight: 0.35, status: 'check_soon', iconName: 'Zap', summary: 'Pack SOH 63%, cell balancing advised' },
-        { id: 'sub-esc-mot', name: 'PMSM Motor & Inverter', score: 81, weight: 0.25, status: 'check_soon', iconName: 'Cpu', summary: 'Vector control efficiency 81%' },
-        { id: 'sub-esc-belt', name: 'Gates Carbon Drive Belt', score: 88, weight: 0.15, status: 'good', iconName: 'Activity', summary: 'Tension 45 Hz (Nominal: 40-55 Hz)' },
-        { id: 'sub-esc-brk', name: 'Regen Braking & Discs', score: 85, weight: 0.15, status: 'good', iconName: 'Shield', summary: 'Front & rear pads 85%, Regen active' },
-        { id: 'sub-esc-tyre', name: '12-inch EV Tyres', score: 92, weight: 0.10, status: 'good', iconName: 'Activity', summary: '30.0 PSI Front, 32.5 PSI Rear' }
+        { id: 'sub-esc-bat', name: 'Battery Pack', score: 63, weight: 0.20, status: 'check_soon', iconName: 'Zap', summary: 'Standard 100% | Live 63.0% | Diff 37.0% (CHECK SOON)' },
+        { id: 'sub-esc-mot', name: 'PMSM Motor', score: 81, weight: 0.15, status: 'check_soon', iconName: 'Cpu', summary: 'Standard 100% | Live 81.0% | Diff 19.0% (CHECK SOON)' },
+        { id: 'sub-esc-bms', name: 'Smart BMS', score: 63, weight: 0.15, status: 'check_soon', iconName: 'Zap', summary: 'Standard 100% | Live 63.0% | Diff 37.0% (CHECK SOON)' },
+        { id: 'sub-esc-ctrl', name: 'Motor Controller', score: 81, weight: 0.15, status: 'check_soon', iconName: 'Cpu', summary: 'Standard 100% | Live 81.0% | Diff 19.0% (CHECK SOON)' },
+        { id: 'sub-esc-brk', name: 'Brakes & Regen', score: 85, weight: 0.10, status: 'good', iconName: 'Shield', summary: 'Standard 100% | Live 85.0% | Diff 15.0% (GOOD)' },
+        { id: 'sub-esc-tyre', name: 'Tyres (12-inch)', score: 92, weight: 0.10, status: 'good', iconName: 'Activity', summary: 'Standard 100% | Live 92.0% | Diff 8.0% (GOOD)' },
+        { id: 'sub-esc-dash', name: 'Smart Dashboard', score: 100, weight: 0.05, status: 'good', iconName: 'Gauge', summary: 'Standard 100% | Live 99.9% | Diff 0.14% (GOOD)' },
+        { id: 'sub-esc-susp', name: 'Suspension', score: 75, weight: 0.10, status: 'check_soon', iconName: 'Activity', summary: 'Standard 100% | Live 75.2% | Diff 24.76% (CHECK SOON)' }
       ]
     },
     components: [
       {
         id: 'esc-battery',
-        name: '3.7 kWh IP67 High-Voltage Lithium-Ion Battery Pack',
+        name: 'Battery Pack',
         shortName: 'Battery Pack',
         category: 'Electrical',
         status: 'check_soon',
@@ -736,18 +739,20 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         cameraFocusPosition: [0, 0.28, 0.12],
         cameraPosition: [1.2, 0.65, 0.3],
         metrics: [
-          { label: 'State of Charge (SOC)', value: 84, unit: '%', nominalRange: [15, 100], status: 'good' },
-          { label: 'Pack Voltage', value: 50.8, unit: 'V', nominalRange: [42.0, 58.8], status: 'good' },
-          { label: 'Pack Temperature', value: 36, unit: '°C', nominalRange: [20, 48], status: 'good' },
-          { label: 'State of Health (SOH)', value: 63, unit: '%', nominalRange: [80, 100], status: 'check_soon' }
+          { label: 'Voltage', value: 60.8, unit: 'V', nominalRange: [59.5, 62.0], status: 'good' },
+          { label: 'Temperature (simulated)', value: 32.0, unit: '°C', nominalRange: [29, 38], status: 'good' },
+          { label: 'Charge (simulated)', value: 63.0, unit: '%', nominalRange: [60, 66], status: 'check_soon' },
+          { label: 'Standard Health', value: '100.0%', unit: '', status: 'good' },
+          { label: 'Live Health', value: '63.0%', unit: '', status: 'check_soon' },
+          { label: 'Difference', value: '37.00%', unit: '', status: 'check_soon' }
         ],
-        description: 'High-density 21700 lithium-ion NMC cell module sealed in IP67 aluminum chassis under the floorboard.',
-        diagnosticFinding: 'Battery State of Health (SOH) degraded to 63%. Cell capacity variance detected across module packs.',
-        recommendation: 'Perform high-voltage battery diagnostic and balance charge at service center.'
+        description: 'Advanced dual lithium-ion battery pack engineered for Electric Optima CX 5.0.',
+        diagnosticFinding: 'Standard Health: 100.0% | Live Health: 63.0% | Difference: 37.00% | Status: CHECK SOON (<85%). Voltage: 60.8V, Temp: 32.0°C, SOC: 63.0%.',
+        recommendation: 'Perform battery pack equalization balance charge and schedule service diagnostics.'
       },
       {
         id: 'esc-motor',
-        name: '6.4 kW High-Torque PMSM Mid-Drive Motor',
+        name: 'PMSM Motor',
         shortName: 'PMSM Motor',
         category: 'Powertrain',
         status: 'check_soon',
@@ -756,18 +761,23 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         cameraFocusPosition: [0, 0.32, -0.3],
         cameraPosition: [1.2, 0.6, -0.2],
         metrics: [
-          { label: 'Motor Speed', value: 3850, unit: 'RPM', nominalRange: [0, 7500], status: 'good' },
-          { label: 'Motor Temperature', value: 54, unit: '°C', nominalRange: [25, 85], status: 'good' },
-          { label: 'Instant Torque', value: 24.2, unit: 'Nm', nominalRange: [0, 26.0], status: 'good' },
-          { label: 'Efficiency Index', value: 81, unit: '%', nominalRange: [85, 98], status: 'check_soon' }
+          { label: 'Motor RPM (A3144)', value: 3850, unit: 'RPM', nominalRange: [0, 5000], status: 'good' },
+          { label: 'Efficiency (simulated)', value: 81.0, unit: '%', nominalRange: [80, 82], status: 'check_soon' },
+          { label: 'Vibration RMS (MPU6050)', value: 0.000, unit: 'g', nominalRange: [0, 0.08], status: 'good' },
+          { label: 'Acceleration X', value: 0.012, unit: 'g', nominalRange: [-2, 2], status: 'good' },
+          { label: 'Acceleration Y', value: 0.008, unit: 'g', nominalRange: [-2, 2], status: 'good' },
+          { label: 'Acceleration Z', value: 0.998, unit: 'g', nominalRange: [0.8, 1.2], status: 'good' },
+          { label: 'Standard Health', value: '100.0%', unit: '', status: 'good' },
+          { label: 'Live Health', value: '81.0%', unit: '', status: 'check_soon' },
+          { label: 'Difference', value: '19.00%', unit: '', status: 'check_soon' }
         ],
-        description: 'Mid-mounted Permanent Magnet Synchronous Motor delivering 26 Nm instantaneous torque with Gates carbon drive belt.',
-        diagnosticFinding: 'PMSM motor operating efficiency is at 81%, slight thermal dissipation observed under heavy load.',
-        recommendation: 'Inspect motor cooling jacket and check carbon drive belt tension.'
+        description: 'High-torque Permanent Magnet Synchronous Motor with A3144 Hall speed sensor interrupt.',
+        diagnosticFinding: 'Standard Health: 100.0% | Live Health: 81.0% | Difference: 19.00% | Status: CHECK SOON (<85%). Efficiency at 81.0%, RPM: 3850, MPU6050 Vibration RMS: 0.000g.',
+        recommendation: 'Check motor stator windings and clean cooling fins.'
       },
       {
         id: 'esc-bms',
-        name: 'Smart Battery Management System (BMS)',
+        name: 'Smart BMS',
         shortName: 'Smart BMS',
         category: 'Electrical',
         status: 'check_soon',
@@ -776,17 +786,19 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         cameraFocusPosition: [0, 0.36, 0.32],
         cameraPosition: [0.9, 0.75, 0.45],
         metrics: [
-          { label: 'Max Cell Delta', value: '28 mV (Imbalance)', unit: '', status: 'check_soon' },
-          { label: 'Thermal Sensors', value: '6/6 Active', unit: '', status: 'good' },
-          { label: 'Insulation Resistance', value: '> 500 MΩ', unit: '', status: 'good' }
+          { label: 'Cell Delta (simulated)', value: 28.0, unit: 'mV', nominalRange: [26, 30], status: 'check_soon' },
+          { label: 'BMS Temperature (simulated)', value: 38.0, unit: '°C', nominalRange: [36, 40], status: 'good' },
+          { label: 'Standard Health', value: '100.0%', unit: '', status: 'good' },
+          { label: 'Live Health', value: '63.0%', unit: '', status: 'check_soon' },
+          { label: 'Difference', value: '37.00%', unit: '', status: 'check_soon' }
         ],
-        description: 'Automotive-grade micro-controller monitoring individual cell voltages, over-current protection, and thermal throttling.',
-        diagnosticFinding: 'BMS reports cell group imbalance of 28mV across module packs, health index at 63%.',
-        recommendation: 'Allow full overnight balance charge on standard AC slow charger; schedule BMS diagnostic if delta persists.'
+        description: 'Automotive micro-controller managing individual cell balance, delta monitoring, and thermal cutoffs.',
+        diagnosticFinding: 'Standard Health: 100.0% | Live Health: 63.0% | Difference: 37.00% | Status: CHECK SOON (<85%). Cell Delta: 28.0 mV, BMS Temp: 38.0°C.',
+        recommendation: 'Allow slow overnight AC balance charge to equalize cell groups.'
       },
       {
         id: 'esc-controller',
-        name: 'FOC (Field-Oriented Control) Motor Controller Inverter',
+        name: 'Motor Controller',
         shortName: 'Motor Controller',
         category: 'Electrical',
         status: 'check_soon',
@@ -795,17 +807,19 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         cameraFocusPosition: [0, 0.44, 0.05],
         cameraPosition: [1.1, 0.8, 0.15],
         metrics: [
-          { label: 'MOSFET Inverter Temp', value: 46, unit: '°C', nominalRange: [25, 75], status: 'good' },
-          { label: 'Peak Current Output', value: 118, unit: 'A', nominalRange: [0, 150], status: 'good' },
-          { label: 'Throttle Response', value: '16 ms', unit: '', status: 'good' }
+          { label: 'Controller Temp (MAX6675)', value: 46.5, unit: '°C', nominalRange: [25, 75], status: 'good' },
+          { label: 'Efficiency (simulated)', value: 81.0, unit: '%', nominalRange: [80, 82], status: 'check_soon' },
+          { label: 'Standard Health', value: '100.0%', unit: '', status: 'good' },
+          { label: 'Live Health', value: '81.0%', unit: '', status: 'check_soon' },
+          { label: 'Difference', value: '19.00%', unit: '', status: 'check_soon' }
         ],
-        description: 'High frequency vector motor controller managing power delivery and variable regenerative energy recovery.',
-        diagnosticFinding: 'Motor controller inverter running at 81% efficiency with slight gate drive temperature rise.',
-        recommendation: 'Check inverter heatsink thermal paste at next scheduled service.'
+        description: 'FOC vector controller with MAX6675 direct thermocouple GPIO temperature probe.',
+        diagnosticFinding: 'Standard Health: 100.0% | Live Health: 81.0% | Difference: 19.00% | Status: CHECK SOON (<85%). Controller Temp: 46.5°C, Efficiency: 81.0%.',
+        recommendation: 'Inspect controller heatsink thermal interface material and airflow.'
       },
       {
         id: 'esc-brakes',
-        name: 'Hydraulic Disc Brakes & Regenerative CBS System',
+        name: 'Brakes & Regen',
         shortName: 'Brakes & Regen',
         category: 'Braking',
         status: 'good',
@@ -814,17 +828,19 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         cameraFocusPosition: [0, 0.22, 0.82],
         cameraPosition: [1.2, 0.5, 0.95],
         metrics: [
-          { label: 'Front 200mm Pad Life', value: 85, unit: '%', nominalRange: [30, 100], status: 'good' },
-          { label: 'Rear 190mm Pad Life', value: 82, unit: '%', nominalRange: [30, 100], status: 'good' },
-          { label: 'Regen Braking Recovery', value: 14.2, unit: 'A', nominalRange: [0, 30], status: 'good' }
+          { label: 'Brake Temp (simulated)', value: 30.0, unit: '°C', nominalRange: [28, 35], status: 'good' },
+          { label: 'Brake Material (simulated)', value: 85.0, unit: '%', nominalRange: [84, 86], status: 'good' },
+          { label: 'Standard Health', value: '100.0%', unit: '', status: 'good' },
+          { label: 'Live Health', value: '85.0%', unit: '', status: 'good' },
+          { label: 'Difference', value: '15.00%', unit: '', status: 'good' }
         ],
-        description: '200mm front & 190mm rear disc brakes with Combined Braking System (CBS) and magnetic regenerative energy recovery.',
-        diagnosticFinding: 'Brake pads have 85% friction material remaining thanks to regenerative electric engine braking.',
-        recommendation: 'Inspect DOT 4 brake fluid level at regular service.'
+        description: 'Mechanical dual disc braking with regenerative electrical braking assist.',
+        diagnosticFinding: 'Standard Health: 100.0% | Live Health: 85.0% | Difference: 15.00% | Status: GOOD (>=85%). Brake Temp: 30.0°C, Friction Material: 85.0%.',
+        recommendation: 'Braking system is in good operating condition.'
       },
       {
         id: 'esc-tyres',
-        name: '12-Inch Low-Rolling-Resistance Tubeless Tyres',
+        name: 'Tyres (12-inch)',
         shortName: 'Tyres (12-inch)',
         category: 'Chassis',
         status: 'good',
@@ -833,17 +849,18 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         cameraFocusPosition: [0, 0.22, -0.72],
         cameraPosition: [1.3, 0.5, -0.85],
         metrics: [
-          { label: 'Front Pressure', value: 30.0, unit: 'PSI', nominalRange: [28, 33], status: 'good' },
-          { label: 'Rear Pressure', value: 32.5, unit: 'PSI', nominalRange: [30, 35], status: 'good' },
-          { label: 'Tread Depth', value: 4.2, unit: 'mm', nominalRange: [2.0, 5.5], status: 'good' }
+          { label: 'Tyre Pressure (simulated)', value: 32.2, unit: 'PSI', nominalRange: [31, 33], status: 'good' },
+          { label: 'Standard Health', value: '100.0%', unit: '', status: 'good' },
+          { label: 'Live Health', value: '92.0%', unit: '', status: 'good' },
+          { label: 'Difference', value: '8.00%', unit: '', status: 'good' }
         ],
-        description: '90/90-12 front and 100/80-12 rear tubeless tyres engineered for low rolling drag and wet road grip.',
-        diagnosticFinding: 'Tread depth and cold inflation pressures are optimal for maximum true riding range.',
-        recommendation: 'Check tyre pressures weekly with digital gauge.'
+        description: '12-inch low rolling resistance tubeless tyres tuned for Electric Optima CX 5.0.',
+        diagnosticFinding: 'Standard Health: 100.0% | Live Health: 92.0% | Difference: 8.00% | Status: GOOD (>=85%). Tyre Pressure: 32.2 PSI (Nominal 31–33 PSI).',
+        recommendation: 'Maintain cold tire pressures at 32 PSI for optimum range and tire life.'
       },
       {
         id: 'esc-display',
-        name: '7-inch Capacitive Touchscreen TFT Smart Dashboard',
+        name: 'Smart Dashboard',
         shortName: 'Smart Dashboard',
         category: 'Telemetry',
         status: 'good',
@@ -852,17 +869,19 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         cameraFocusPosition: [0, 0.98, 0.44],
         cameraPosition: [0.6, 1.25, 0.65],
         metrics: [
-          { label: 'LTE / BLE Signal', value: '-58 dBm (Strong)', unit: '', status: 'good' },
-          { label: 'TrueRange Estimate', value: 98, unit: 'km', nominalRange: [20, 150], status: 'good' },
-          { label: 'Riding Mode', value: 'Ride (Eco/Sport/Warp)', unit: '', status: 'good' }
+          { label: 'Response (simulated)', value: 99.6, unit: '%', nominalRange: [99, 100], status: 'good' },
+          { label: 'Latency (simulated)', value: 0.6, unit: 'ms', nominalRange: [0, 2], status: 'good' },
+          { label: 'Standard Health', value: '100.0%', unit: '', status: 'good' },
+          { label: 'Live Health', value: '99.9%', unit: '', status: 'good' },
+          { label: 'Difference', value: '0.14%', unit: '', status: 'good' }
         ],
-        description: 'IP65-rated 7-inch color display running onboard navigation, live telemetry diagnostics, and BLE connectivity.',
-        diagnosticFinding: 'Dashboard touch response and cloud telematics sync are operating at 100% with zero latency.',
-        recommendation: 'Keep screen clean with microfiber cloth.'
+        description: 'Smart digital instrument console with Bluetooth BLE telematics uplink.',
+        diagnosticFinding: 'Standard Health: 100.0% | Live Health: 99.9% | Difference: 0.14% | Status: GOOD (>=85%). Response: 99.6%, Latency: 0.6 ms.',
+        recommendation: 'Smart Dashboard display and telemetry pipeline operating optimally.'
       },
       {
         id: 'esc-suspension',
-        name: 'Front Telescopic Forks & Offset Rear Monoshock',
+        name: 'Suspension',
         shortName: 'Suspension',
         category: 'Chassis',
         status: 'check_soon',
@@ -871,41 +890,74 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         cameraFocusPosition: [0, 0.45, 0.65],
         cameraPosition: [1.2, 0.75, 0.85],
         metrics: [
-          { label: 'Front Travel', value: '95 mm (Slight Sag)', unit: '', status: 'check_soon' },
-          { label: 'Rear Preload', value: 'Stage 2 (Soft)', unit: '', status: 'good' }
+          { label: 'Vibration RMS (MPU6050)', value: 0.000, unit: 'g', nominalRange: [0, 0.08], status: 'good' },
+          { label: 'Firmness (simulated)', value: 74.0, unit: '%', nominalRange: [74, 76], status: 'check_soon' },
+          { label: 'Standard Health', value: '100.0%', unit: '', status: 'good' },
+          { label: 'Live Health', value: '75.2%', unit: '', status: 'check_soon' },
+          { label: 'Difference', value: '24.76%', unit: '', status: 'check_soon' }
         ],
-        description: 'Telescopic hydraulic front suspension and rear asymmetrical progressive monoshock tuned for urban comfort.',
-        diagnosticFinding: 'Front telescopic forks show 75% dampening firmness with slight rebound softening.',
-        recommendation: 'Inspect fork seals and preload setting during scheduled maintenance.'
+        description: 'Telescopic front suspension forks and rear dual shock absorbers.',
+        diagnosticFinding: 'Standard Health: 100.0% | Live Health: 75.2% | Difference: 24.76% | Status: CHECK SOON (<85%). Vibration RMS: 0.000g, Firmness: 74.0%.',
+        recommendation: 'Inspect telescopic fork oil level and check rebound dampening.'
       }
     ],
     sensors: [
-      { id: 'sesc-soc', label: 'Battery SOC', value: 84, unit: '%', nominalRange: [15, 100], status: 'good', category: 'electrical', isLiveAnimated: true },
-      { id: 'sesc-range', label: 'TrueRange Left', value: 118, unit: 'km', nominalRange: [10, 150], status: 'good', category: 'powertrain', isLiveAnimated: true },
-      { id: 'sesc-speed', label: 'Vehicle Speed', value: 42, unit: 'km/h', nominalRange: [0, 90], status: 'good', category: 'powertrain', isLiveAnimated: true },
-      { id: 'sesc-rpm', label: 'Motor RPM', value: 3850, unit: 'rpm', nominalRange: [0, 7500], status: 'good', category: 'powertrain', isLiveAnimated: true },
-      { id: 'sesc-btemp', label: 'Battery Temp', value: 34, unit: '°C', nominalRange: [20, 48], status: 'good', category: 'thermal' },
-      { id: 'sesc-mtemp', label: 'Motor Temp', value: 48, unit: '°C', nominalRange: [25, 85], status: 'good', category: 'thermal' },
-      { id: 'sesc-regen', label: 'Regen Current', value: 14.2, unit: 'A', nominalRange: [0, 30], status: 'good', category: 'electrical', isLiveAnimated: true },
-      { id: 'sesc-invtemp', label: 'Inverter Temp', value: 40, unit: '°C', nominalRange: [25, 75], status: 'good', category: 'thermal' }
+      { id: 'sesc-volt', label: 'Battery Voltage', value: 60.8, unit: 'V', nominalRange: [59.5, 62.0], status: 'good', category: 'electrical', isLiveAnimated: true },
+      { id: 'sesc-soc', label: 'Battery SOC', value: 63.0, unit: '%', nominalRange: [60, 66], status: 'good', category: 'electrical', isLiveAnimated: true },
+      { id: 'sesc-btemp', label: 'Battery Temp', value: 32.0, unit: '°C', nominalRange: [29, 38], status: 'good', category: 'thermal' },
+      { id: 'sesc-rpm', label: 'Motor RPM (A3144)', value: 3850, unit: 'rpm', nominalRange: [0, 5000], status: 'good', category: 'powertrain', isLiveAnimated: true },
+      { id: 'sesc-moteff', label: 'Motor Efficiency', value: 81.0, unit: '%', nominalRange: [80, 82], status: 'check_soon', category: 'powertrain' },
+      { id: 'sesc-vib', label: 'Vibration RMS (MPU6050)', value: 0.000, unit: 'g', nominalRange: [0, 0.08], status: 'good', category: 'chassis', isLiveAnimated: true },
+      { id: 'sesc-celldelta', label: 'Cell Delta', value: 28.0, unit: 'mV', nominalRange: [26, 30], status: 'check_soon', category: 'electrical' },
+      { id: 'sesc-bmstemp', label: 'BMS Temperature', value: 38.0, unit: '°C', nominalRange: [36, 40], status: 'good', category: 'thermal' },
+      { id: 'sesc-ctrltemp', label: 'Controller Temp (MAX6675)', value: 46.5, unit: '°C', nominalRange: [25, 75], status: 'good', category: 'thermal' },
+      { id: 'sesc-ctrleff', label: 'Controller Efficiency', value: 81.0, unit: '%', nominalRange: [80, 82], status: 'check_soon', category: 'electrical' },
+      { id: 'sesc-brktemp', label: 'Brake Temp', value: 30.0, unit: '°C', nominalRange: [28, 35], status: 'good', category: 'braking' },
+      { id: 'sesc-brkmat', label: 'Brake Material', value: 85.0, unit: '%', nominalRange: [84, 86], status: 'good', category: 'braking' },
+      { id: 'sesc-tyre', label: 'Tyre Pressure', value: 32.2, unit: 'PSI', nominalRange: [31, 33], status: 'good', category: 'chassis' },
+      { id: 'sesc-dashresp', label: 'Dashboard Response', value: 99.6, unit: '%', nominalRange: [99, 100], status: 'good', category: 'telemetry' },
+      { id: 'sesc-dashlat', label: 'Dashboard Latency', value: 0.6, unit: 'ms', nominalRange: [0, 2], status: 'good', category: 'telemetry' },
+      { id: 'sesc-firmness', label: 'Suspension Firmness', value: 74.0, unit: '%', nominalRange: [74, 76], status: 'check_soon', category: 'chassis' }
     ],
     maintenance: [
-      { id: 'mesc-belt', name: 'Gates Carbon Drive Belt Inspection & Tension', intervalValue: '10,000 km', dueValue: '10,000 km', remainingValue: '1,360 km remaining', remainingNumber: 1360, status: 'good', action: 'Inspect carbon belt teeth and adjust acoustic tension to 45 Hz.', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹400 – ₹1,800' },
-      { id: 'mesc-brake', name: 'Hydraulic Disc Brake Pads & Fluid Bleed', intervalValue: '10,000 km', dueValue: '10,000 km', remainingValue: '1,360 km remaining', remainingNumber: 1360, status: 'good', action: 'Measure front/rear brake pad thickness and check DOT 4 fluid clarity.', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹850 – ₹1,600' },
-      { id: 'mesc-bms', name: 'Battery Pack Health & Active Cell Balancing', intervalValue: '15,000 km', dueValue: '15,000 km', remainingValue: '6,360 km remaining', remainingNumber: 6360, status: 'good', action: 'Full high-voltage BMS conductance diagnostic and capacity test.', lastCompleted: 'First Service (01 Sep 2025)', costRange: '₹0 (Under Warranty)' },
-      { id: 'mesc-tyres', name: 'Tyre Tread & Wheel Alignment', intervalValue: '8,000 km', dueValue: '10,000 km', remainingValue: '1,360 km remaining', remainingNumber: 1360, status: 'good', action: 'Check 12-inch tubeless tire tread and wheel balance.', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹300 – ₹600' }
+      { id: 'mesc-bat', name: 'Battery Pack Equalization & Cell Balance', intervalValue: '10,000 km', dueValue: '9,000 km', remainingValue: 'Due Soon (360 km left)', remainingNumber: 360, status: 'due_soon', action: 'Perform active AC cell balancing to address 28mV cell delta.', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹0 (Under Warranty)' },
+      { id: 'mesc-susp', name: 'Front Telescopic Suspension Inspection', intervalValue: '8,000 km', dueValue: '8,500 km', remainingValue: 'Due Soon', remainingNumber: -140, status: 'due_soon', action: 'Inspect fork seals and check 74% dampening firmness.', lastCompleted: '4,000 km (10 Dec 2025)', costRange: '₹350 – ₹800' },
+      { id: 'mesc-brake', name: 'Hydraulic Disc Brake Pad & Fluid Bleed', intervalValue: '10,000 km', dueValue: '10,000 km', remainingValue: '1,360 km remaining', remainingNumber: 1360, status: 'good', action: 'Measure brake pad friction material (currently 85%).', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹400 – ₹900' },
+      { id: 'mesc-tyres', name: '12-inch Tyre Pressure & Tread Check', intervalValue: '5,000 km', dueValue: '10,000 km', remainingValue: '1,360 km remaining', remainingNumber: 1360, status: 'good', action: 'Maintain cold pressure at 32.2 PSI for maximum efficiency.', lastCompleted: '5,000 km (15 Jan 2026)', costRange: '₹150 – ₹300' }
     ],
     alerts: [
       {
         id: 'alt-sc1',
-        title: 'Battery Cell Temperature & Balance Optimal',
-        subsystem: 'EV High-Voltage Battery',
-        urgency: 'good',
-        whatHappened: 'All 21700 lithium battery modules are operating within 34°C with balanced 4mV cell delta.',
-        whyItMatters: 'Healthy thermal parameters maximize battery lifespan and preserve 100+ km TrueRange.',
-        whatShouldIDo: 'No action needed. Charge with regular home charger for optimal battery longevity.',
+        title: 'Battery Pack Health 63% (Difference: 37.0%)',
+        subsystem: 'Battery Pack',
+        urgency: 'check_soon',
+        whatHappened: 'Battery Pack live health is 63.0% against standard 100.0% (difference: 37.00%). Voltage at 60.8V, SOC at 63.0%.',
+        whyItMatters: 'Capacity variation across cell packs can trigger early BMS thermal throttling.',
+        whatShouldIDo: 'Connect to slow AC home charger overnight for multi-stage cell balancing.',
         timestamp: 'Today, 08:30 AM',
         componentId: 'esc-battery'
+      },
+      {
+        id: 'alt-sc2',
+        title: 'Smart BMS Cell Delta at 28.0 mV',
+        subsystem: 'Smart BMS',
+        urgency: 'check_soon',
+        whatHappened: 'BMS detected cell imbalance of 28.0 mV with BMS temperature at 38.0°C. Live health: 63.0%.',
+        whyItMatters: 'Imbalances reduce usable battery capacity and accelerate cell wear.',
+        whatShouldIDo: 'Allow vehicle to complete full 100% trickle charge balance cycle.',
+        timestamp: 'Today, 08:30 AM',
+        componentId: 'esc-bms'
+      },
+      {
+        id: 'alt-sc3',
+        title: 'Suspension Firmness 74.0% (Live Health: 75.2%)',
+        subsystem: 'Suspension',
+        urgency: 'check_soon',
+        whatHappened: 'Suspension firmness measured at 74.0% with 24.76% difference from reference standard. MPU6050 Vibration RMS: 0.000g.',
+        whyItMatters: 'Softer rebound dampening impacts ride quality over road bumps.',
+        whatShouldIDo: 'Inspect telescopic fork seals and preload setting at upcoming service.',
+        timestamp: 'Yesterday, 04:15 PM',
+        componentId: 'esc-suspension'
       }
     ]
   }

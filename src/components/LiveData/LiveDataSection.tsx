@@ -4,7 +4,10 @@ import {
   Gauge,
   Thermometer,
   Zap,
-  Fuel
+  Fuel,
+  Shield,
+  Activity,
+  Radio
 } from 'lucide-react';
 
 interface LiveDataSectionProps {
@@ -29,6 +32,12 @@ export const LiveDataSection: React.FC<LiveDataSectionProps> = ({ vehicleConfig 
         return <Zap className="w-4 h-4 text-orange-600" />;
       case 'fuel':
         return <Fuel className="w-4 h-4 text-orange-600" />;
+      case 'braking':
+        return <Shield className="w-4 h-4 text-orange-600" />;
+      case 'chassis':
+        return <Activity className="w-4 h-4 text-orange-600" />;
+      case 'telemetry':
+        return <Radio className="w-4 h-4 text-orange-600" />;
       default:
         return <Gauge className="w-4 h-4 text-orange-600" />;
     }
@@ -78,8 +87,11 @@ export const LiveDataSection: React.FC<LiveDataSectionProps> = ({ vehicleConfig 
   const categories = [
     { id: 'all', label: 'All Sensors' },
     { id: 'powertrain', label: 'Powertrain' },
+    { id: 'electrical', label: 'Electrical' },
     { id: 'thermal', label: 'Thermal' },
-    { id: 'electrical', label: 'Electrical' }
+    { id: 'braking', label: 'Braking' },
+    { id: 'chassis', label: 'Chassis' },
+    { id: 'telemetry', label: 'Telemetry' }
   ];
 
   return (

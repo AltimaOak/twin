@@ -50,11 +50,49 @@ export interface RcCarTelemetry {
   batteryCapacityMahRemaining: number;
 }
 
+export interface ComponentHealthReading {
+  name: string;
+  standard: number;
+  live: number;
+  diff: number;
+  status: 'GOOD' | 'CHECK SOON';
+}
+
+export interface ElectricScooterTelemetry {
+  speedKmh: number;
+  // Sensor readings from Arduino sketch:
+  batteryVoltageV: number;
+  batteryTempC: number;
+  batterySocPct: number;
+  motorRpm: number;
+  motorEfficiencyPct: number;
+  vibrationRmsG: number;
+  accelX: number;
+  accelY: number;
+  accelZ: number;
+  cellDeltaMv: number;
+  bmsTempC: number;
+  controllerTempC: number;
+  controllerEfficiencyPct: number;
+  brakeTempC: number;
+  brakeMaterialPct: number;
+  tyrePressurePsi: number;
+  dashboardResponsePct: number;
+  dashboardLatencyMs: number;
+  suspensionFirmnessPct: number;
+  // Hardware status
+  mpuAvailable: boolean;
+  thermocoupleAvailable: boolean;
+  // 8 Monitored Components Health
+  parts: ComponentHealthReading[];
+}
+
 export type TelemetryData = {
   timestamp: number;
   car?: CarTelemetry;
   bike?: BikeTelemetry;
   rcCar?: RcCarTelemetry;
+  scooter?: ElectricScooterTelemetry;
 };
 
 export interface TelemetryHistoryPoint {
@@ -65,3 +103,12 @@ export interface TelemetryHistoryPoint {
   voltage: number;
   loadOrCurrent: number;
 }
+
+export interface LiveTelemetrySnapshot {
+  car?: CarTelemetry;
+  bike?: BikeTelemetry;
+  rcCar?: RcCarTelemetry;
+  scooter?: ElectricScooterTelemetry;
+  history: TelemetryHistoryPoint[];
+}
+

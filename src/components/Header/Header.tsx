@@ -188,7 +188,7 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     <div className="flex items-center gap-2">
                       <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Ather 450X (EV Scooter)</span>
+                      <span>Electric Optima CX 5.0 (EV)</span>
                     </div>
                     {selectedCategory === 'scooter' && <Check className="w-3.5 h-3.5 text-orange-600" />}
                   </button>

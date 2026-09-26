@@ -1,19 +1,21 @@
 import React from 'react';
 import type { VehicleType } from '../../types/vehicle';
-import type { CarTelemetry, BikeTelemetry, RcCarTelemetry } from '../../types/telemetry';
+import type { CarTelemetry, BikeTelemetry, RcCarTelemetry, ElectricScooterTelemetry } from '../../types/telemetry';
 
 interface GaugeClusterProps {
   vehicleType: VehicleType;
   car?: CarTelemetry;
   bike?: BikeTelemetry;
   rcCar?: RcCarTelemetry;
+  scooter?: ElectricScooterTelemetry;
 }
 
 export const GaugeCluster: React.FC<GaugeClusterProps> = ({
   vehicleType,
   car,
   bike,
-  rcCar
+  rcCar,
+  scooter
 }) => {
   let speed = 0;
   let rpm = 0;
@@ -42,6 +44,13 @@ export const GaugeCluster: React.FC<GaugeClusterProps> = ({
     maxRpm = 50000;
     rpmLabel = 'MOTOR RPM';
     gearOrMode = '3S LiPo';
+  } else if ((vehicleType === 'scooter' || (vehicleType as string) === 'electricScooter') && scooter) {
+    speed = scooter.speedKmh;
+    rpm = scooter.motorRpm;
+    maxSpeed = 70;
+    maxRpm = 6000;
+    rpmLabel = 'A3144 MOTOR RPM';
+    gearOrMode = 'DUAL 60.8V';
   }
 
   const speedPct = Math.min(1, Math.max(0, speed / maxSpeed));

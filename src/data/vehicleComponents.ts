@@ -460,7 +460,7 @@ export const rcCarComponents: VehicleComponent[] = [
 export const electricScooterComponents: VehicleComponent[] = [
   {
     id: 'esc-battery',
-    name: '3.7 kWh IP67 High-Voltage Lithium-Ion Battery Pack',
+    name: 'Battery Pack',
     shortName: 'Battery Pack',
     category: 'electrical',
     position3D: [0, 0.28, 0.12],
@@ -468,18 +468,20 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [1.2, 0.65, 0.3],
     status: 'warning',
     metrics: [
-      { label: 'State of Charge (SOC)', value: 84, unit: '%', nominalRange: [15, 100], min: 0, max: 100, status: 'normal' },
-      { label: 'Pack Voltage', value: 50.8, unit: 'V', nominalRange: [42.0, 58.8], min: 38, max: 62, status: 'normal' },
-      { label: 'Pack Temperature', value: 36, unit: '°C', nominalRange: [20, 48], min: 0, max: 65, status: 'normal' },
-      { label: 'State of Health (SOH)', value: 63, unit: '%', nominalRange: [80, 100], min: 0, max: 100, status: 'warning' }
+      { label: 'Voltage', value: 60.8, unit: 'V', nominalRange: [59.5, 62.0], min: 50, max: 70, status: 'normal' },
+      { label: 'Temperature (simulated)', value: 32.0, unit: '°C', nominalRange: [29, 38], min: 0, max: 60, status: 'normal' },
+      { label: 'Charge (simulated)', value: 63.0, unit: '%', nominalRange: [60, 66], min: 0, max: 100, status: 'warning' },
+      { label: 'Standard Health', value: '100.0%', unit: '', status: 'normal' },
+      { label: 'Live Health', value: '63.0%', unit: '', status: 'warning' },
+      { label: 'Difference', value: '37.00%', unit: '', status: 'warning' }
     ],
-    description: 'High-density 21700 lithium-ion NMC cell module with die-cast aluminum enclosure and smart thermal monitoring.',
-    whatDoesThisMean: 'Your battery pack is at 84% charge but State of Health (SOH) has degraded to 63% with cell imbalance.',
-    recommendedAction: 'Schedule a battery diagnostic scan and perform overnight slow AC cell balancing charge.'
+    description: 'Electric Optima CX 5.0 Dual 60V Lithium-ion Battery Pack monitored via ESP32 telemetry.',
+    whatDoesThisMean: 'Standard Health is 100.0% vs Live Health 63.0% (Difference: 37.00%). Voltage at 60.8V, Charge at 63.0%. Status: CHECK SOON (<85%).',
+    recommendedAction: 'Schedule battery cell balancing charge and inspect pack connections.'
   },
   {
     id: 'esc-motor',
-    name: '6.4 kW High-Torque PMSM Mid-Drive Motor',
+    name: 'PMSM Motor',
     shortName: 'PMSM Motor',
     category: 'powertrain',
     position3D: [0, 0.32, -0.3],
@@ -487,18 +489,23 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [1.2, 0.6, -0.2],
     status: 'warning',
     metrics: [
-      { label: 'Motor Speed', value: 3850, unit: 'RPM', nominalRange: [0, 7500], min: 0, max: 8000, status: 'normal' },
-      { label: 'Motor Temperature', value: 54, unit: '°C', nominalRange: [25, 85], min: 0, max: 115, status: 'normal' },
-      { label: 'Instant Torque', value: 24.2, unit: 'Nm', nominalRange: [0, 26.0], min: 0, max: 32, status: 'normal' },
-      { label: 'Efficiency Index', value: 81, unit: '%', nominalRange: [85, 98], min: 0, max: 100, status: 'warning' }
+      { label: 'Motor RPM (A3144)', value: 3850, unit: 'RPM', nominalRange: [0, 5000], min: 0, max: 6000, status: 'normal' },
+      { label: 'Efficiency (simulated)', value: 81.0, unit: '%', nominalRange: [80, 82], min: 0, max: 100, status: 'warning' },
+      { label: 'Vibration RMS (MPU6050)', value: 0.000, unit: 'g', nominalRange: [0, 0.08], min: 0, max: 1, status: 'normal' },
+      { label: 'Acceleration X', value: 0.012, unit: 'g', nominalRange: [-2, 2], min: -4, max: 4, status: 'normal' },
+      { label: 'Acceleration Y', value: 0.008, unit: 'g', nominalRange: [-2, 2], min: -4, max: 4, status: 'normal' },
+      { label: 'Acceleration Z', value: 0.998, unit: 'g', nominalRange: [0.8, 1.2], min: -4, max: 4, status: 'normal' },
+      { label: 'Standard Health', value: '100.0%', unit: '', status: 'normal' },
+      { label: 'Live Health', value: '81.0%', unit: '', status: 'warning' },
+      { label: 'Difference', value: '19.00%', unit: '', status: 'warning' }
     ],
-    description: 'Permanent Magnet Synchronous Motor delivering 26 Nm instantaneous torque with Gates carbon belt final drive.',
-    whatDoesThisMean: 'Electric motor coils and bearings are operating at 81% efficiency with slight thermal load under high throttle.',
-    recommendedAction: 'Inspect motor cooling fins and verify carbon drive belt tension at scheduled maintenance.'
+    description: 'High-torque Permanent Magnet Synchronous Motor with A3144 Hall interrupt telemetry.',
+    whatDoesThisMean: 'Standard Health is 100.0% vs Live Health 81.0% (Difference: 19.00%). Efficiency at 81.0%, RPM 3850, Vibration RMS 0.000g. Status: CHECK SOON.',
+    recommendedAction: 'Inspect motor cooling fins and monitor motor bearing smoothness.'
   },
   {
     id: 'esc-bms',
-    name: 'Smart Battery Management System (BMS)',
+    name: 'Smart BMS',
     shortName: 'Smart BMS',
     category: 'electrical',
     position3D: [0, 0.36, 0.32],
@@ -506,35 +513,39 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [0.9, 0.75, 0.45],
     status: 'warning',
     metrics: [
-      { label: 'Max Cell Delta', value: '28 mV (Imbalance)', unit: '', status: 'warning' },
-      { label: 'Thermal Sensors', value: '6/6 Active', unit: '', status: 'normal' },
-      { label: 'Insulation Resistance', value: '> 500 MΩ', unit: '', status: 'normal' }
+      { label: 'Cell Delta (simulated)', value: '28.0 mV', unit: '', status: 'warning' },
+      { label: 'BMS Temperature (simulated)', value: 38.0, unit: '°C', nominalRange: [36, 40], min: 0, max: 70, status: 'normal' },
+      { label: 'Standard Health', value: '100.0%', unit: '', status: 'normal' },
+      { label: 'Live Health', value: '63.0%', unit: '', status: 'warning' },
+      { label: 'Difference', value: '37.00%', unit: '', status: 'warning' }
     ],
-    description: 'Automotive-grade micro-controller monitoring individual cell voltages, over-current protection, and thermal throttling.',
-    whatDoesThisMean: 'BMS detected a 28mV imbalance across 21700 cell module groups; active cell balancing is working to compensate.',
-    recommendedAction: 'Allow vehicle to remain plugged into regular slow home charger overnight for cell equalization.'
+    description: 'Smart Battery Management System managing active balancing across series cell module groups.',
+    whatDoesThisMean: 'Standard Health: 100.0% vs Live Health: 63.0% (Difference: 37.00%). Cell Delta is 28.0 mV and BMS temp is 38.0°C. Status: CHECK SOON.',
+    recommendedAction: 'Leave plugged into slow AC charger overnight to complete full cell equalization cycle.'
   },
   {
     id: 'esc-controller',
-    name: 'FOC (Field-Oriented Control) Motor Controller Inverter',
+    name: 'Motor Controller',
     shortName: 'Motor Controller',
     category: 'electrical',
     position3D: [0, 0.44, 0.05],
     cameraFocusPosition: [0, 0.44, 0.05],
     cameraPosition: [1.1, 0.8, 0.15],
-    status: 'normal',
+    status: 'warning',
     metrics: [
-      { label: 'MOSFET Inverter Temp', value: 46, unit: '°C', nominalRange: [25, 75], min: 0, max: 95, status: 'normal' },
-      { label: 'Peak Current Output', value: 118, unit: 'A', nominalRange: [0, 150], min: 0, max: 180, status: 'normal' },
-      { label: 'Throttle Response', value: '16 ms', unit: '', status: 'normal' }
+      { label: 'Controller Temp (MAX6675)', value: 46.5, unit: '°C', nominalRange: [25, 75], min: 0, max: 100, status: 'normal' },
+      { label: 'Efficiency (simulated)', value: 81.0, unit: '%', nominalRange: [80, 82], min: 0, max: 100, status: 'warning' },
+      { label: 'Standard Health', value: '100.0%', unit: '', status: 'normal' },
+      { label: 'Live Health', value: '81.0%', unit: '', status: 'warning' },
+      { label: 'Difference', value: '19.00%', unit: '', status: 'warning' }
     ],
-    description: 'High frequency vector motor controller managing power delivery and variable regenerative energy recovery.',
-    whatDoesThisMean: 'Inverter transistors and heatsink heat dissipation are operating normally at 81% efficiency rating.',
-    recommendedAction: 'Check controller thermal paste and heatsink airflow during next service.'
+    description: 'Vector FOC Controller monitored by MAX6675 direct thermocouple GPIO probe.',
+    whatDoesThisMean: 'Standard Health: 100.0% vs Live Health: 81.0% (Difference: 19.00%). Inverter Temp: 46.5°C, Efficiency: 81.0%. Status: CHECK SOON.',
+    recommendedAction: 'Check controller heatsink thermal paste at upcoming periodic check.'
   },
   {
     id: 'esc-brakes',
-    name: 'Hydraulic Disc Brakes & Regenerative CBS System',
+    name: 'Brakes & Regen',
     shortName: 'Brakes & Regen',
     category: 'braking',
     position3D: [0, 0.22, 0.82],
@@ -542,17 +553,19 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [1.2, 0.5, 0.95],
     status: 'normal',
     metrics: [
-      { label: 'Front 200mm Pad Life', value: 85, unit: '%', nominalRange: [30, 100], min: 0, max: 100, status: 'normal' },
-      { label: 'Rear 190mm Pad Life', value: 82, unit: '%', nominalRange: [30, 100], min: 0, max: 100, status: 'normal' },
-      { label: 'Regen Braking Recovery', value: 14.2, unit: 'A', nominalRange: [0, 30], min: 0, max: 35, status: 'normal' }
+      { label: 'Brake Temp (simulated)', value: 30.0, unit: '°C', nominalRange: [28, 35], min: 0, max: 80, status: 'normal' },
+      { label: 'Brake Material (simulated)', value: 85.0, unit: '%', nominalRange: [84, 86], min: 0, max: 100, status: 'normal' },
+      { label: 'Standard Health', value: '100.0%', unit: '', status: 'normal' },
+      { label: 'Live Health', value: '85.0%', unit: '', status: 'normal' },
+      { label: 'Difference', value: '15.00%', unit: '', status: 'normal' }
     ],
-    description: '200mm front & 190mm rear disc brakes with Combined Braking System (CBS) and magnetic regenerative energy recovery.',
-    whatDoesThisMean: 'Mechanical brake pads have 85% life remaining thanks to regenerative electronic engine braking.',
-    recommendedAction: 'Inspect DOT 4 brake fluid level at regular service.'
+    description: 'Dual mechanical disc braking combined with regenerative magnetic motor braking.',
+    whatDoesThisMean: 'Standard Health: 100.0% vs Live Health: 85.0% (Difference: 15.00%). Brake temp: 30.0°C, Pad life: 85.0%. Status: GOOD (>=85%).',
+    recommendedAction: 'Brakes and regeneration are performing within normal parameters.'
   },
   {
     id: 'esc-tyres',
-    name: '12-Inch Low-Rolling-Resistance Tubeless Tyres',
+    name: 'Tyres (12-inch)',
     shortName: 'Tyres (12-inch)',
     category: 'chassis',
     position3D: [0, 0.22, -0.72],
@@ -560,17 +573,18 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [1.3, 0.5, -0.85],
     status: 'normal',
     metrics: [
-      { label: 'Front Pressure', value: 30.0, unit: 'PSI', nominalRange: [28, 33], min: 0, max: 45, status: 'normal' },
-      { label: 'Rear Pressure', value: 32.5, unit: 'PSI', nominalRange: [30, 35], min: 0, max: 45, status: 'normal' },
-      { label: 'Tread Depth', value: 4.2, unit: 'mm', nominalRange: [2.0, 5.5], min: 0, max: 6, status: 'normal' }
+      { label: 'Tyre Pressure (simulated)', value: 32.2, unit: 'PSI', nominalRange: [31, 33], min: 0, max: 50, status: 'normal' },
+      { label: 'Standard Health', value: '100.0%', unit: '', status: 'normal' },
+      { label: 'Live Health', value: '92.0%', unit: '', status: 'normal' },
+      { label: 'Difference', value: '8.00%', unit: '', status: 'normal' }
     ],
-    description: '90/90-12 front and 100/80-12 rear tubeless tyres engineered for low rolling drag and wet road grip.',
-    whatDoesThisMean: 'Tread depth and cold inflation pressures are optimal at 92% integrity index.',
-    recommendedAction: 'Check tire pressures weekly with digital gauge.'
+    description: '12-inch tubeless low rolling drag tyres tuned for Electric Optima CX 5.0.',
+    whatDoesThisMean: 'Standard Health: 100.0% vs Live Health: 92.0% (Difference: 8.00%). Cold pressure: 32.2 PSI (Nominal: 31–33 PSI). Status: GOOD.',
+    recommendedAction: 'Maintain cold tyre pressure at 32 PSI with weekly digital gauge checks.'
   },
   {
     id: 'esc-display',
-    name: '7-inch Capacitive Touchscreen TFT Smart Dashboard',
+    name: 'Smart Dashboard',
     shortName: 'Smart Dashboard',
     category: 'telemetry',
     position3D: [0, 0.98, 0.44],
@@ -578,17 +592,19 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [0.6, 1.25, 0.65],
     status: 'normal',
     metrics: [
-      { label: 'LTE / BLE Signal', value: '-58 dBm (Strong)', unit: '', status: 'normal' },
-      { label: 'TrueRange Estimate', value: 98, unit: 'km', nominalRange: [20, 150], min: 0, max: 160, status: 'normal' },
-      { label: 'Riding Mode', value: 'Ride (Eco/Sport/Warp)', unit: '', status: 'normal' }
+      { label: 'Response (simulated)', value: 99.6, unit: '%', nominalRange: [99, 100], min: 0, max: 100, status: 'normal' },
+      { label: 'Latency (simulated)', value: 0.6, unit: 'ms', nominalRange: [0, 2], min: 0, max: 20, status: 'normal' },
+      { label: 'Standard Health', value: '100.0%', unit: '', status: 'normal' },
+      { label: 'Live Health', value: '99.9%', unit: '', status: 'normal' },
+      { label: 'Difference', value: '0.14%', unit: '', status: 'normal' }
     ],
-    description: 'IP65-rated 7-inch color display running onboard navigation, live telemetry diagnostics, and BLE connectivity.',
-    whatDoesThisMean: 'Dashboard touch response and cloud telematics sync are operating at 100% with zero latency.',
-    recommendedAction: 'Keep screen clean with microfiber cloth.'
+    description: 'High-visibility digital console running Bluetooth BLE telematics pipeline.',
+    whatDoesThisMean: 'Standard Health: 100.0% vs Live Health: 99.9% (Difference: 0.14%). Response: 99.6%, Latency: 0.6 ms. Status: GOOD.',
+    recommendedAction: 'Dashboard display and sensor sync operating at peak efficiency.'
   },
   {
     id: 'esc-suspension',
-    name: 'Front Telescopic Forks & Offset Rear Monoshock',
+    name: 'Suspension',
     shortName: 'Suspension',
     category: 'chassis',
     position3D: [0, 0.45, 0.65],
@@ -596,11 +612,15 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [1.2, 0.75, 0.85],
     status: 'warning',
     metrics: [
-      { label: 'Front Travel', value: '95 mm (Slight Sag)', unit: '', status: 'warning' },
-      { label: 'Rear Preload', value: 'Nominal (Stage 2)', unit: '', status: 'normal' }
+      { label: 'Vibration RMS (MPU6050)', value: 0.000, unit: 'g', nominalRange: [0, 0.08], min: 0, max: 1, status: 'normal' },
+      { label: 'Firmness (simulated)', value: 74.0, unit: '%', nominalRange: [74, 76], min: 0, max: 100, status: 'warning' },
+      { label: 'Standard Health', value: '100.0%', unit: '', status: 'normal' },
+      { label: 'Live Health', value: '75.2%', unit: '', status: 'warning' },
+      { label: 'Difference', value: '24.76%', unit: '', status: 'warning' }
     ],
-    description: 'Telescopic hydraulic front suspension and rear asymmetrical progressive monoshock tuned for urban comfort.',
-    whatDoesThisMean: 'Front telescopic forks show 75% dampening firmness with slight rebound softening.',
-    recommendedAction: 'Inspect fork seals and check suspension travel during periodic checkup.'
+    description: 'Front telescopic forks and rear dual shock absorbers with MPU6050 vibration telemetry.',
+    whatDoesThisMean: 'Standard Health: 100.0% vs Live Health: 75.2% (Difference: 24.76%). Firmness: 74.0%, Vibration RMS: 0.000g. Status: CHECK SOON (<85%).',
+    recommendedAction: 'Check fork oil dampening seals and adjust rear preload spring tension.'
   }
 ];
+

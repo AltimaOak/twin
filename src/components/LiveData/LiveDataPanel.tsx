@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { VehicleType } from '../../types/vehicle';
-import type { CarTelemetry, BikeTelemetry, RcCarTelemetry, TelemetryHistoryPoint } from '../../types/telemetry';
+import type { CarTelemetry, BikeTelemetry, RcCarTelemetry, ElectricScooterTelemetry, TelemetryHistoryPoint } from '../../types/telemetry';
 import { GaugeCluster } from './GaugeCluster';
 import {
   Activity,
@@ -12,7 +12,8 @@ import {
   Radio,
   Sliders,
   TrendingUp,
-  Flame
+  Flame,
+  Shield
 } from 'lucide-react';
 
 interface LiveDataPanelProps {
@@ -20,6 +21,7 @@ interface LiveDataPanelProps {
   car?: CarTelemetry;
   bike?: BikeTelemetry;
   rcCar?: RcCarTelemetry;
+  scooter?: ElectricScooterTelemetry;
   history: TelemetryHistoryPoint[];
 }
 
@@ -28,6 +30,7 @@ export const LiveDataPanel: React.FC<LiveDataPanelProps> = ({
   car,
   bike,
   rcCar,
+  scooter,
   history
 }) => {
   const [activeChartMetric, setActiveChartMetric] = useState<'speed' | 'rpm' | 'temp' | 'load'>('speed');
@@ -61,6 +64,8 @@ export const LiveDataPanel: React.FC<LiveDataPanelProps> = ({
     </div>
   );
 
+  const isScooter = vehicleType === 'scooter' || (vehicleType as string) === 'electricScooter';
+
   return (
     <div className="space-y-4">
       {/* Top Banner with Demo Data Tag */}
@@ -68,20 +73,46 @@ export const LiveDataPanel: React.FC<LiveDataPanelProps> = ({
         <div className="flex items-center gap-2">
           <Activity className="w-4 h-4 text-cyan-400" />
           <h2 className="text-sm font-bold tracking-tight text-white uppercase font-mono">
-            {vehicleType === 'rcCar' ? 'RC Live Telemetry Stream' : 'OBD-II Live Telemetry Stream'}
+            {isScooter
+              ? 'ESP32 + MPU6050 + A3144 + MAX6675 Telemetry Stream'
+              : vehicleType === 'rcCar'
+              ? 'RC Live Telemetry Stream'
+              : 'OBD-II Live Telemetry Stream'}
           </h2>
         </div>
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-950/40 border border-cyan-700/50 text-[11px] font-mono text-cyan-300">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            <span>Demo Data Stream (Active)</span>
+            <span>ESP32 10s Diagnostic Loop</span>
           </div>
         </div>
       </div>
 
       {/* Primary Gauges */}
-      <GaugeCluster vehicleType={vehicleType} car={car} bike={bike} rcCar={rcCar} />
+      <GaugeCluster vehicleType={vehicleType} car={car} bike={bike} rcCar={rcCar} scooter={scooter} />
+
+      {/* EV Scooter Telemetry Grid */}
+      {isScooter && scooter && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {renderMetricCard('Battery Voltage', `${scooter.batteryVoltageV}`, 'V', <Zap className="w-4 h-4 text-emerald-400" />, 'Standard 60V (59.5–62V)', false, 'Live 63% SOH')}
+          {renderMetricCard('Battery SOC', `${scooter.batterySocPct}%`, '', <Fuel className="w-4 h-4 text-amber-400" />, 'CHECK SOON (<85%)', true, 'Dual Pack')}
+          {renderMetricCard('Battery Temp', `${scooter.batteryTempC}`, '°C', <Thermometer className="w-4 h-4 text-cyan-400" />, 'Simulated (29–38°C)')}
+          {renderMetricCard('Motor RPM', `${scooter.motorRpm}`, 'RPM', <Gauge className="w-4 h-4 text-cyan-400" />, 'A3144 Hall ISR', false, 'PMSM')}
+          {renderMetricCard('Motor Efficiency', `${scooter.motorEfficiencyPct}%`, '', <Cpu className="w-4 h-4 text-amber-400" />, 'Live Health: 81.0%', true, 'CHECK SOON')}
+          {renderMetricCard('Vibration RMS', `${scooter.vibrationRmsG}`, 'g', <Activity className="w-4 h-4 text-cyan-400" />, 'MPU6050 100 samples', false, `X:${scooter.accelX} Z:${scooter.accelZ}`)}
+          {renderMetricCard('Cell Delta', `${scooter.cellDeltaMv}`, 'mV', <Zap className="w-4 h-4 text-amber-400" />, 'Smart BMS delta', true, 'CHECK SOON')}
+          {renderMetricCard('BMS Temperature', `${scooter.bmsTempC}`, '°C', <Thermometer className="w-4 h-4 text-cyan-400" />, 'Nominal 36–40°C')}
+          {renderMetricCard('Controller Temp', `${scooter.controllerTempC}`, '°C', <Flame className="w-4 h-4 text-amber-400" />, 'MAX6675 Thermocouple', false, 'Live 81% Health')}
+          {renderMetricCard('Controller Efficiency', `${scooter.controllerEfficiencyPct}%`, '', <Cpu className="w-4 h-4 text-amber-400" />, 'Vector inverter 81%', true)}
+          {renderMetricCard('Brake Material', `${scooter.brakeMaterialPct}%`, '', <Shield className="w-4 h-4 text-emerald-400" />, 'Live Health: 85.0%', false, 'GOOD (>=85%)')}
+          {renderMetricCard('Tyre Pressure', `${scooter.tyrePressurePsi}`, 'PSI', <Sliders className="w-4 h-4 text-emerald-400" />, '12-inch Wheels', false, 'Live 92.0%')}
+          {renderMetricCard('Dashboard Response', `${scooter.dashboardResponsePct}%`, '', <Gauge className="w-4 h-4 text-emerald-400" />, 'Live Health: 99.9%', false, 'GOOD (>=85%)')}
+          {renderMetricCard('Dashboard Latency', `${scooter.dashboardLatencyMs}`, 'ms', <Radio className="w-4 h-4 text-cyan-400" />, 'Near instantaneous')}
+          {renderMetricCard('Suspension Firmness', `${scooter.suspensionFirmnessPct}%`, '', <Activity className="w-4 h-4 text-amber-400" />, 'Live Health: 75.2%', true, 'CHECK SOON')}
+          {renderMetricCard('Hardware Transceiver', 'ESP32', '', <Radio className="w-4 h-4 text-emerald-400" />, 'I2C + SPI + GPIO active', false, '115200 Baud')}
+        </div>
+      )}
 
       {/* Specific Telemetry Grid */}
       {vehicleType === 'car' && car && (
