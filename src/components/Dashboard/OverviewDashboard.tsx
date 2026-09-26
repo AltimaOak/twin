@@ -94,17 +94,17 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
     ? [
         {
           id: 'a1',
-          title: 'BMS cell delta balanced (4mV variance)',
+          title: 'Battery SOH degraded to 63% (Cell delta 28mV)',
           time: 'Today, 08:30 AM',
-          severity: 'Good',
-          icon: <Activity className="w-4 h-4 text-emerald-500" />
+          severity: 'Check soon',
+          icon: <AlertTriangle className="w-4 h-4 text-amber-500" />
         },
         {
           id: 'a2',
-          title: 'Rear tyre cold pressure 29 PSI (nominal: 32)',
+          title: 'Front fork dampening 75% integrity',
           time: 'Yesterday, 05:40 PM',
           severity: 'Check soon',
-          icon: <AlertTriangle className="w-4 h-4 text-amber-500" />
+          icon: <Activity className="w-4 h-4 text-orange-500" />
         }
       ]
     : isBike
@@ -215,7 +215,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                       cy="48"
                       r={radius}
                       fill="none"
-                      stroke="#10b981"
+                      stroke={score >= 90 ? '#10b981' : score >= 75 ? '#f59e0b' : '#ef4444'}
                       strokeWidth="7"
                       strokeDasharray={circumference}
                       strokeDashoffset={strokeDashoffset}
@@ -227,12 +227,12 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                   </div>
                 </div>
 
-                <div className="mt-2.5 flex items-center gap-1 text-xs font-semibold text-emerald-600">
-                  <span>Good Condition</span>
-                  <Info className="w-3.5 h-3.5 text-emerald-500" />
+                <div className={`mt-2.5 flex items-center gap-1 text-xs font-semibold ${score >= 90 ? 'text-emerald-600' : score >= 75 ? 'text-amber-600' : 'text-rose-600'}`}>
+                  <span>{vehicleConfig.healthIndex.statusText || (score >= 90 ? 'Optimal Condition' : 'Attention Recommended')}</span>
+                  <Info className="w-3.5 h-3.5" />
                 </div>
                 <p className="text-[11px] text-stone-500 leading-snug mt-1">
-                  Your vehicle is running smoothly. No immediate action required.
+                  {vehicleConfig.healthIndex.summary || 'Vehicle diagnostics and component integrity monitoring active.'}
                 </p>
               </div>
 

@@ -686,7 +686,7 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
     categoryLabel: 'Electric Scooter (Smart EV)',
     detectionLabel: 'Vehicle Detected: Smart Electric Scooter (CAN / BLE Diagnostic)',
     model: {
-      name: 'Ather 450X Gen 3',
+      name: 'Hero Electric Optima',
       year: 2024,
       make: 'Ather',
       variant: '450X 3.7 kWh Pro',
@@ -712,15 +712,15 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
       baudRateOrFrequency: '250 kbps CAN / BLE 5.2'
     },
     healthIndex: {
-      overallScore: 95,
-      grade: 'A',
-      statusText: 'EXCELLENT',
-      summary: '3.7 kWh high-voltage lithium battery pack and PMSM electric motor are in pristine condition. All 21700 cells balanced with zero voltage delta.',
+      overallScore: 78,
+      grade: 'B',
+      statusText: 'ATTENTION RECOMMENDED',
+      summary: 'Battery pack SOH (63%) and BMS require balancing inspection. Motor efficiency is at 81% and front suspension dampening should be checked.',
       subsystems: [
-        { id: 'sub-esc-bat', name: 'High-Voltage Battery & BMS', score: 98, weight: 0.35, status: 'good', iconName: 'Zap', summary: 'Pack SOH 98%, 34°C normal temp' },
-        { id: 'sub-esc-mot', name: 'PMSM Motor & Inverter', score: 96, weight: 0.25, status: 'good', iconName: 'Cpu', summary: 'Vector control efficiency 94.5%' },
-        { id: 'sub-esc-belt', name: 'Gates Carbon Drive Belt', score: 90, weight: 0.15, status: 'good', iconName: 'Activity', summary: 'Tension 45 Hz (Nominal: 40-55 Hz)' },
-        { id: 'sub-esc-brk', name: 'Regen Braking & Discs', score: 94, weight: 0.15, status: 'good', iconName: 'Shield', summary: 'Front & rear pads 85%, Regen active' },
+        { id: 'sub-esc-bat', name: 'High-Voltage Battery & BMS', score: 63, weight: 0.35, status: 'check_soon', iconName: 'Zap', summary: 'Pack SOH 63%, cell balancing advised' },
+        { id: 'sub-esc-mot', name: 'PMSM Motor & Inverter', score: 81, weight: 0.25, status: 'check_soon', iconName: 'Cpu', summary: 'Vector control efficiency 81%' },
+        { id: 'sub-esc-belt', name: 'Gates Carbon Drive Belt', score: 88, weight: 0.15, status: 'good', iconName: 'Activity', summary: 'Tension 45 Hz (Nominal: 40-55 Hz)' },
+        { id: 'sub-esc-brk', name: 'Regen Braking & Discs', score: 85, weight: 0.15, status: 'good', iconName: 'Shield', summary: 'Front & rear pads 85%, Regen active' },
         { id: 'sub-esc-tyre', name: '12-inch EV Tyres', score: 92, weight: 0.10, status: 'good', iconName: 'Activity', summary: '30.0 PSI Front, 32.5 PSI Rear' }
       ]
     },
@@ -730,78 +730,78 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         name: '3.7 kWh IP67 High-Voltage Lithium-Ion Battery Pack',
         shortName: 'Battery Pack',
         category: 'Electrical',
-        status: 'good',
-        healthPct: 98,
+        status: 'check_soon',
+        healthPct: 63,
         position3D: [0, 0.28, 0.12],
         cameraFocusPosition: [0, 0.28, 0.12],
         cameraPosition: [1.2, 0.65, 0.3],
         metrics: [
           { label: 'State of Charge (SOC)', value: 84, unit: '%', nominalRange: [15, 100], status: 'good' },
-          { label: 'Pack Voltage', value: 51.2, unit: 'V', nominalRange: [42.0, 58.8], status: 'good' },
-          { label: 'Pack Temperature', value: 34, unit: '°C', nominalRange: [20, 48], status: 'good' },
-          { label: 'State of Health (SOH)', value: 98, unit: '%', nominalRange: [80, 100], status: 'good' }
+          { label: 'Pack Voltage', value: 50.8, unit: 'V', nominalRange: [42.0, 58.8], status: 'good' },
+          { label: 'Pack Temperature', value: 36, unit: '°C', nominalRange: [20, 48], status: 'good' },
+          { label: 'State of Health (SOH)', value: 63, unit: '%', nominalRange: [80, 100], status: 'check_soon' }
         ],
         description: 'High-density 21700 lithium-ion NMC cell module sealed in IP67 aluminum chassis under the floorboard.',
-        diagnosticFinding: 'Active cell voltage balancing is operating with less than 4mV delta between series groups.',
-        recommendation: 'Charge to 100% once weekly on standard 5A socket for cell calibration.'
+        diagnosticFinding: 'Battery State of Health (SOH) degraded to 63%. Cell capacity variance detected across module packs.',
+        recommendation: 'Perform high-voltage battery diagnostic and balance charge at service center.'
       },
       {
         id: 'esc-motor',
         name: '6.4 kW High-Torque PMSM Mid-Drive Motor',
         shortName: 'PMSM Motor',
         category: 'Powertrain',
-        status: 'good',
-        healthPct: 96,
+        status: 'check_soon',
+        healthPct: 81,
         position3D: [0, 0.32, -0.3],
         cameraFocusPosition: [0, 0.32, -0.3],
         cameraPosition: [1.2, 0.6, -0.2],
         metrics: [
           { label: 'Motor Speed', value: 3850, unit: 'RPM', nominalRange: [0, 7500], status: 'good' },
-          { label: 'Motor Temperature', value: 48, unit: '°C', nominalRange: [25, 85], status: 'good' },
-          { label: 'Instant Torque', value: 26.0, unit: 'Nm', nominalRange: [0, 26.0], status: 'good' },
-          { label: 'Efficiency Index', value: 94.5, unit: '%', nominalRange: [85, 98], status: 'good' }
+          { label: 'Motor Temperature', value: 54, unit: '°C', nominalRange: [25, 85], status: 'good' },
+          { label: 'Instant Torque', value: 24.2, unit: 'Nm', nominalRange: [0, 26.0], status: 'good' },
+          { label: 'Efficiency Index', value: 81, unit: '%', nominalRange: [85, 98], status: 'check_soon' }
         ],
         description: 'Mid-mounted Permanent Magnet Synchronous Motor delivering 26 Nm instantaneous torque with Gates carbon drive belt.',
-        diagnosticFinding: 'Electric motor coils, rotor magnets, and bearings are operating at nominal peak efficiency.',
-        recommendation: 'Check carbon drive belt tension at scheduled 10,000 km maintenance.'
+        diagnosticFinding: 'PMSM motor operating efficiency is at 81%, slight thermal dissipation observed under heavy load.',
+        recommendation: 'Inspect motor cooling jacket and check carbon drive belt tension.'
       },
       {
         id: 'esc-bms',
         name: 'Smart Battery Management System (BMS)',
         shortName: 'Smart BMS',
         category: 'Electrical',
-        status: 'good',
-        healthPct: 98,
+        status: 'check_soon',
+        healthPct: 63,
         position3D: [0, 0.36, 0.32],
         cameraFocusPosition: [0, 0.36, 0.32],
         cameraPosition: [0.9, 0.75, 0.45],
         metrics: [
-          { label: 'Max Cell Delta', value: '4 mV (Balanced)', unit: '', status: 'good' },
+          { label: 'Max Cell Delta', value: '28 mV (Imbalance)', unit: '', status: 'check_soon' },
           { label: 'Thermal Sensors', value: '6/6 Active', unit: '', status: 'good' },
           { label: 'Insulation Resistance', value: '> 500 MΩ', unit: '', status: 'good' }
         ],
         description: 'Automotive-grade micro-controller monitoring individual cell voltages, over-current protection, and thermal throttling.',
-        diagnosticFinding: 'Cell balancing is active with zero insulation leakage or thermal hot spots.',
-        recommendation: 'Firmware is running latest OTA release v2.4.1.'
+        diagnosticFinding: 'BMS reports cell group imbalance of 28mV across module packs, health index at 63%.',
+        recommendation: 'Allow full overnight balance charge on standard AC slow charger; schedule BMS diagnostic if delta persists.'
       },
       {
         id: 'esc-controller',
         name: 'FOC (Field-Oriented Control) Motor Controller Inverter',
         shortName: 'Motor Controller',
         category: 'Electrical',
-        status: 'good',
-        healthPct: 96,
+        status: 'check_soon',
+        healthPct: 81,
         position3D: [0, 0.44, 0.05],
         cameraFocusPosition: [0, 0.44, 0.05],
         cameraPosition: [1.1, 0.8, 0.15],
         metrics: [
-          { label: 'MOSFET Inverter Temp', value: 40, unit: '°C', nominalRange: [25, 75], status: 'good' },
-          { label: 'Peak Current Output', value: 125, unit: 'A', nominalRange: [0, 150], status: 'good' },
-          { label: 'Throttle Response', value: '12 ms', unit: '', status: 'good' }
+          { label: 'MOSFET Inverter Temp', value: 46, unit: '°C', nominalRange: [25, 75], status: 'good' },
+          { label: 'Peak Current Output', value: 118, unit: 'A', nominalRange: [0, 150], status: 'good' },
+          { label: 'Throttle Response', value: '16 ms', unit: '', status: 'good' }
         ],
         description: 'High frequency vector motor controller managing power delivery and variable regenerative energy recovery.',
-        diagnosticFinding: 'Inverter power transistors and heat sink dissipation are completely stable.',
-        recommendation: 'No action needed.'
+        diagnosticFinding: 'Motor controller inverter running at 81% efficiency with slight gate drive temperature rise.',
+        recommendation: 'Check inverter heatsink thermal paste at next scheduled service.'
       },
       {
         id: 'esc-brakes',
@@ -809,17 +809,17 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         shortName: 'Brakes & Regen',
         category: 'Braking',
         status: 'good',
-        healthPct: 94,
+        healthPct: 85,
         position3D: [0, 0.22, 0.82],
         cameraFocusPosition: [0, 0.22, 0.82],
         cameraPosition: [1.2, 0.5, 0.95],
         metrics: [
-          { label: 'Front Pad Life', value: 85, unit: '%', nominalRange: [30, 100], status: 'good' },
-          { label: 'Rear Pad Life', value: 82, unit: '%', nominalRange: [30, 100], status: 'good' },
+          { label: 'Front 200mm Pad Life', value: 85, unit: '%', nominalRange: [30, 100], status: 'good' },
+          { label: 'Rear 190mm Pad Life', value: 82, unit: '%', nominalRange: [30, 100], status: 'good' },
           { label: 'Regen Braking Recovery', value: 14.2, unit: 'A', nominalRange: [0, 30], status: 'good' }
         ],
         description: '200mm front & 190mm rear disc brakes with Combined Braking System (CBS) and magnetic regenerative energy recovery.',
-        diagnosticFinding: 'Brake pads have generous thickness thanks to regenerative electric engine braking.',
+        diagnosticFinding: 'Brake pads have 85% friction material remaining thanks to regenerative electric engine braking.',
         recommendation: 'Inspect DOT 4 brake fluid level at regular service.'
       },
       {
@@ -847,17 +847,17 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         shortName: 'Smart Dashboard',
         category: 'Telemetry',
         status: 'good',
-        healthPct: 97,
+        healthPct: 100,
         position3D: [0, 0.98, 0.44],
         cameraFocusPosition: [0, 0.98, 0.44],
         cameraPosition: [0.6, 1.25, 0.65],
         metrics: [
-          { label: 'LTE / BLE Signal', value: '-62 dBm (Strong)', unit: '', status: 'good' },
-          { label: 'TrueRange Estimate', value: 118, unit: 'km', nominalRange: [20, 150], status: 'good' },
+          { label: 'LTE / BLE Signal', value: '-58 dBm (Strong)', unit: '', status: 'good' },
+          { label: 'TrueRange Estimate', value: 98, unit: 'km', nominalRange: [20, 150], status: 'good' },
           { label: 'Riding Mode', value: 'Ride (Eco/Sport/Warp)', unit: '', status: 'good' }
         ],
         description: 'IP65-rated 7-inch color display running onboard navigation, live telemetry diagnostics, and BLE connectivity.',
-        diagnosticFinding: 'Dashboard touch response and cloud telematics sync are active with zero latency.',
+        diagnosticFinding: 'Dashboard touch response and cloud telematics sync are operating at 100% with zero latency.',
         recommendation: 'Keep screen clean with microfiber cloth.'
       },
       {
@@ -865,18 +865,18 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
         name: 'Front Telescopic Forks & Offset Rear Monoshock',
         shortName: 'Suspension',
         category: 'Chassis',
-        status: 'good',
-        healthPct: 94,
+        status: 'check_soon',
+        healthPct: 75,
         position3D: [0, 0.45, 0.65],
         cameraFocusPosition: [0, 0.45, 0.65],
         cameraPosition: [1.2, 0.75, 0.85],
         metrics: [
-          { label: 'Front Travel', value: '110 mm', unit: '', status: 'good' },
-          { label: 'Rear Preload', value: 'Nominal (Stage 3)', unit: '', status: 'good' }
+          { label: 'Front Travel', value: '95 mm (Slight Sag)', unit: '', status: 'check_soon' },
+          { label: 'Rear Preload', value: 'Stage 2 (Soft)', unit: '', status: 'good' }
         ],
         description: 'Telescopic hydraulic front suspension and rear asymmetrical progressive monoshock tuned for urban comfort.',
-        diagnosticFinding: 'Dampers absorb potholes smoothly with zero oil seepage from seals.',
-        recommendation: 'Inspect fork seals during periodic washes.'
+        diagnosticFinding: 'Front telescopic forks show 75% dampening firmness with slight rebound softening.',
+        recommendation: 'Inspect fork seals and preload setting during scheduled maintenance.'
       }
     ],
     sensors: [
@@ -954,8 +954,8 @@ export function createCustomVehicleConfig(
     base.specifications.mileageOrCycles = custom.mileageOrCycles.includes('km') || custom.mileageOrCycles.includes('cycle')
       ? custom.mileageOrCycles
       : type === 'rc_car'
-      ? `${custom.mileageOrCycles} cycles`
-      : `${custom.mileageOrCycles} km`;
+        ? `${custom.mileageOrCycles} cycles`
+        : `${custom.mileageOrCycles} km`;
   }
 
   if (custom.engineOrMotor) {

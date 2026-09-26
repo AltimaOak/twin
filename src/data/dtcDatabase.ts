@@ -90,10 +90,10 @@ export const DTC_DATABASE: DiagnosticCode[] = [
     whatShouldIDo: 'No action needed. Periodic slow charging ensures continued cell balance.',
     affectedComponents: ['esc-battery', 'esc-bms'],
     freezeFrame: {
-      'Pack Voltage': '51.4V',
-      'Cell Delta': '4mV',
-      'Pack Temp': '34°C',
-      'State of Health': '98%'
+      'Pack Voltage': '50.8V',
+      'Cell Delta': '28mV',
+      'Pack Temp': '36°C',
+      'State of Health': '63%'
     },
     timestamp: '1 hour ago'
   }

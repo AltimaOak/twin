@@ -466,16 +466,16 @@ export const electricScooterComponents: VehicleComponent[] = [
     position3D: [0, 0.28, 0.12],
     cameraFocusPosition: [0, 0.28, 0.12],
     cameraPosition: [1.2, 0.65, 0.3],
-    status: 'normal',
+    status: 'warning',
     metrics: [
       { label: 'State of Charge (SOC)', value: 84, unit: '%', nominalRange: [15, 100], min: 0, max: 100, status: 'normal' },
-      { label: 'Pack Voltage', value: 51.2, unit: 'V', nominalRange: [42.0, 58.8], min: 38, max: 62, status: 'normal' },
-      { label: 'Pack Temperature', value: 34, unit: '°C', nominalRange: [20, 48], min: 0, max: 65, status: 'normal' },
-      { label: 'State of Health (SOH)', value: 98, unit: '%', nominalRange: [80, 100], min: 0, max: 100, status: 'normal' }
+      { label: 'Pack Voltage', value: 50.8, unit: 'V', nominalRange: [42.0, 58.8], min: 38, max: 62, status: 'normal' },
+      { label: 'Pack Temperature', value: 36, unit: '°C', nominalRange: [20, 48], min: 0, max: 65, status: 'normal' },
+      { label: 'State of Health (SOH)', value: 63, unit: '%', nominalRange: [80, 100], min: 0, max: 100, status: 'warning' }
     ],
     description: 'High-density 21700 lithium-ion NMC cell module with die-cast aluminum enclosure and smart thermal monitoring.',
-    whatDoesThisMean: 'Your battery pack is at 84% charge with perfectly balanced cell voltages and healthy operating temperature.',
-    recommendedAction: 'No action needed. Charge on standard home socket (5A) to keep battery conditioned.'
+    whatDoesThisMean: 'Your battery pack is at 84% charge but State of Health (SOH) has degraded to 63% with cell imbalance.',
+    recommendedAction: 'Schedule a battery diagnostic scan and perform overnight slow AC cell balancing charge.'
   },
   {
     id: 'esc-motor',
@@ -485,16 +485,16 @@ export const electricScooterComponents: VehicleComponent[] = [
     position3D: [0, 0.32, -0.3],
     cameraFocusPosition: [0, 0.32, -0.3],
     cameraPosition: [1.2, 0.6, -0.2],
-    status: 'normal',
+    status: 'warning',
     metrics: [
       { label: 'Motor Speed', value: 3850, unit: 'RPM', nominalRange: [0, 7500], min: 0, max: 8000, status: 'normal' },
-      { label: 'Motor Temperature', value: 48, unit: '°C', nominalRange: [25, 85], min: 0, max: 115, status: 'normal' },
-      { label: 'Instant Torque', value: 26.0, unit: 'Nm', nominalRange: [0, 26.0], min: 0, max: 32, status: 'normal' },
-      { label: 'Efficiency Index', value: 94.5, unit: '%', nominalRange: [85, 98], min: 0, max: 100, status: 'normal' }
+      { label: 'Motor Temperature', value: 54, unit: '°C', nominalRange: [25, 85], min: 0, max: 115, status: 'normal' },
+      { label: 'Instant Torque', value: 24.2, unit: 'Nm', nominalRange: [0, 26.0], min: 0, max: 32, status: 'normal' },
+      { label: 'Efficiency Index', value: 81, unit: '%', nominalRange: [85, 98], min: 0, max: 100, status: 'warning' }
     ],
     description: 'Permanent Magnet Synchronous Motor delivering 26 Nm instantaneous torque with Gates carbon belt final drive.',
-    whatDoesThisMean: 'Electric motor coils, rotor magnets, and bearings are operating at maximum efficiency with zero vibration.',
-    recommendedAction: 'Check carbon drive belt tension at scheduled 10,000 km maintenance.'
+    whatDoesThisMean: 'Electric motor coils and bearings are operating at 81% efficiency with slight thermal load under high throttle.',
+    recommendedAction: 'Inspect motor cooling fins and verify carbon drive belt tension at scheduled maintenance.'
   },
   {
     id: 'esc-bms',
@@ -504,15 +504,15 @@ export const electricScooterComponents: VehicleComponent[] = [
     position3D: [0, 0.36, 0.32],
     cameraFocusPosition: [0, 0.36, 0.32],
     cameraPosition: [0.9, 0.75, 0.45],
-    status: 'normal',
+    status: 'warning',
     metrics: [
-      { label: 'Max Cell Delta', value: '4 mV (Balanced)', unit: '', status: 'normal' },
+      { label: 'Max Cell Delta', value: '28 mV (Imbalance)', unit: '', status: 'warning' },
       { label: 'Thermal Sensors', value: '6/6 Active', unit: '', status: 'normal' },
       { label: 'Insulation Resistance', value: '> 500 MΩ', unit: '', status: 'normal' }
     ],
     description: 'Automotive-grade micro-controller monitoring individual cell voltages, over-current protection, and thermal throttling.',
-    whatDoesThisMean: 'Active cell balancing is operational with zero insulation leakage or thermal hot spots.',
-    recommendedAction: 'Firmware is running latest OTA release v2.4.1.'
+    whatDoesThisMean: 'BMS detected a 28mV imbalance across 21700 cell module groups; active cell balancing is working to compensate.',
+    recommendedAction: 'Allow vehicle to remain plugged into regular slow home charger overnight for cell equalization.'
   },
   {
     id: 'esc-controller',
@@ -524,13 +524,13 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [1.1, 0.8, 0.15],
     status: 'normal',
     metrics: [
-      { label: 'MOSFET Inverter Temp', value: 40, unit: '°C', nominalRange: [25, 75], min: 0, max: 95, status: 'normal' },
-      { label: 'Peak Current Output', value: 125, unit: 'A', nominalRange: [0, 150], min: 0, max: 180, status: 'normal' },
-      { label: 'Throttle Response', value: '12 ms', unit: '', status: 'normal' }
+      { label: 'MOSFET Inverter Temp', value: 46, unit: '°C', nominalRange: [25, 75], min: 0, max: 95, status: 'normal' },
+      { label: 'Peak Current Output', value: 118, unit: 'A', nominalRange: [0, 150], min: 0, max: 180, status: 'normal' },
+      { label: 'Throttle Response', value: '16 ms', unit: '', status: 'normal' }
     ],
     description: 'High frequency vector motor controller managing power delivery and variable regenerative energy recovery.',
-    whatDoesThisMean: 'Inverter transistors and heatsink heat dissipation are completely stable.',
-    recommendedAction: 'No action needed.'
+    whatDoesThisMean: 'Inverter transistors and heatsink heat dissipation are operating normally at 81% efficiency rating.',
+    recommendedAction: 'Check controller thermal paste and heatsink airflow during next service.'
   },
   {
     id: 'esc-brakes',
@@ -547,7 +547,7 @@ export const electricScooterComponents: VehicleComponent[] = [
       { label: 'Regen Braking Recovery', value: 14.2, unit: 'A', nominalRange: [0, 30], min: 0, max: 35, status: 'normal' }
     ],
     description: '200mm front & 190mm rear disc brakes with Combined Braking System (CBS) and magnetic regenerative energy recovery.',
-    whatDoesThisMean: 'Mechanical brake pads have generous life thanks to regenerative electronic engine braking.',
+    whatDoesThisMean: 'Mechanical brake pads have 85% life remaining thanks to regenerative electronic engine braking.',
     recommendedAction: 'Inspect DOT 4 brake fluid level at regular service.'
   },
   {
@@ -565,7 +565,7 @@ export const electricScooterComponents: VehicleComponent[] = [
       { label: 'Tread Depth', value: 4.2, unit: 'mm', nominalRange: [2.0, 5.5], min: 0, max: 6, status: 'normal' }
     ],
     description: '90/90-12 front and 100/80-12 rear tubeless tyres engineered for low rolling drag and wet road grip.',
-    whatDoesThisMean: 'Tread depth and cold inflation pressures are optimal for maximum true riding range.',
+    whatDoesThisMean: 'Tread depth and cold inflation pressures are optimal at 92% integrity index.',
     recommendedAction: 'Check tire pressures weekly with digital gauge.'
   },
   {
@@ -578,12 +578,12 @@ export const electricScooterComponents: VehicleComponent[] = [
     cameraPosition: [0.6, 1.25, 0.65],
     status: 'normal',
     metrics: [
-      { label: 'LTE / BLE Signal', value: '-62 dBm (Strong)', unit: '', status: 'normal' },
-      { label: 'TrueRange Estimate', value: 118, unit: 'km', nominalRange: [20, 150], min: 0, max: 160, status: 'normal' },
+      { label: 'LTE / BLE Signal', value: '-58 dBm (Strong)', unit: '', status: 'normal' },
+      { label: 'TrueRange Estimate', value: 98, unit: 'km', nominalRange: [20, 150], min: 0, max: 160, status: 'normal' },
       { label: 'Riding Mode', value: 'Ride (Eco/Sport/Warp)', unit: '', status: 'normal' }
     ],
     description: 'IP65-rated 7-inch color display running onboard navigation, live telemetry diagnostics, and BLE connectivity.',
-    whatDoesThisMean: 'Dashboard touch response and cloud telematics sync are active with zero latency.',
+    whatDoesThisMean: 'Dashboard touch response and cloud telematics sync are operating at 100% with zero latency.',
     recommendedAction: 'Keep screen clean with microfiber cloth.'
   },
   {
@@ -594,13 +594,13 @@ export const electricScooterComponents: VehicleComponent[] = [
     position3D: [0, 0.45, 0.65],
     cameraFocusPosition: [0, 0.45, 0.65],
     cameraPosition: [1.2, 0.75, 0.85],
-    status: 'normal',
+    status: 'warning',
     metrics: [
-      { label: 'Front Travel', value: '110 mm', unit: '', status: 'normal' },
-      { label: 'Rear Preload', value: 'Nominal (Stage 3)', unit: '', status: 'normal' }
+      { label: 'Front Travel', value: '95 mm (Slight Sag)', unit: '', status: 'warning' },
+      { label: 'Rear Preload', value: 'Nominal (Stage 2)', unit: '', status: 'normal' }
     ],
     description: 'Telescopic hydraulic front suspension and rear asymmetrical progressive monoshock tuned for urban comfort.',
-    whatDoesThisMean: 'Dampers absorb potholes smoothly with zero oil seepage from seals.',
-    recommendedAction: 'Inspect fork seals during periodic washes.'
+    whatDoesThisMean: 'Front telescopic forks show 75% dampening firmness with slight rebound softening.',
+    recommendedAction: 'Inspect fork seals and check suspension travel during periodic checkup.'
   }
 ];
