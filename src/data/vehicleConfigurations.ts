@@ -364,7 +364,7 @@ export const VEHICLE_CONFIGURATIONS: Record<string, VehicleConfig> = {
     categoryLabel: 'Motorcycle',
     detectionLabel: 'Vehicle Detected: Motorcycle (Motorcycle CAN)',
     model: {
-      name: 'Honda CB350 / MT-07',
+      name: 'Honda CB350',
       year: 2024,
       make: 'Honda',
       variant: 'DLX Pro ABS',

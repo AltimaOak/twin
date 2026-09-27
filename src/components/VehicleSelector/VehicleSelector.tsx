@@ -28,7 +28,7 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
     {
       type: 'bike',
       label: 'Motorcycle',
-      sublabel: 'Yamaha MT-07 ABS (2022)',
+      sublabel: 'Honda CB350 H\'ness (2024)',
       icon: <Bike className="w-4 h-4" />,
       protocol: 'Motorcycle CAN'
     },
