@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectCategory,
   connectionState,
   onOpenReportModal: _onOpenReportModal,
-  onOpenConnectionModal: _onOpenConnectionModal,
+  onOpenConnectionModal,
   onOpenChatbot,
   alertCount
 }) => {
@@ -71,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Home Button + Vehicle Title, Status & Last Updated */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          {/* Home Link (Direct way to return to Landing Page on Mobile & Desktop) */}
+          {/* Home Link */}
           <button
             type="button"
             onClick={() => navigate('/')}
@@ -92,22 +92,26 @@ export const Header: React.FC<HeaderProps> = ({
                 {vehicleConfig.model.name} <span className="hidden xs:inline text-stone-400 font-normal">{vehicleConfig.model.year}</span>
               </h1>
 
-              {/* Status Pill Badge */}
-              <span
-                className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold shrink-0 ${
+              {/* Status Pill Button (Click to open Hardware Connect Modal) */}
+              <button
+                type="button"
+                onClick={onOpenConnectionModal}
+                title="Click to configure ESP32 Hardware Connection"
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95 ${
                   isConnected
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
-                    : 'bg-stone-100 text-stone-600 border border-stone-200'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 hover:bg-emerald-100'
+                    : 'bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200'
                 }`}
               >
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    isConnected ? 'bg-emerald-500' : 'bg-stone-400'
+                  className={`w-2 h-2 rounded-full ${
+                    isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-stone-400'
                   }`}
                 />
-                <span className="hidden xs:inline">{isConnected ? 'Connected' : 'Offline'}</span>
-              </span>
+                <span>{isConnected ? 'ESP32 / Link Connected' : 'Connect Hardware'}</span>
+              </button>
             </div>
+
 
             <p className="text-[10px] sm:text-[11px] text-stone-400 font-medium mt-0.5 truncate">
               Last updated: Today, 10:45 AM

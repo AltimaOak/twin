@@ -22,6 +22,8 @@ import {
   Cpu
 } from 'lucide-react';
 
+import { useTelemetry } from '../../hooks/useTelemetry';
+
 interface OverviewDashboardProps {
   vehicleConfig: VehicleConfig;
   onNavigateTab: (tab: SidebarTab) => void;
@@ -33,6 +35,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
   onNavigateTab,
   onOpenReportModal
 }) => {
+  const { car, bike, rcCar, isLiveHardware } = useTelemetry(vehicleConfig.type);
   const isBike = vehicleConfig.type === 'motorcycle';
   const isScooter = vehicleConfig.type === 'scooter';
   const isRC = vehicleConfig.type === 'rc_car';
@@ -43,34 +46,99 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
-  // Tailored Telemetry per vehicle type
+  // Dynamic Live Telemetry per vehicle type
   const liveTelemetry = isRC
     ? [
-        { label: 'Motor RPM', value: '8,420 rpm', icon: <Gauge className="w-4 h-4 text-stone-400" /> },
-        { label: 'ESC Temp', value: '42 °C', icon: <Thermometer className="w-4 h-4 text-stone-400" /> },
-        { label: 'LiPo Voltage', value: '11.8 V', icon: <Battery className="w-4 h-4 text-stone-400" /> },
-        { label: 'Battery Level', value: '85 %', icon: <Zap className="w-4 h-4 text-stone-400" /> }
+        {
+          label: 'Motor RPM',
+          value: rcCar ? `${rcCar.motorRpm.toLocaleString()} rpm` : '0 rpm',
+          icon: <Gauge className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'ESC Temp',
+          value: rcCar ? `${rcCar.escTempC} °C` : '0 °C',
+          icon: <Thermometer className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'LiPo Voltage',
+          value: rcCar ? `${rcCar.packVoltageV.toFixed(2)} V` : '0.00 V',
+          icon: <Battery className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Power Draw',
+          value: rcCar ? `${rcCar.currentDrawAmps.toFixed(1)} A` : '0.0 A',
+          icon: <Zap className="w-4 h-4 text-stone-400" />
+        }
       ]
     : isScooter
     ? [
-        { label: 'Motor RPM', value: '4,200 rpm', icon: <Gauge className="w-4 h-4 text-stone-400" /> },
-        { label: 'Battery Temp', value: '34 °C', icon: <Thermometer className="w-4 h-4 text-stone-400" /> },
-        { label: 'Battery SOC', value: '88 %', icon: <Battery className="w-4 h-4 text-stone-400" /> },
-        { label: 'TrueRange', value: '98 km', icon: <Zap className="w-4 h-4 text-emerald-500" /> }
+        {
+          label: 'Speed',
+          value: bike ? `${bike.speedKmh} km/h` : '0 km/h',
+          icon: <Gauge className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Battery Temp',
+          value: bike ? `${bike.engineTempC} °C` : '0 °C',
+          icon: <Thermometer className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Pack Voltage',
+          value: bike ? `${bike.batteryVoltageV.toFixed(1)} V` : '0.0 V',
+          icon: <Battery className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Throttle / Load',
+          value: bike ? `${bike.throttlePositionPct} %` : '0 %',
+          icon: <Zap className="w-4 h-4 text-emerald-500" />
+        }
       ]
     : isBike
     ? [
-        { label: 'Engine RPM', value: '1,200 rpm', icon: <Gauge className="w-4 h-4 text-stone-400" /> },
-        { label: 'Engine Temp', value: '82 °C', icon: <Thermometer className="w-4 h-4 text-stone-400" /> },
-        { label: 'Battery Voltage', value: '14.1 V', icon: <Battery className="w-4 h-4 text-stone-400" /> },
-        { label: 'Fuel Level', value: '74 %', icon: <Fuel className="w-4 h-4 text-stone-400" /> }
+        {
+          label: 'Engine RPM',
+          value: bike ? `${bike.engineRpm.toLocaleString()} rpm` : '0 rpm',
+          icon: <Gauge className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Engine Temp',
+          value: bike ? `${bike.engineTempC} °C` : '0 °C',
+          icon: <Thermometer className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Battery Voltage',
+          value: bike ? `${bike.batteryVoltageV.toFixed(1)} V` : '0.0 V',
+          icon: <Battery className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Speed',
+          value: bike ? `${bike.speedKmh} km/h` : '0 km/h',
+          icon: <Fuel className="w-4 h-4 text-stone-400" />
+        }
       ]
     : [
-        { label: 'Engine RPM', value: '1,850 rpm', icon: <Gauge className="w-4 h-4 text-stone-400" /> },
-        { label: 'Coolant Temp', value: '89 °C', icon: <Thermometer className="w-4 h-4 text-stone-400" /> },
-        { label: 'Battery Voltage', value: '14.1 V', icon: <Battery className="w-4 h-4 text-stone-400" /> },
-        { label: 'Fuel Level', value: '68 %', icon: <Fuel className="w-4 h-4 text-stone-400" /> }
+        {
+          label: 'Engine RPM',
+          value: car ? `${car.engineRpm.toLocaleString()} rpm` : '0 rpm',
+          icon: <Gauge className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Coolant Temp',
+          value: car ? `${car.coolantTempC} °C` : '0 °C',
+          icon: <Thermometer className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Battery Voltage',
+          value: car ? `${car.batteryVoltageV.toFixed(1)} V` : '0.0 V',
+          icon: <Battery className="w-4 h-4 text-stone-400" />
+        },
+        {
+          label: 'Vehicle Speed',
+          value: car ? `${car.speedKmh} km/h` : '0 km/h',
+          icon: <Fuel className="w-4 h-4 text-stone-400" />
+        }
       ];
+
 
   // Tailored Alerts
   const alerts = isRC
@@ -345,7 +413,16 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         {/* ── CARD 2: LIVE STATUS ── */}
         <div className="bg-white border border-stone-200/90 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex flex-col justify-between">
           <div>
-            <h2 className="text-stone-900 font-semibold text-base">Live Status</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-stone-900 font-semibold text-base">Live Status</h2>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold font-mono ${
+                isLiveHardware
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : 'bg-stone-100 text-stone-600'
+              }`}>
+                {isLiveHardware ? 'ESP32 SENSORS' : 'STANDBY'}
+              </span>
+            </div>
 
             <div className="mt-4 space-y-3">
               {liveTelemetry.map((item, idx) => (

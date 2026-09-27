@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVehicle } from '../context/VehicleContext';
+import { DeviceService } from '../services/deviceService';
 import type { VehicleComponentData } from '../data/vehicleConfigurations';
 import type { ConnectionState, ConnectionLog } from '../types/device';
 import type { SidebarTab } from '../components/Sidebar/Sidebar';
@@ -34,17 +35,24 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ initialTab = 'dash
   const [activeTab, setActiveTab] = useState<SidebarTab>(initialTab);
 
   // Hardware Connection State
-  const [connectionState, setConnectionState] = useState<ConnectionState>('connected');
+  const [connectionState, setConnectionState] = useState<ConnectionState>(() => DeviceService.getInstance().getState());
   const [showConnectionModal, setShowConnectionModal] = useState(false);
   const [showMechanicReport, setShowMechanicReport] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
+  const [connectionLogs, setConnectionLogs] = useState<ConnectionLog[]>(() => DeviceService.getInstance().getLogs());
 
-  // Connection Logs
-  const [connectionLogs, setConnectionLogs] = useState<ConnectionLog[]>([
-    { id: '1', timestamp: '08:30:12', level: 'info', message: 'Diagnostic transceiver initialized on ISO 15765-4.' },
-    { id: '2', timestamp: '08:30:14', level: 'success', message: 'CAN bus handshake successful (500 kbps).' },
-    { id: '3', timestamp: '08:30:15', level: 'info', message: 'Read ECU ID: HONDA-PGM-FI v4.2. Streaming PIDs active.' }
-  ]);
+  React.useEffect(() => {
+    const unsubState = DeviceService.getInstance().onStateChange((st) => {
+      setConnectionState(st);
+    });
+    const unsubLog = DeviceService.getInstance().onLog(() => {
+      setConnectionLogs(DeviceService.getInstance().getLogs());
+    });
+    return () => {
+      unsubState();
+      unsubLog();
+    };
+  }, []);
 
   const vehicleConfig = activeVehicle;
 
@@ -52,27 +60,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ initialTab = 'dash
   const handleSelectCategory = (cat: typeof selectedCategory) => {
     setSelectedCategory(cat);
     setSelectedComponent(null);
-
-    const newLog: ConnectionLog = {
-      id: `${Date.now()}`,
-      timestamp: new Date().toLocaleTimeString(),
-      level: 'info',
-      message: `Switched target profile to ${cat.toUpperCase()} (${vehicleConfig.hardwareLink.protocol}).`
-    };
-    setConnectionLogs((prev) => [newLog, ...prev.slice(0, 20)]);
   };
 
   // Toggle Connection
   const handleToggleConnection = () => {
-    if (connectionState === 'connected') {
-      setConnectionState('disconnected');
-    } else {
-      setConnectionState('connecting');
-      setTimeout(() => {
-        setConnectionState('connected');
-      }, 1200);
-    }
+    DeviceService.getInstance().toggleConnection();
   };
+
 
   return (
     <div className="min-h-screen bg-[#f8f6f0] text-stone-900 flex flex-col md:flex-row font-sans selection:bg-orange-500/20 selection:text-orange-950">
