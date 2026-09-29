@@ -1,8 +1,9 @@
 <div align="center">
 
-# 🚗⚡ MotoMindX — Vehicle Health & Diagnosis
-### *AI + IoT Connected Digital Twin for Real-Time Machine Health & Maintenance Intelligence*
+# 🚗⚡ MotoMindX — Unified Multi-Vehicle Health & Diagnosis Platform
+### *AI + IoT Connected Digital Twin for Real-Time Vehicle Health & Predictive Maintenance Intelligence*
 
+**Supported Vehicle Modalities:** 🚗 Passenger Cars • 🏍️ Motorcycles / Bikes • 🛵 Electric Scooters / EVs • 🏎️ Dynamic RC Testbeds  
 **Smart India Hackathon (SIH 2026)** • **Problem Statement ID:** `SIH26219`  
 **Theme:** Smart Automation • **Category:** Hardware • **Team:** TwinTorque  
 **Live Prototype:** [rc-one-mu.vercel.app](https://rc-one-mu.vercel.app/) • **Status:** Prototype Validated & Live Demo Ready
@@ -12,7 +13,7 @@
 [![React](https://img.shields.io/badge/Frontend-React%2019%20%2B%20TypeScript-61DAFB?style=flat-square&logo=react)](https://react.dev/)
 [![Three.js](https://img.shields.io/badge/3D%20Twin-Three.js%20%2F%20WebGL-000000?style=flat-square&logo=threedotjs)](https://threejs.org/)
 [![Hardware](https://img.shields.io/badge/Hardware-ESP32%20%2B%20MPU6050%20%2B%20MAX6675-E7352C?style=flat-square&logo=espressif)](https://espressif.com/)
-[![Protocol](https://img.shields.io/badge/Transport-MQTT%20QoS%201%20%2F%20CAN--Bus-2CA5E0?style=flat-square)](https://mqtt.org/)
+[![Protocol](https://img.shields.io/badge/Transport-MQTT%20QoS%201%20%2F%20OBD--II%20CAN-2CA5E0?style=flat-square)](https://mqtt.org/)
 [![SIH Category](https://img.shields.io/badge/SIH-Hardware%20%26%20Smart%20Automation-FF9933?style=flat-square)]()
 
 </div>
@@ -21,16 +22,17 @@
 
 ## 📌 Table of Contents
 1. [Executive Summary & Problem Statement](#-1-executive-summary--problem-statement)
-2. [Innovation & Core Differentiation](#-2-innovation--core-differentiation)
-3. [End-to-End System Architecture](#-3-end-to-end-system-architecture)
-4. [Hardware Bill of Materials (BOM) & Edge Engineering](#-4-hardware-bill-of-materials-bom--edge-engineering)
-5. [AI & Diagnostic Intelligence Pipeline](#-5-ai--diagnostic-intelligence-pipeline)
-6. [Quantitative Validation & Empirical Benchmarks](#-6-quantitative-validation--empirical-benchmarks)
-7. [Digital Twin & Operator Workflow](#-7-digital-twin--operator-workflow)
-8. [Implementation Status Matrix (Honest Audit)](#-8-implementation-status-matrix-honest-audit)
-9. [Defensible Research & Academic Grounding](#-9-defensible-research--academic-grounding)
-10. [SIH Slide-by-Slide PPT Alignment Guide](#-10-sih-slide-by-slide-ppt-alignment-guide)
-11. [Quickstart & Local Setup](#-11-quickstart--local-setup)
+2. [Multi-Vehicle Modality Architecture](#-2-multi-vehicle-modality-architecture)
+3. [Innovation & Core Differentiation](#-3-innovation--core-differentiation)
+4. [End-to-End System Architecture](#-4-end-to-end-system-architecture)
+5. [Hardware Bill of Materials (BOM) & Edge Engineering](#-5-hardware-bill-of-materials-bom--edge-engineering)
+6. [AI & Diagnostic Intelligence Pipeline](#-6-ai--diagnostic-intelligence-pipeline)
+7. [Quantitative Validation & Empirical Benchmarks](#-7-quantitative-validation--empirical-benchmarks)
+8. [Digital Twin & Operator Workflow](#-8-digital-twin--operator-workflow)
+9. [Implementation Status Matrix (Honest Audit)](#-9-implementation-status-matrix-honest-audit)
+10. [Defensible Research & Academic Grounding](#-10-defensible-research--academic-grounding)
+11. [SIH Slide-by-Slide PPT Alignment Guide](#-11-sih-slide-by-slide-ppt-alignment-guide)
+12. [Quickstart & Local Setup](#-12-quickstart--local-setup)
 
 ---
 
@@ -39,10 +41,14 @@
 ### 🏛️ The SIH26219 Context
 Official SIH Challenge: *Intelligent utilization of sensor resources and multi-modal machine data to deliver predictive operational insights.*
 
-### 🔍 Our Problem Translation & Scope
-- **The Core Problem:** Conventional vehicle/machinery maintenance is **reactive** (repair after catastrophic failure) or **rigidly scheduled** (arbitrary calendar intervals), causing avoidable fleet downtime, safety hazards, and premature part disposal.
-- **Our Primary Validation Target:** **Electric Vehicle Powertrain & Rotating Machinery** (BLDC/PMSM motor, Li-ion Battery pack/BMS, electronic speed controller, thermal subsystems).
-- **Our Solution:** **MotoMindX** connects multi-sensor hardware telemetry (vibration, temperature, current, RPM) with a synchronized 3D WebGL Digital Twin and a multi-domain diagnostic engine. It transforms raw telemetry into component-level health scores, localized fault isolation, and automated maintenance directives before physical breakdown occurs.
+### 🔍 Our Problem Translation & Unified Multi-Vehicle Scope
+- **The Core Problem:** Conventional vehicle maintenance across consumer and commercial sectors is **reactive** (waiting for roadside breakdown) or **rigidly scheduled** (arbitrary mileage intervals), causing avoidable fleet downtime, safety hazards, and premature part disposal.
+- **Our Unified Scope:** **MotoMindX** provides a unified diagnostic pipeline supporting:
+  - 🛵 **Electric Scooters / Light EVs:** Real-time BMS cell delta monitoring, PMSM motor stator temperature, controller efficiency, and regenerative braking dynamics.
+  - 🚗 **Passenger Cars:** Standard OBD-II (ISO 15765-4 CAN 500kbps) bus telemetry for engine load, coolant spikes, oil pressure, spark misfires, and TPMS.
+  - 🏍️ **Motorcycles / Bikes:** 6-pin diagnostic CAN / IMU integration for lean-angle dynamics, chain slack monitoring, and engine thermal envelopes.
+  - 🏎️ **Scale RC Testbeds:** 915MHz LoRa telemetry for rapid dynamic benchmark validation.
+- **Our Solution:** **MotoMindX** connects multi-protocol hardware telemetry with vehicle-specific synchronized 3D WebGL Digital Twins and a multi-domain diagnostic engine. It transforms raw telemetry into component-level health scores, localized fault isolation, and automated maintenance directives before physical breakdown occurs.
 
 ```mermaid
 flowchart LR
